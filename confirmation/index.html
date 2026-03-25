@@ -1,285 +1,325 @@
 <!DOCTYPE html>
 
-<html lang="fr">
+<html lang="fr" style="background:#fbfbfd!important;color:#1d1d1f!important">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Orixen — Audit confirmé</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230071e3'/><path d='M8 16 L14 10 L20 16 L14 22 Z' fill='none' stroke='white' stroke-width='2' stroke-linejoin='round'/><circle cx='22' cy='16' r='3' fill='white'/></svg>"/>
 <style>
-:root {
-  --surface: #fbfbfd;
-  --bg:      #f5f5f7;
-  --card:    #ffffff;
-  --line:    #d2d2d7;
-  --line-hi: #e8e8ed;
-  --ink:     #1d1d1f;
-  --ink-2:   #3d3d3f;
-  --ink-3:   #6e6e73;
-  --ink-4:   #aeaeb2;
-  --blue:    #0071e3;
-  --blue-hi: #0077ed;
-  --blue-lo: rgba(0,113,227,.08);
-  --blue-mid:rgba(0,113,227,.18);
-  --green:   #28a745;
-  --green-lo:rgba(40,167,69,.09);
-  --green-bd:rgba(40,167,69,.22);
-  --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --ease: cubic-bezier(.25,.46,.45,.94);
-  --spring: cubic-bezier(.34,1.56,.64,1);
+/* ── HARD RESET — overrides everything ── */
+html, body, div, span, p, h1, h2, h3, h4, a, nav, main, section, footer, ul, li, button, input, blockquote {
+  all: revert;
+  box-sizing: border-box !important;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-size: 16px; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; scroll-behavior: smooth; }
-body { background: var(--surface); color: var(--ink); font-family: var(--font); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; cursor: none; }
-a { color: inherit; text-decoration: none; }
-::-webkit-scrollbar { width: 0; }
+html {
+  font-size: 16px !important;
+  background: #fbfbfd !important;
+  -webkit-font-smoothing: antialiased !important;
+  text-rendering: optimizeLegibility !important;
+}
+body {
+  background: #fbfbfd !important;
+  color: #1d1d1f !important;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 100vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow-x: hidden !important;
+  cursor: none !important;
+}
+*, *::before, *::after {
+  box-sizing: border-box !important;
+}
+a { text-decoration: none !important; color: inherit !important; }
+button { border: none !important; background: none !important; font-family: inherit !important; cursor: none !important; }
+ul { list-style: none !important; }
+::-webkit-scrollbar { width: 0 !important; }
+
+/* ── VARIABLES ── */
+:root {
+–surface: #fbfbfd;
+–bg:      #f5f5f7;
+–card:    #ffffff;
+–line-hi: #e8e8ed;
+–line:    #d2d2d7;
+–ink:     #1d1d1f;
+–ink-2:   #3d3d3f;
+–ink-3:   #6e6e73;
+–ink-4:   #aeaeb2;
+–blue:    #0071e3;
+–blue-hi: #0077ed;
+–blue-lo: rgba(0,113,227,.08);
+–blue-mid:rgba(0,113,227,.18);
+–green:   #28a745;
+–green-lo:rgba(40,167,69,.09);
+–green-bd:rgba(40,167,69,.22);
+–ease:   cubic-bezier(.25,.46,.45,.94);
+–spring: cubic-bezier(.34,1.56,.64,1);
+}
 
 /* ── CURSOR ── */
-#cursor { position: fixed; top: 0; left: 0; z-index: 9999; pointer-events: none; width: 10px; height: 10px; background: var(–blue); border-radius: 50%; transform: translate(-50%,-50%); transition: width .25s var(–spring), height .25s var(–spring), background .2s; will-change: transform; }
-#cursor.h { width: 44px; height: 44px; background: rgba(0,113,227,.1); border: 1.5px solid var(–blue); }
-#cursor.c { width: 7px; height: 7px; }
-#ct { position: fixed; top: 0; left: 0; z-index: 9998; pointer-events: none; width: 34px; height: 34px; border: 1px solid rgba(0,113,227,.25); border-radius: 50%; transform: translate(-50%,-50%); opacity: .5; will-change: transform; }
+#cursor {
+position: fixed !important; top: 0 !important; left: 0 !important;
+z-index: 9999 !important; pointer-events: none !important;
+width: 10px !important; height: 10px !important;
+background: var(–blue) !important; border-radius: 50% !important;
+transform: translate(-50%,-50%) !important;
+transition: width .25s var(–spring), height .25s var(–spring) !important;
+will-change: transform !important;
+}
+#cursor.h { width: 42px !important; height: 42px !important; background: rgba(0,113,227,.1) !important; border: 1.5px solid var(–blue) !important; }
+#ct {
+position: fixed !important; top: 0 !important; left: 0 !important;
+z-index: 9998 !important; pointer-events: none !important;
+width: 32px !important; height: 32px !important;
+border: 1px solid rgba(0,113,227,.25) !important; border-radius: 50% !important;
+transform: translate(-50%,-50%) !important; opacity: .45 !important;
+}
 
 /* ── NAV ── */
-nav {
-position: sticky; top: 0; z-index: 200;
-height: 52px; display: flex; align-items: center; justify-content: space-between;
-padding: 0 28px;
-background: rgba(245,245,247,.88);
-backdrop-filter: saturate(180%) blur(20px);
--webkit-backdrop-filter: saturate(180%) blur(20px);
-border-bottom: 1px solid var(–line-hi);
+#conf-nav {
+position: sticky !important; top: 0 !important; z-index: 200 !important;
+height: 52px !important;
+display: flex !important; align-items: center !important; justify-content: space-between !important;
+padding: 0 28px !important;
+background: rgba(251,251,253,.92) !important;
+backdrop-filter: saturate(180%) blur(20px) !important;
+-webkit-backdrop-filter: saturate(180%) blur(20px) !important;
+border-bottom: 1px solid var(–line-hi) !important;
+margin: 0 !important;
 }
-.nav-logo { display: flex; align-items: center; gap: 9px; font-size: 1.05rem; font-weight: 800; letter-spacing: -.03em; color: var(–ink); }
-.nav-logo svg { width: 26px; height: 26px; }
-.nav-back { display: inline-flex; align-items: center; gap: 6px; font-size: .8rem; font-weight: 500; color: var(–ink-3); border: 1px solid var(–line-hi); padding: 7px 14px; border-radius: 980px; transition: border-color .2s, color .2s, background .2s; }
-.nav-back svg { width: 13px; height: 13px; }
-.nav-back:hover { border-color: var(–line); color: var(–ink); background: var(–card); }
+.conf-logo {
+display: flex !important; align-items: center !important; gap: 9px !important;
+font-size: 1.05rem !important; font-weight: 800 !important;
+letter-spacing: -.03em !important; color: var(–ink) !important;
+background: none !important; border: none !important; padding: 0 !important;
+}
+.conf-logo svg { width: 26px !important; height: 26px !important; display: block !important; }
+.conf-back {
+display: inline-flex !important; align-items: center !important; gap: 6px !important;
+font-size: .8rem !important; font-weight: 500 !important; color: var(–ink-3) !important;
+border: 1px solid var(–line-hi) !important; padding: 7px 14px !important;
+border-radius: 980px !important; background: var(–card) !important;
+transition: border-color .2s, color .2s !important;
+}
+.conf-back svg { width: 13px !important; height: 13px !important; }
+.conf-back:hover { border-color: var(–line) !important; color: var(–ink) !important; }
 
-/* ── HERO ZONE ── */
-.hero-zone {
-background: var(–surface);
-padding: 72px 24px 60px;
-text-align: center;
-position: relative;
-overflow: hidden;
+/* ── HERO ── */
+#conf-hero {
+background: #fbfbfd !important;
+padding: 68px 24px 56px !important;
+text-align: center !important;
+position: relative !important;
+overflow: hidden !important;
 }
-.hero-zone::before {
-content: ‘’;
-position: absolute; top: -20%; left: 50%; transform: translateX(-50%);
-width: 800px; height: 500px;
-background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(40,167,69,.07), transparent 70%);
-pointer-events: none;
+#conf-hero::before {
+content: ‘’ !important;
+position: absolute !important; top: -20% !important; left: 50% !important;
+transform: translateX(-50%) !important;
+width: 800px !important; height: 500px !important;
+background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(40,167,69,.06), transparent 70%) !important;
+pointer-events: none !important;
 }
-.hero-grid {
-position: absolute; inset: 0; pointer-events: none;
-background-image: linear-gradient(rgba(0,113,227,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,113,227,.03) 1px, transparent 1px);
-background-size: 60px 60px;
-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 20%, transparent 75%);
--webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 20%, transparent 75%);
+.conf-grid {
+position: absolute !important; inset: 0 !important; pointer-events: none !important;
+background-image: linear-gradient(rgba(0,113,227,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,113,227,.03) 1px, transparent 1px) !important;
+background-size: 60px 60px !important;
+mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 20%, transparent 75%) !important;
+-webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 20%, transparent 75%) !important;
 }
 
 /* checkmark */
-.check-wrap { position: relative; z-index: 1; margin: 0 auto 32px; width: 80px; height: 80px; }
-.check-ring-outer {
-position: absolute; inset: 0;
-border-radius: 50%;
-border: 1px solid var(–green-bd);
-animation: ring-pulse 2.5s ease-in-out infinite 1s;
+.check-wrap {
+position: relative !important; z-index: 1 !important;
+margin: 0 auto 28px !important; width: 80px !important; height: 80px !important;
+display: flex !important; align-items: center !important; justify-content: center !important;
 }
-.check-ring-outer2 {
-position: absolute; inset: -10px;
-border-radius: 50%;
-border: 1px solid rgba(40,167,69,.1);
-animation: ring-pulse 2.5s ease-in-out infinite 1.4s;
+.check-ring1 {
+position: absolute !important; inset: -12px !important;
+border-radius: 50% !important; border: 1px solid rgba(40,167,69,.1) !important;
+animation: rpulse 2.5s ease-in-out infinite 1.3s !important;
 }
-@keyframes ring-pulse { 0%,100%{transform:scale(1);opacity:.5} 50%{transform:scale(1.08);opacity:1} }
+.check-ring2 {
+position: absolute !important; inset: 0 !important;
+border-radius: 50% !important; border: 1px solid var(–green-bd) !important;
+animation: rpulse 2.5s ease-in-out infinite .8s !important;
+}
+@keyframes rpulse { 0%,100%{transform:scale(1);opacity:.5} 50%{transform:scale(1.09);opacity:1} }
 .check-circle {
-width: 80px; height: 80px; border-radius: 50%;
-background: var(–green-lo);
-border: 2px solid var(–green-bd);
-display: flex; align-items: center; justify-content: center;
-position: relative; z-index: 2;
-animation: pop .6s var(–spring) forwards;
+width: 80px !important; height: 80px !important; border-radius: 50% !important;
+background: var(–green-lo) !important; border: 2px solid var(–green-bd) !important;
+display: flex !important; align-items: center !important; justify-content: center !important;
+position: relative !important; z-index: 2 !important;
+animation: cpop .6s var(–spring) forwards !important;
 }
-.check-circle svg { width: 34px; height: 34px; color: var(–green); }
-.check-path { stroke-dasharray: 42; stroke-dashoffset: 42; animation: draw .5s var(–ease) .5s forwards; }
-@keyframes pop { from{transform:scale(.5);opacity:0} to{transform:scale(1);opacity:1} }
-@keyframes draw { to{stroke-dashoffset:0} }
+.check-circle svg { width: 32px !important; height: 32px !important; color: var(–green) !important; }
+.check-path { stroke-dasharray: 42 !important; stroke-dashoffset: 42 !important; animation: cdraw .5s var(–ease) .5s forwards !important; }
+@keyframes cpop { from{transform:scale(.5);opacity:0} to{transform:scale(1);opacity:1} }
+@keyframes cdraw { to{stroke-dashoffset:0} }
 
-.confirm-inner { position: relative; z-index: 1; max-width: 600px; margin: 0 auto; }
-
-.confirm-badge {
-display: inline-flex; align-items: center; gap: 7px;
-font-size: .72rem; font-weight: 700; color: var(–green);
-letter-spacing: .06em; text-transform: uppercase;
-background: var(–green-lo); border: 1px solid var(–green-bd);
-padding: 5px 14px; border-radius: 20px;
-margin-bottom: 20px;
+.conf-hero-inner { position: relative !important; z-index: 1 !important; max-width: 580px !important; margin: 0 auto !important; }
+.conf-badge {
+display: inline-flex !important; align-items: center !important; gap: 7px !important;
+font-size: .72rem !important; font-weight: 700 !important; color: var(–green) !important;
+letter-spacing: .06em !important; text-transform: uppercase !important;
+background: var(–green-lo) !important; border: 1px solid var(–green-bd) !important;
+padding: 5px 14px !important; border-radius: 20px !important; margin-bottom: 18px !important;
 }
-.badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(–green); animation: pdot 2s ease-in-out infinite; }
+.badge-dot { width: 6px !important; height: 6px !important; border-radius: 50% !important; background: var(–green) !important; animation: pdot 2s ease-in-out infinite !important; display: inline-block !important; }
 @keyframes pdot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.6)} }
-
-.confirm-h1 {
-font-size: clamp(2rem, 5vw, 3.2rem);
-font-weight: 800; letter-spacing: -.04em; line-height: 1.06;
-color: var(–ink); margin-bottom: 18px;
+.conf-h1 {
+font-size: clamp(1.9rem, 5vw, 3rem) !important;
+font-weight: 800 !important; letter-spacing: -.04em !important; line-height: 1.07 !important;
+color: var(–ink) !important; margin: 0 0 16px !important; padding: 0 !important;
 }
-.confirm-h1 span { color: var(–blue); }
-
-.confirm-sub {
-font-size: 1rem; line-height: 1.72; color: var(–ink-3);
-max-width: 480px; margin: 0 auto;
+.conf-h1 span { color: var(–blue) !important; }
+.conf-sub {
+font-size: 1rem !important; line-height: 1.72 !important; color: var(–ink-3) !important;
+max-width: 460px !important; margin: 0 auto !important; padding: 0 !important;
 }
 
-/* ── CONTENT ── */
-.content {
-padding: 0 24px 80px;
-max-width: 700px;
-margin: 0 auto;
-width: 100%;
+/* ── BODY CONTENT ── */
+#conf-body {
+padding: 0 20px 72px !important;
+max-width: 680px !important;
+margin: 0 auto !important;
+width: 100% !important;
+background: transparent !important;
 }
 
-/* ── TIMELINE ── */
-.timeline-wrap {
-background: var(–card);
-border: 1px solid var(–line-hi);
-border-radius: 20px;
-overflow: hidden;
-margin-top: -32px;
-margin-bottom: 16px;
-box-shadow: 0 4px 24px rgba(0,0,0,.06), 0 1px 3px rgba(0,0,0,.04);
-position: relative;
-z-index: 2;
+/* timeline card */
+.tl-card {
+background: var(–card) !important;
+border: 1px solid var(–line-hi) !important;
+border-radius: 20px !important;
+overflow: hidden !important;
+margin-top: -28px !important;
+margin-bottom: 14px !important;
+box-shadow: 0 4px 24px rgba(0,0,0,.06), 0 1px 3px rgba(0,0,0,.04) !important;
+position: relative !important; z-index: 2 !important;
 }
-.tl-header {
-padding: 22px 28px 0;
-display: flex; align-items: center; justify-content: space-between;
+.tl-card-head {
+padding: 20px 26px 0 !important;
+display: flex !important; align-items: center !important; justify-content: space-between !important;
+background: var(–card) !important;
 }
-.tl-label { font-size: .68rem; font-weight: 700; color: var(–ink-4); text-transform: uppercase; letter-spacing: .08em; }
-.tl-badge { font-size: .68rem; font-weight: 600; color: var(–blue); background: var(–blue-lo); padding: 4px 10px; border-radius: 20px; }
-
-.timeline { padding: 20px 28px 24px; display: flex; flex-direction: column; gap: 0; }
-.tl-step {
-display: flex; align-items: flex-start; gap: 16px;
-padding: 18px 0;
-border-bottom: 1px solid var(–line-hi);
-position: relative;
+.tl-lbl { font-size: .67rem !important; font-weight: 700 !important; color: var(–ink-4) !important; text-transform: uppercase !important; letter-spacing: .08em !important; }
+.tl-count { font-size: .67rem !important; font-weight: 600 !important; color: var(–blue) !important; background: var(–blue-lo) !important; padding: 3px 10px !important; border-radius: 20px !important; }
+.tl-list { padding: 18px 26px 22px !important; display: flex !important; flex-direction: column !important; gap: 0 !important; background: var(–card) !important; }
+.tl-item {
+display: flex !important; align-items: flex-start !important; gap: 14px !important;
+padding: 17px 0 !important; border-bottom: 1px solid var(–line-hi) !important;
 }
-.tl-step:last-child { border-bottom: none; padding-bottom: 0; }
-.tl-step:first-child { padding-top: 0; }
-
-.tl-left { display: flex; flex-direction: column; align-items: center; gap: 0; flex-shrink: 0; }
-.tl-num {
-width: 32px; height: 32px; border-radius: 10px;
-background: var(–blue-lo);
-display: flex; align-items: center; justify-content: center;
-font-size: .72rem; font-weight: 800; color: var(–blue);
-flex-shrink: 0;
-transition: background .3s, color .3s;
+.tl-item:first-child { padding-top: 0 !important; }
+.tl-item:last-child { border-bottom: none !important; padding-bottom: 0 !important; }
+.tl-n {
+width: 30px !important; height: 30px !important; border-radius: 9px !important;
+background: var(–blue-lo) !important;
+display: flex !important; align-items: center !important; justify-content: center !important;
+font-size: .72rem !important; font-weight: 800 !important; color: var(–blue) !important;
+flex-shrink: 0 !important; margin-top: 1px !important;
+transition: background .25s, color .25s !important;
 }
-.tl-step:hover .tl-num { background: var(–blue); color: #fff; }
-
-.tl-body { flex: 1; }
-.tl-title { font-size: .98rem; font-weight: 700; color: var(–ink); margin-bottom: 5px; letter-spacing: -.01em; }
-.tl-text { font-size: .86rem; line-height: 1.68; color: var(–ink-3); }
+.tl-item:hover .tl-n { background: var(–blue) !important; color: #fff !important; }
+.tl-title { font-size: .97rem !important; font-weight: 700 !important; color: var(–ink) !important; margin: 0 0 5px !important; letter-spacing: -.01em !important; }
+.tl-body { font-size: .85rem !important; line-height: 1.67 !important; color: var(–ink-3) !important; margin: 0 !important; }
 .tl-tag {
-display: inline-block; margin-top: 8px;
-font-size: .67rem; font-weight: 600; color: var(–blue);
-background: var(–blue-lo); padding: 3px 10px; border-radius: 12px;
+display: inline-block !important; margin-top: 8px !important;
+font-size: .66rem !important; font-weight: 600 !important;
+color: var(–blue) !important; background: var(–blue-lo) !important;
+padding: 3px 9px !important; border-radius: 10px !important;
 }
-.tl-tag.green { color: var(–green); background: var(–green-lo); }
+.tl-tag-green { color: var(–green) !important; background: var(–green-lo) !important; }
 
-/* ── PREP CARD ── */
-.prep-wrap {
-background: var(–bg);
-border: 1px solid var(–line-hi);
-border-radius: 20px;
-padding: 26px 28px;
-margin-bottom: 16px;
-}
-.prep-label { font-size: .68rem; font-weight: 700; color: var(–ink-4); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 18px; }
-.prep-list { display: flex; flex-direction: column; gap: 0; }
-.prep-item {
-display: flex; align-items: center; gap: 13px;
-padding: 13px 0;
-border-bottom: 1px solid var(–line-hi);
-font-size: .9rem; font-weight: 500; color: var(–ink-2);
-transition: color .2s;
-}
-.prep-item:last-child { border-bottom: none; padding-bottom: 0; }
-.prep-item:first-child { padding-top: 0; }
-.prep-item:hover { color: var(–ink); }
-.prep-icon {
-width: 30px; height: 30px; border-radius: 8px;
-background: var(–card); border: 1px solid var(–line-hi);
-display: flex; align-items: center; justify-content: center;
-flex-shrink: 0; color: var(–blue);
-transition: background .25s, border-color .25s;
-}
-.prep-icon svg { width: 13px; height: 13px; }
-.prep-item:hover .prep-icon { background: var(–blue-lo); border-color: rgba(0,113,227,.2); }
-
-/* ── INFO ROW ── */
+/* 2-col info */
 .info-row {
-display: grid; grid-template-columns: 1fr 1fr;
-gap: 12px; margin-bottom: 16px;
+display: grid !important; grid-template-columns: 1fr 1fr !important;
+gap: 12px !important; margin-bottom: 14px !important;
 }
-.info-card {
-background: var(–card); border: 1px solid var(–line-hi);
-border-radius: 16px; padding: 20px 22px;
-transition: box-shadow .25s, transform .25s;
+.info-c {
+background: var(–card) !important; border: 1px solid var(–line-hi) !important;
+border-radius: 16px !important; padding: 20px 20px 18px !important;
+transition: box-shadow .25s, transform .25s !important;
 }
-.info-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,.07); transform: translateY(-2px); }
-.info-card-icon {
-width: 36px; height: 36px; border-radius: 9px;
-background: var(–blue-lo); display: flex; align-items: center; justify-content: center;
-color: var(–blue); margin-bottom: 14px;
-transition: background .25s;
+.info-c:hover { box-shadow: 0 6px 22px rgba(0,0,0,.07) !important; transform: translateY(-2px) !important; }
+.info-icon {
+width: 36px !important; height: 36px !important; border-radius: 9px !important;
+background: var(–blue-lo) !important;
+display: flex !important; align-items: center !important; justify-content: center !important;
+color: var(–blue) !important; margin-bottom: 13px !important;
+transition: background .25s !important;
 }
-.info-card:hover .info-card-icon { background: var(–blue-mid); }
-.info-card-icon svg { width: 16px; height: 16px; }
-.info-card-title { font-size: .82rem; font-weight: 700; color: var(–ink); margin-bottom: 5px; letter-spacing: -.01em; }
-.info-card-body { font-size: .78rem; line-height: 1.6; color: var(–ink-3); }
+.info-c:hover .info-icon { background: var(–blue-mid) !important; }
+.info-icon svg { width: 16px !important; height: 16px !important; }
+.info-t { font-size: .85rem !important; font-weight: 700 !important; color: var(–ink) !important; margin: 0 0 5px !important; letter-spacing: -.01em !important; }
+.info-b { font-size: .78rem !important; line-height: 1.6 !important; color: var(–ink-3) !important; margin: 0 !important; }
 
-/* ── CTA BACK ── */
+/* prep */
+.prep-card {
+background: var(–bg) !important; border: 1px solid var(–line-hi) !important;
+border-radius: 18px !important; padding: 22px 24px !important; margin-bottom: 16px !important;
+}
+.prep-lbl { font-size: .67rem !important; font-weight: 700 !important; color: var(–ink-4) !important; text-transform: uppercase !important; letter-spacing: .08em !important; margin: 0 0 16px !important; }
+.prep-list { display: flex !important; flex-direction: column !important; gap: 0 !important; }
+.prep-item {
+display: flex !important; align-items: center !important; gap: 12px !important;
+padding: 12px 0 !important; border-bottom: 1px solid var(–line-hi) !important;
+font-size: .89rem !important; font-weight: 500 !important; color: var(–ink-2) !important;
+transition: color .2s !important;
+}
+.prep-item:first-child { padding-top: 0 !important; }
+.prep-item:last-child { border-bottom: none !important; padding-bottom: 0 !important; }
+.prep-item:hover { color: var(–ink) !important; }
+.prep-icon {
+width: 28px !important; height: 28px !important; border-radius: 7px !important;
+background: var(–card) !important; border: 1px solid var(–line-hi) !important;
+display: flex !important; align-items: center !important; justify-content: center !important;
+flex-shrink: 0 !important; color: var(–blue) !important;
+transition: background .2s, border-color .2s !important;
+}
+.prep-icon svg { width: 12px !important; height: 12px !important; }
+.prep-item:hover .prep-icon { background: var(–blue-lo) !important; border-color: rgba(0,113,227,.2) !important; }
+
+/* back */
 .back-btn {
-display: flex; align-items: center; justify-content: center; gap: 8px;
-width: 100%;
-font-size: .9rem; font-weight: 600; color: var(–ink-3);
-border: 1.5px solid var(–line-hi);
-padding: 15px 28px; border-radius: 980px;
-background: var(–card);
-transition: border-color .2s, color .2s, box-shadow .2s;
+display: flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important;
+width: 100% !important; font-size: .9rem !important; font-weight: 600 !important;
+color: var(–ink-3) !important; border: 1.5px solid var(–line-hi) !important;
+padding: 15px 28px !important; border-radius: 980px !important;
+background: var(–card) !important;
+transition: border-color .2s, color .2s, box-shadow .2s !important;
 }
-.back-btn svg { width: 14px; height: 14px; }
-.back-btn:hover { border-color: var(–line); color: var(–ink); box-shadow: 0 4px 16px rgba(0,0,0,.06); }
+.back-btn svg { width: 14px !important; height: 14px !important; }
+.back-btn:hover { border-color: var(–line) !important; color: var(–ink) !important; box-shadow: 0 4px 14px rgba(0,0,0,.06) !important; }
 
-/* ── FOOTER ── */
-footer {
-margin-top: auto;
-border-top: 1px solid var(–line-hi);
-padding: 24px 28px;
-display: flex; align-items: center; justify-content: space-between; gap: 16px;
-background: var(–bg);
+/* footer */
+#conf-footer {
+margin-top: auto !important;
+border-top: 1px solid var(–line-hi) !important;
+padding: 24px 28px !important;
+display: flex !important; align-items: center !important; justify-content: space-between !important; gap: 16px !important;
+background: var(–bg) !important;
 }
-.f-logo { display: flex; align-items: center; gap: 8px; font-size: .9rem; font-weight: 800; color: var(–ink-4); }
-.f-logo svg { width: 22px; height: 22px; }
-.f-note { font-size: .75rem; color: var(–ink-4); }
+.f-logo { display: flex !important; align-items: center !important; gap: 8px !important; font-size: .9rem !important; font-weight: 800 !important; color: var(–ink-4) !important; }
+.f-logo svg { width: 22px !important; height: 22px !important; }
+.f-note { font-size: .75rem !important; color: var(–ink-4) !important; }
 
-/* ── RESPONSIVE ── */
+/* responsive */
 @media (max-width: 560px) {
-nav { padding: 0 18px; }
-.hero-zone { padding: 60px 20px 52px; }
-.content { padding: 0 18px 60px; }
-.timeline { padding: 18px 20px 20px; }
-.tl-header { padding: 18px 20px 0; }
-.info-row { grid-template-columns: 1fr; }
-footer { flex-direction: column; text-align: center; padding: 20px; }
-.prep-wrap { padding: 22px 20px; }
+#conf-nav { padding: 0 18px !important; }
+#conf-hero { padding: 56px 18px 48px !important; }
+#conf-body { padding: 0 16px 56px !important; }
+.tl-list { padding: 16px 18px 18px !important; }
+.tl-card-head { padding: 18px 18px 0 !important; }
+.info-row { grid-template-columns: 1fr !important; }
+#conf-footer { flex-direction: column !important; text-align: center !important; padding: 18px !important; }
 }
 </style>
 
@@ -291,16 +331,16 @@ footer { flex-direction: column; text-align: center; padding: 20px; }
 
 <!-- NAV -->
 
-<nav>
-  <div class="nav-logo">
-    <svg viewBox="0 0 26 26" fill="none">
+<nav id="conf-nav">
+  <div class="conf-logo">
+    <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect width="26" height="26" rx="7" fill="#0071e3"/>
       <path d="M7 13L12 8L17 13L12 18Z" fill="none" stroke="white" stroke-width="1.8" stroke-linejoin="round"/>
       <circle cx="20" cy="13" r="2.5" fill="white"/>
     </svg>
     Orixen
   </div>
-  <a href="/" class="nav-back">
+  <a href="/" class="conf-back">
     <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M13 7H1M6 2L1 7l5 5"/>
     </svg>
@@ -308,168 +348,127 @@ footer { flex-direction: column; text-align: center; padding: 20px; }
   </a>
 </nav>
 
-<!-- HERO ZONE -->
+<!-- HERO -->
 
-<div class="hero-zone">
-  <div class="hero-grid"></div>
+<div id="conf-hero">
+  <div class="conf-grid"></div>
 
   <div class="check-wrap">
-    <div class="check-ring-outer2"></div>
-    <div class="check-ring-outer"></div>
+    <div class="check-ring1"></div>
+    <div class="check-ring2"></div>
     <div class="check-circle">
-      <svg viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path class="check-path" d="M7 17l7 7 13-13"/>
+      <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path class="check-path" d="M6 16l7 7 13-13"/>
       </svg>
     </div>
   </div>
 
-  <div class="confirm-inner">
-    <div class="confirm-badge">
+  <div class="conf-hero-inner">
+    <div class="conf-badge">
       <span class="badge-dot"></span>
       Audit confirmé
     </div>
-    <h1 class="confirm-h1">Votre créneau est réservé.<br><span>Voici ce qui se passe.</span></h1>
-    <p class="confirm-sub">Vous allez recevoir un email de confirmation dans les prochaines minutes avec le lien de l'appel et tous les détails.</p>
+    <h1 class="conf-h1">Votre créneau est réservé.<br><span>Voici ce qui se passe.</span></h1>
+    <p class="conf-sub">Vous allez recevoir un email de confirmation dans les prochaines minutes avec le lien de l'appel et tous les détails.</p>
   </div>
 </div>
 
-<!-- CONTENT -->
+<!-- BODY -->
 
-<div class="content">
+<div id="conf-body">
 
   <!-- Timeline -->
 
-  <div class="timeline-wrap">
-    <div class="tl-header">
-      <div class="tl-label">Ce qui se passe maintenant</div>
-      <div class="tl-badge">4 étapes</div>
+  <div class="tl-card">
+    <div class="tl-card-head">
+      <span class="tl-lbl">Ce qui se passe maintenant</span>
+      <span class="tl-count">4 étapes</span>
     </div>
-    <div class="timeline">
-
-```
-  <div class="tl-step">
-    <div class="tl-left">
-      <div class="tl-num">1</div>
-    </div>
-    <div class="tl-body">
-      <div class="tl-title">Email de confirmation</div>
-      <div class="tl-text">Vous recevez le lien de visioconférence, la date confirmée et un rappel automatique 24h avant l'appel.</div>
-      <span class="tl-tag green">Dans les 5 minutes</span>
-    </div>
-  </div>
-
-  <div class="tl-step">
-    <div class="tl-left">
-      <div class="tl-num">2</div>
-    </div>
-    <div class="tl-body">
-      <div class="tl-title">Préparation de l'audit</div>
-      <div class="tl-text">Notre équipe analyse votre zone géographique, votre secteur et le potentiel d'acquisition disponible. L'audit commence dès la première seconde.</div>
-      <span class="tl-tag">Avant l'appel</span>
-    </div>
-  </div>
-
-  <div class="tl-step">
-    <div class="tl-left">
-      <div class="tl-num">3</div>
-    </div>
-    <div class="tl-body">
-      <div class="tl-title">L'audit stratégique — 45 min</div>
-      <div class="tl-text">On analyse ensemble votre situation actuelle, les opportunités concrètes et comment le système Orixen s'adapte à votre activité et votre marché local.</div>
-      <span class="tl-tag">J-jour</span>
-    </div>
-  </div>
-
-  <div class="tl-step">
-    <div class="tl-left">
-      <div class="tl-num">4</div>
-    </div>
-    <div class="tl-body">
-      <div class="tl-title">Proposition ou non-proposition</div>
-      <div class="tl-text">Si une opportunité claire existe pour votre zone, nous vous présentons une proposition concrète. Sinon, vous repartez avec des insights gratuits sur votre marché. Sans pression.</div>
-      <span class="tl-tag">Sous 48h après l'appel</span>
+    <div class="tl-list">
+      <div class="tl-item">
+        <div class="tl-n">1</div>
+        <div>
+          <p class="tl-title">Email de confirmation</p>
+          <p class="tl-body">Vous recevez le lien de visioconférence, la date confirmée et un rappel automatique 24h avant l'appel.</p>
+          <span class="tl-tag tl-tag-green">Dans les 5 minutes</span>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-n">2</div>
+        <div>
+          <p class="tl-title">Préparation de l'audit</p>
+          <p class="tl-body">Notre équipe analyse votre zone, votre secteur et le potentiel d'acquisition disponible avant l'appel. L'audit commence dès la première seconde.</p>
+          <span class="tl-tag">Avant l'appel</span>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-n">3</div>
+        <div>
+          <p class="tl-title">L'audit stratégique — 45 min</p>
+          <p class="tl-body">On analyse ensemble votre situation, les opportunités concrètes et comment le système Orixen s'adapte à votre activité et votre marché local.</p>
+          <span class="tl-tag">J-jour</span>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-n">4</div>
+        <div>
+          <p class="tl-title">Proposition ou non-proposition</p>
+          <p class="tl-body">Si une opportunité claire existe, nous vous la présentons. Sinon, vous repartez avec des insights gratuits sur votre marché. Sans pression.</p>
+          <span class="tl-tag">Sous 48h après l'appel</span>
+        </div>
+      </div>
     </div>
   </div>
 
-</div>
-```
-
-  </div>
-
-  <!-- Info cards -->
+  <!-- Info row -->
 
   <div class="info-row">
-    <div class="info-card">
-      <div class="info-card-icon">
+    <div class="info-c">
+      <div class="info-icon">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
           <rect x="1" y="3" width="14" height="11" rx="2"/>
           <path d="M1 7h14M5 1v4M11 1v4"/>
         </svg>
       </div>
-      <div class="info-card-title">Durée de l'appel</div>
-      <div class="info-card-body">45 minutes en visioconférence. Agenda structuré, pas de temps perdu.</div>
+      <p class="info-t">Durée de l'appel</p>
+      <p class="info-b">45 minutes en visioconférence. Agenda structuré, pas de temps perdu.</p>
     </div>
-    <div class="info-card">
-      <div class="info-card-icon">
+    <div class="info-c">
+      <div class="info-icon">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
           <circle cx="8" cy="8" r="6"/>
           <path d="M8 5v3l2.5 2"/>
         </svg>
       </div>
-      <div class="info-card-title">Aucun engagement</div>
-      <div class="info-card-body">L'audit est gratuit. Aucune obligation de suite, aucune pression commerciale.</div>
+      <p class="info-t">Aucun engagement</p>
+      <p class="info-b">L'audit est gratuit. Aucune obligation de suite, aucune pression commerciale.</p>
     </div>
   </div>
 
   <!-- Prep -->
 
-  <div class="prep-wrap">
-    <div class="prep-label">Pour préparer votre audit</div>
+  <div class="prep-card">
+    <p class="prep-lbl">Pour préparer votre audit</p>
     <div class="prep-list">
       <div class="prep-item">
-        <div class="prep-icon">
-          <svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-            <circle cx="6.5" cy="6.5" r="5"/>
-            <path d="M4 6.5l2 2 3-3"/>
-          </svg>
-        </div>
-        Votre zone géographique principale et rayon d'intervention
+        <div class="prep-icon"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 6l3 3 5-5"/></svg></div>
+        Votre zone géographique et rayon d'intervention
       </div>
       <div class="prep-item">
-        <div class="prep-icon">
-          <svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-            <circle cx="6.5" cy="6.5" r="5"/>
-            <path d="M4 6.5l2 2 3-3"/>
-          </svg>
-        </div>
-        Le panier moyen de vos chantiers ou projets
+        <div class="prep-icon"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 6l3 3 5-5"/></svg></div>
+        Le panier moyen de vos chantiers
       </div>
       <div class="prep-item">
-        <div class="prep-icon">
-          <svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-            <circle cx="6.5" cy="6.5" r="5"/>
-            <path d="M4 6.5l2 2 3-3"/>
-          </svg>
-        </div>
+        <div class="prep-icon"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 6l3 3 5-5"/></svg></div>
         Votre volume de demandes entrant par semaine
       </div>
       <div class="prep-item">
-        <div class="prep-icon">
-          <svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-            <circle cx="6.5" cy="6.5" r="5"/>
-            <path d="M4 6.5l2 2 3-3"/>
-          </svg>
-        </div>
+        <div class="prep-icon"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 6l3 3 5-5"/></svg></div>
         Votre délai de réponse actuel à un nouveau lead
       </div>
       <div class="prep-item">
-        <div class="prep-icon">
-          <svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-            <circle cx="6.5" cy="6.5" r="5"/>
-            <path d="M4 6.5l2 2 3-3"/>
-          </svg>
-        </div>
-        Votre budget publicitaire envisageable (ordre de grandeur)
+        <div class="prep-icon"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 6l3 3 5-5"/></svg></div>
+        Votre budget publicitaire envisageable
       </div>
     </div>
   </div>
@@ -487,7 +486,7 @@ footer { flex-direction: column; text-align: center; padding: 20px; }
 
 <!-- FOOTER -->
 
-<footer>
+<footer id="conf-footer">
   <div class="f-logo">
     <svg viewBox="0 0 22 22" fill="none">
       <rect width="22" height="22" rx="6" fill="#0071e3"/>
@@ -496,14 +495,14 @@ footer { flex-direction: column; text-align: center; padding: 20px; }
     </svg>
     Orixen
   </div>
-  <div class="f-note">contact@orixen.fr</div>
+  <span class="f-note">contact@orixen.fr</span>
 </footer>
 
 <script>
-/* CURSOR */
 const cur = document.getElementById('cursor');
 const ct = document.getElementById('ct');
 let mx = 0, my = 0, tx = 0, ty = 0;
+
 document.addEventListener('mousemove', e => {
   mx = e.clientX; my = e.clientY;
   cur.style.left = mx + 'px'; cur.style.top = my + 'px';
@@ -513,7 +512,7 @@ document.addEventListener('mousemove', e => {
   ct.style.left = tx + 'px'; ct.style.top = ty + 'px';
   requestAnimationFrame(loop);
 })();
-document.querySelectorAll('a, .info-card, .tl-step, .prep-item').forEach(el => {
+document.querySelectorAll('a, .info-c, .tl-item, .prep-item').forEach(el => {
   el.addEventListener('mouseenter', () => cur.classList.add('h'));
   el.addEventListener('mouseleave', () => cur.classList.remove('h'));
 });
@@ -523,6 +522,7 @@ if ('ontouchstart' in window) {
   cur.style.display = 'none';
   ct.style.display = 'none';
   document.body.style.cursor = 'auto';
+  document.querySelectorAll('button, a').forEach(el => el.style.cursor = 'auto');
 }
 </script>
 
