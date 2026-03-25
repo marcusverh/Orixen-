@@ -1,50 +1,47 @@
 <!DOCTYPE html>
 
-<html lang="fr">
+<html lang="fr" style="background:#fbfbfd;overflow-x:hidden">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 <title>Orixen — Audit confirmé</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230071e3'/><path d='M8 16 L14 10 L20 16 L14 22 Z' fill='none' stroke='white' stroke-width='2' stroke-linejoin='round'/><circle cx='22' cy='16' r='3' fill='white'/></svg>"/>
-<!-- NO external CSS, NO external fonts — fully self-contained -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230071e3'/><path d='M8 16L14 10L20 16L14 22Z' fill='none' stroke='white' stroke-width='2' stroke-linejoin='round'/><circle cx='22' cy='16' r='3' fill='white'/></svg>"/>
 <style>
-/* Force light background immediately before anything else loads */
-html { background: #fbfbfd; }
-body { background: #fbfbfd; margin: 0; padding: 0; }
-</style>
-<style id="main-styles">
-/* ─── COMPLETE ISOLATION ─── */
-/* This page has no connection to index.html styles */
-
+/* ── TOTAL ISOLATION ── */
 html {
-font-size: 16px;
-background: #fbfbfd;
--webkit-font-smoothing: antialiased;
-text-rendering: optimizeLegibility;
+  font-size: 16px;
+  background: #fbfbfd;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -webkit-text-size-adjust: 100%;
 }
-
 body {
-background: #fbfbfd;
-color: #1d1d1f;
-font-family: -apple-system, BlinkMacSystemFont, ‘SF Pro Display’, ‘Helvetica Neue’, Arial, sans-serif;
-margin: 0;
-padding: 0;
-min-height: 100vh;
-display: flex;
-flex-direction: column;
-overflow-x: hidden;
+  background: #fbfbfd;
+  color: #1d1d1f;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
+  position: relative;
 }
+*, *::before, *::after {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+img, svg { display: block; max-width: 100%; }
+a { text-decoration: none; color: inherit; }
+p, h1 { margin: 0; padding: 0; }
 
-- { box-sizing: border-box; }
-  a { text-decoration: none; color: inherit; }
-  p, h1, h2, h3 { margin: 0; padding: 0; }
-
-/* ─── CURSOR ─── */
-body.has-mouse { cursor: none; }
-body.has-mouse a,
-body.has-mouse button { cursor: none; }
-
-#orixen-cursor {
+/* ── CURSOR (desktop only) ── */
+.has-mouse { cursor: none; }
+.has-mouse a, .has-mouse button { cursor: none; }
+#ocur {
 position: fixed;
 top: 0; left: 0;
 z-index: 9999;
@@ -53,133 +50,133 @@ width: 10px; height: 10px;
 background: #0071e3;
 border-radius: 50%;
 transform: translate(-50%, -50%);
-transition: width .22s, height .22s, background .18s;
+transition: width .22s cubic-bezier(.34,1.56,.64,1), height .22s cubic-bezier(.34,1.56,.64,1), background .18s;
 display: none;
 }
-#orixen-cursor.active { display: block; }
-#orixen-cursor.big {
-width: 42px; height: 42px;
-background: rgba(0,113,227,.1);
-border: 1.5px solid #0071e3;
-}
+#ocur.on { display: block; }
+#ocur.big { width: 40px; height: 40px; background: rgba(0,113,227,.1); border: 1.5px solid #0071e3; }
 
-/* ─── NAV ─── */
-.c-nav {
+/* ── NAV ── */
+.cn {
 position: sticky;
-top: 0;
+top: 0; left: 0; right: 0;
 z-index: 100;
 height: 52px;
+width: 100%;
 display: flex;
 align-items: center;
 justify-content: space-between;
-padding: 0 24px;
+padding: 0 22px;
 background: rgba(251,251,253,.92);
 -webkit-backdrop-filter: saturate(180%) blur(20px);
 backdrop-filter: saturate(180%) blur(20px);
 border-bottom: 1px solid #e8e8ed;
 }
-
-.c-logo {
+.cn-logo {
 display: flex;
 align-items: center;
 gap: 8px;
-font-size: 1.05rem;
+font-size: 1.02rem;
 font-weight: 800;
 letter-spacing: -.03em;
 color: #1d1d1f;
+white-space: nowrap;
 }
-.c-logo svg { width: 26px; height: 26px; display: block; flex-shrink: 0; }
-
-.c-back {
+.cn-logo svg { width: 25px; height: 25px; flex-shrink: 0; }
+.cn-back {
 display: inline-flex;
 align-items: center;
 gap: 6px;
-font-size: .8rem;
+font-size: .78rem;
 font-weight: 500;
 color: #6e6e73;
 border: 1px solid #e8e8ed;
-padding: 7px 14px;
+padding: 7px 13px;
 border-radius: 980px;
 background: #fff;
+white-space: nowrap;
 transition: border-color .2s, color .2s;
+flex-shrink: 0;
 }
-.c-back svg { width: 13px; height: 13px; flex-shrink: 0; }
+.cn-back svg { width: 12px; height: 12px; flex-shrink: 0; }
+.cn-back:hover { border-color: #d2d2d7; color: #1d1d1f; }
 
-/* ─── HERO ─── */
-.c-hero {
+/* ── HERO ── */
+.ch {
+width: 100%;
+overflow: hidden;
 background: #fbfbfd;
-padding: 64px 24px 52px;
+padding: 60px 20px 48px;
 text-align: center;
 position: relative;
-overflow: hidden;
 }
-
-/* grid pattern */
-.c-hero::before {
+/* grid bg — clipped to container */
+.ch-grid {
+position: absolute;
+inset: 0;
+overflow: hidden;
+pointer-events: none;
+}
+.ch-grid::before {
 content: ‘’;
 position: absolute;
 inset: 0;
 background-image:
 linear-gradient(rgba(0,113,227,.035) 1px, transparent 1px),
 linear-gradient(90deg, rgba(0,113,227,.035) 1px, transparent 1px);
-background-size: 56px 56px;
--webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 15%, transparent 72%);
-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 15%, transparent 72%);
-pointer-events: none;
+background-size: 54px 54px;
+-webkit-mask-image: radial-gradient(ellipse 85% 75% at 50% 50%, black 10%, transparent 70%);
+mask-image: radial-gradient(ellipse 85% 75% at 50% 50%, black 10%, transparent 70%);
 }
-
-/* green glow */
-.c-hero::after {
-content: ‘’;
+/* green ambient */
+.ch-glow {
 position: absolute;
-top: -10%; left: 50%;
+top: -5%; left: 50%;
 transform: translateX(-50%);
-width: 700px; height: 500px;
+width: 600px;
+height: 400px;
 background: radial-gradient(ellipse 55% 50% at 50% 40%, rgba(40,167,69,.065), transparent 68%);
 pointer-events: none;
 }
-
-.c-hero-inner {
+.ch-inner {
 position: relative;
 z-index: 1;
-max-width: 560px;
+max-width: 520px;
 margin: 0 auto;
 }
 
-/* ─── CHECKMARK ─── */
-.check-outer {
+/* ── CHECKMARK ── */
+.ck-wrap {
 position: relative;
-width: 84px; height: 84px;
-margin: 0 auto 28px;
+width: 80px; height: 80px;
+margin: 0 auto 26px;
 }
-
-.check-pulse {
+.ck-r1, .ck-r2 {
 position: absolute;
-inset: -10px;
 border-radius: 50%;
-border: 1px solid rgba(40,167,69,.15);
--webkit-animation: cpulse 2.8s ease-in-out infinite;
-animation: cpulse 2.8s ease-in-out infinite;
+pointer-events: none;
 }
-.check-pulse2 {
-position: absolute;
+.ck-r1 {
+inset: -11px;
+border: 1px solid rgba(40,167,69,.13);
+-webkit-animation: ckpulse 2.8s ease-in-out infinite;
+animation: ckpulse 2.8s ease-in-out infinite;
+}
+.ck-r2 {
 inset: 0;
-border-radius: 50%;
 border: 1px solid rgba(40,167,69,.28);
--webkit-animation: cpulse 2.8s ease-in-out infinite .6s;
-animation: cpulse 2.8s ease-in-out infinite .6s;
+-webkit-animation: ckpulse 2.8s ease-in-out infinite .7s;
+animation: ckpulse 2.8s ease-in-out infinite .7s;
 }
-
-@-webkit-keyframes cpulse {
-0%, 100% { -webkit-transform: scale(1); opacity: .5; }
-50%       { -webkit-transform: scale(1.1); opacity: 1; }
+@-webkit-keyframes ckpulse {
+0%,100%{ -webkit-transform:scale(1); opacity:.5 }
+50%    { -webkit-transform:scale(1.1); opacity:1 }
 }
-@keyframes cpulse {
-0%, 100% { transform: scale(1); opacity: .5; }
-50%       { transform: scale(1.1); opacity: 1; }
+@keyframes ckpulse {
+0%,100%{ transform:scale(1); opacity:.5 }
+50%    { transform:scale(1.1); opacity:1 }
 }
-
-.check-circle {
+.ck-circle {
 position: absolute;
 inset: 0;
 border-radius: 50%;
@@ -189,32 +186,29 @@ display: flex;
 align-items: center;
 justify-content: center;
 z-index: 1;
--webkit-animation: cpop .55s cubic-bezier(.34,1.56,.64,1) forwards;
-animation: cpop .55s cubic-bezier(.34,1.56,.64,1) forwards;
+-webkit-animation: ckpop .55s cubic-bezier(.34,1.56,.64,1) both;
+animation: ckpop .55s cubic-bezier(.34,1.56,.64,1) both;
 }
-
-@-webkit-keyframes cpop {
-from { -webkit-transform: scale(.4); opacity: 0; }
-to   { -webkit-transform: scale(1); opacity: 1; }
+@-webkit-keyframes ckpop {
+from { -webkit-transform:scale(.35); opacity:0 }
+to   { -webkit-transform:scale(1);   opacity:1 }
 }
-@keyframes cpop {
-from { transform: scale(.4); opacity: 0; }
-to   { transform: scale(1); opacity: 1; }
+@keyframes ckpop {
+from { transform:scale(.35); opacity:0 }
+to   { transform:scale(1);   opacity:1 }
 }
-
-.check-circle svg { width: 32px; height: 32px; color: #28a745; }
-
-.check-path {
+.ck-circle svg { width: 30px; height: 30px; color: #28a745; overflow: visible; }
+.ck-path {
 stroke-dasharray: 44;
 stroke-dashoffset: 44;
--webkit-animation: cdraw .5s ease .55s forwards;
-animation: cdraw .5s ease .55s forwards;
+-webkit-animation: ckdraw .5s ease .5s both;
+animation: ckdraw .5s ease .5s both;
 }
-@-webkit-keyframes cdraw { to { stroke-dashoffset: 0; } }
-@keyframes cdraw { to { stroke-dashoffset: 0; } }
+@-webkit-keyframes ckdraw { to { stroke-dashoffset: 0 } }
+@keyframes ckdraw { to { stroke-dashoffset: 0 } }
 
 /* badge */
-.c-badge {
+.ck-badge {
 display: inline-flex;
 align-items: center;
 gap: 7px;
@@ -224,280 +218,231 @@ color: #28a745;
 letter-spacing: .07em;
 text-transform: uppercase;
 background: rgba(40,167,69,.09);
-border: 1px solid rgba(40,167,69,.25);
+border: 1px solid rgba(40,167,69,.24);
 padding: 5px 14px;
 border-radius: 20px;
 margin-bottom: 18px;
 }
-.badge-dot {
+.ck-dot {
 width: 6px; height: 6px;
 border-radius: 50%;
 background: #28a745;
--webkit-animation: pdot 2s ease-in-out infinite;
-animation: pdot 2s ease-in-out infinite;
-display: block;
 flex-shrink: 0;
+-webkit-animation: ckdot 2s ease-in-out infinite;
+animation: ckdot 2s ease-in-out infinite;
 }
-@-webkit-keyframes pdot {
-0%,100% { opacity:1; -webkit-transform:scale(1); }
-50%      { opacity:.35; -webkit-transform:scale(.55); }
+@-webkit-keyframes ckdot {
+0%,100%{ opacity:1; -webkit-transform:scale(1) }
+50%    { opacity:.35; -webkit-transform:scale(.5) }
 }
-@keyframes pdot {
-0%,100% { opacity:1; transform:scale(1); }
-50%      { opacity:.35; transform:scale(.55); }
+@keyframes ckdot {
+0%,100%{ opacity:1; transform:scale(1) }
+50%    { opacity:.35; transform:scale(.5) }
 }
 
-.c-h1 {
-font-size: clamp(1.9rem, 5vw, 3rem);
+.ch-h1 {
+font-size: clamp(1.85rem, 5.5vw, 2.9rem);
 font-weight: 800;
 letter-spacing: -.04em;
 line-height: 1.07;
 color: #1d1d1f;
-margin: 0 0 16px;
+margin: 0 0 15px;
+word-break: break-word;
 }
-.c-h1 span { color: #0071e3; }
-
-.c-sub {
-font-size: 1rem;
+.ch-h1 span { color: #0071e3; }
+.ch-sub {
+font-size: .98rem;
 line-height: 1.7;
 color: #6e6e73;
-max-width: 440px;
+max-width: 420px;
 margin: 0 auto;
 }
 
-/* ─── BODY ─── */
-.c-body {
-padding: 0 20px 72px;
-max-width: 660px;
+/* ── BODY ── */
+.cb {
+padding: 0 16px 64px;
+max-width: 640px;
 margin: 0 auto;
 width: 100%;
 }
 
-/* timeline card */
-.tl-card {
+/* timeline card — overlaps hero */
+.tl {
 background: #fff;
 border: 1px solid #e8e8ed;
 border-radius: 20px;
 overflow: hidden;
-margin-top: -24px;
-margin-bottom: 14px;
+margin-top: -20px;
+margin-bottom: 13px;
 box-shadow: 0 4px 24px rgba(0,0,0,.06), 0 1px 3px rgba(0,0,0,.04);
 position: relative;
 z-index: 2;
+width: 100%;
 }
 .tl-head {
-padding: 20px 24px 0;
+padding: 19px 22px 0;
 display: flex;
 align-items: center;
 justify-content: space-between;
 background: #fff;
 }
-.tl-lbl {
-font-size: .66rem;
-font-weight: 700;
-color: #aeaeb2;
-text-transform: uppercase;
-letter-spacing: .09em;
-}
-.tl-count {
-font-size: .66rem;
-font-weight: 600;
-color: #0071e3;
-background: rgba(0,113,227,.08);
-padding: 3px 10px;
-border-radius: 20px;
-}
-.tl-list {
-padding: 18px 24px 22px;
-display: flex;
-flex-direction: column;
-background: #fff;
-}
-.tl-item {
+.tl-lbl { font-size: .65rem; font-weight: 700; color: #aeaeb2; text-transform: uppercase; letter-spacing: .09em; }
+.tl-cnt { font-size: .65rem; font-weight: 600; color: #0071e3; background: rgba(0,113,227,.08); padding: 3px 9px; border-radius: 20px; }
+.tl-body { padding: 16px 22px 20px; }
+.tl-row {
 display: flex;
 align-items: flex-start;
-gap: 14px;
-padding: 16px 0;
+gap: 13px;
+padding: 15px 0;
 border-bottom: 1px solid #e8e8ed;
 }
-.tl-item:first-child { padding-top: 2px; }
-.tl-item:last-child { border-bottom: none; padding-bottom: 2px; }
-
+.tl-row:first-child { padding-top: 2px; }
+.tl-row:last-child  { border-bottom: none; padding-bottom: 2px; }
 .tl-n {
-width: 30px; height: 30px;
-border-radius: 9px;
+width: 29px; height: 29px;
+border-radius: 8px;
 background: rgba(0,113,227,.08);
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: .72rem;
-font-weight: 800;
-color: #0071e3;
-flex-shrink: 0;
-margin-top: 1px;
-transition: background .22s, color .22s;
+display: flex; align-items: center; justify-content: center;
+font-size: .7rem; font-weight: 800; color: #0071e3;
+flex-shrink: 0; margin-top: 1px;
+transition: background .2s, color .2s;
 }
-.tl-item:hover .tl-n { background: #0071e3; color: #fff; }
-
-.tl-title {
-font-size: .97rem;
-font-weight: 700;
-color: #1d1d1f;
-margin: 0 0 5px;
-letter-spacing: -.01em;
-}
-.tl-text {
-font-size: .85rem;
-line-height: 1.66;
-color: #6e6e73;
-margin: 0;
-}
+.tl-row:hover .tl-n { background: #0071e3; color: #fff; }
+.tl-t { font-size: .95rem; font-weight: 700; color: #1d1d1f; margin: 0 0 4px; letter-spacing: -.01em; }
+.tl-d { font-size: .84rem; line-height: 1.65; color: #6e6e73; margin: 0; }
 .tl-tag {
-display: inline-block;
-margin-top: 8px;
-font-size: .66rem;
-font-weight: 600;
-color: #0071e3;
-background: rgba(0,113,227,.08);
-padding: 3px 9px;
-border-radius: 10px;
+display: inline-block; margin-top: 7px;
+font-size: .64rem; font-weight: 600; color: #0071e3;
+background: rgba(0,113,227,.08); padding: 3px 9px; border-radius: 9px;
 }
-.tl-tag-g { color: #28a745; background: rgba(40,167,69,.09); }
+.tl-tag.g { color: #28a745; background: rgba(40,167,69,.09); }
 
-/* 2-col cards */
-.two-col {
+/* 2-col */
+.two {
 display: grid;
 grid-template-columns: 1fr 1fr;
-gap: 12px;
-margin-bottom: 14px;
+gap: 11px;
+margin-bottom: 13px;
+width: 100%;
 }
-.info-card {
+.ic {
 background: #fff;
 border: 1px solid #e8e8ed;
 border-radius: 16px;
-padding: 20px 18px 18px;
-transition: box-shadow .22s, transform .22s;
+padding: 18px 16px 16px;
+min-width: 0;
+transition: box-shadow .2s, transform .2s;
 }
-.info-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.07); transform: translateY(-2px); }
-
-.ic-icon {
-width: 36px; height: 36px;
-border-radius: 9px;
+.ic:hover { box-shadow: 0 6px 20px rgba(0,0,0,.07); transform: translateY(-2px); }
+.ic-ico {
+width: 34px; height: 34px;
+border-radius: 8px;
 background: rgba(0,113,227,.08);
-display: flex;
-align-items: center;
-justify-content: center;
+display: flex; align-items: center; justify-content: center;
 color: #0071e3;
-margin-bottom: 12px;
-transition: background .22s;
+margin-bottom: 11px;
+transition: background .2s;
 }
-.info-card:hover .ic-icon { background: rgba(0,113,227,.16); }
-.ic-icon svg { width: 15px; height: 15px; }
-.ic-title { font-size: .85rem; font-weight: 700; color: #1d1d1f; margin: 0 0 5px; letter-spacing: -.01em; }
-.ic-body  { font-size: .78rem; line-height: 1.58; color: #6e6e73; margin: 0; }
+.ic:hover .ic-ico { background: rgba(0,113,227,.16); }
+.ic-ico svg { width: 14px; height: 14px; flex-shrink: 0; }
+.ic-t { font-size: .83rem; font-weight: 700; color: #1d1d1f; margin: 0 0 4px; letter-spacing: -.01em; }
+.ic-d { font-size: .76rem; line-height: 1.58; color: #6e6e73; margin: 0; }
 
 /* prep */
-.prep-card {
+.pr {
 background: #f5f5f7;
 border: 1px solid #e8e8ed;
-border-radius: 18px;
-padding: 22px 22px 18px;
-margin-bottom: 16px;
+border-radius: 17px;
+padding: 20px 20px 16px;
+margin-bottom: 14px;
+width: 100%;
 }
-.prep-lbl {
-font-size: .66rem;
-font-weight: 700;
-color: #aeaeb2;
-text-transform: uppercase;
-letter-spacing: .09em;
-margin: 0 0 14px;
-}
-.prep-item {
+.pr-lbl { font-size: .65rem; font-weight: 700; color: #aeaeb2; text-transform: uppercase; letter-spacing: .09em; margin: 0 0 13px; }
+.pr-row {
 display: flex;
 align-items: center;
 gap: 11px;
 padding: 11px 0;
 border-bottom: 1px solid #e8e8ed;
-font-size: .88rem;
+font-size: .87rem;
 font-weight: 500;
 color: #3d3d3f;
+min-width: 0;
 transition: color .18s;
 }
-.prep-item:first-of-type { padding-top: 2px; }
-.prep-item:last-of-type  { border-bottom: none; padding-bottom: 2px; }
-.prep-item:hover { color: #1d1d1f; }
-.prep-dot {
-width: 26px; height: 26px;
+.pr-row:first-of-type { padding-top: 2px; }
+.pr-row:last-of-type  { border-bottom: none; padding-bottom: 2px; }
+.pr-row:hover { color: #1d1d1f; }
+.pr-ico {
+width: 26px; height: 26px; flex-shrink: 0;
 border-radius: 7px;
 background: #fff;
 border: 1px solid #e8e8ed;
-display: flex;
-align-items: center;
-justify-content: center;
-flex-shrink: 0;
+display: flex; align-items: center; justify-content: center;
 color: #0071e3;
 transition: background .18s, border-color .18s;
 }
-.prep-item:hover .prep-dot { background: rgba(0,113,227,.08); border-color: rgba(0,113,227,.2); }
-.prep-dot svg { width: 11px; height: 11px; }
+.pr-ico svg { width: 10px; height: 10px; }
+.pr-row:hover .pr-ico { background: rgba(0,113,227,.08); border-color: rgba(0,113,227,.2); }
 
-/* back button */
-.back-btn {
+/* back btn */
+.bb {
 display: flex;
 align-items: center;
 justify-content: center;
 gap: 8px;
 width: 100%;
-font-size: .9rem;
+font-size: .88rem;
 font-weight: 600;
 color: #6e6e73;
 border: 1.5px solid #e8e8ed;
-padding: 15px 28px;
+padding: 14px 24px;
 border-radius: 980px;
 background: #fff;
-transition: border-color .2s, color .2s, box-shadow .2s;
 font-family: inherit;
+transition: border-color .2s, color .2s, box-shadow .2s;
 }
-.back-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
-.back-btn:hover { border-color: #d2d2d7; color: #1d1d1f; box-shadow: 0 4px 14px rgba(0,0,0,.06); }
+.bb svg { width: 13px; height: 13px; flex-shrink: 0; }
+.bb:hover { border-color: #d2d2d7; color: #1d1d1f; box-shadow: 0 4px 14px rgba(0,0,0,.06); }
 
 /* footer */
-.c-footer {
+.cf {
 margin-top: auto;
 border-top: 1px solid #e8e8ed;
-padding: 22px 24px;
+padding: 20px 22px;
 display: flex;
 align-items: center;
 justify-content: space-between;
-gap: 16px;
+gap: 12px;
 background: #f5f5f7;
+width: 100%;
 }
-.cf-logo { display: flex; align-items: center; gap: 8px; font-size: .9rem; font-weight: 800; color: #aeaeb2; }
-.cf-logo svg { width: 20px; height: 20px; }
-.cf-note { font-size: .75rem; color: #aeaeb2; }
+.cf-logo { display: flex; align-items: center; gap: 7px; font-size: .88rem; font-weight: 800; color: #aeaeb2; }
+.cf-logo svg { width: 20px; height: 20px; flex-shrink: 0; }
+.cf-note { font-size: .74rem; color: #aeaeb2; }
 
-/* ─── RESPONSIVE ─── */
-@media (max-width: 540px) {
-.c-nav { padding: 0 16px; }
-.c-hero { padding: 52px 16px 44px; }
-.c-body { padding: 0 14px 56px; }
-.tl-list { padding: 14px 16px 16px; }
+/* ── RESPONSIVE ── */
+@media (max-width: 480px) {
+.cn { padding: 0 14px; }
+.ch { padding: 52px 14px 42px; }
+.cb { padding: 0 12px 52px; }
+.tl-body { padding: 14px 16px 16px; }
 .tl-head { padding: 16px 16px 0; }
-.two-col { grid-template-columns: 1fr; }
-.c-footer { flex-direction: column; text-align: center; padding: 18px 16px; }
-.prep-card { padding: 18px 16px 14px; }
+.two { grid-template-columns: 1fr; }
+.cf { flex-direction: column; text-align: center; padding: 16px 14px; }
+.pr { padding: 16px 14px 12px; }
 }
 </style>
 
 </head>
 <body>
 
-<div id="orixen-cursor"></div>
+<div id="ocur"></div>
 
 <!-- NAV -->
 
-<nav class="c-nav">
-  <div class="c-logo">
+<nav class="cn">
+  <div class="cn-logo">
     <svg viewBox="0 0 26 26" fill="none">
       <rect width="26" height="26" rx="7" fill="#0071e3"/>
       <path d="M7 13L12 8L17 13L12 18Z" fill="none" stroke="white" stroke-width="1.8" stroke-linejoin="round"/>
@@ -505,36 +450,39 @@ background: #f5f5f7;
     </svg>
     Orixen
   </div>
-  <a href="/" class="c-back">
+  <a href="/" class="cn-back">
     <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M13 7H1M6 2L1 7l5 5"/>
     </svg>
-    Retour au site
+    Retour
   </a>
 </nav>
 
 <!-- HERO -->
 
-<div class="c-hero">
-  <div class="c-hero-inner">
-    <div class="check-outer">
-      <div class="check-pulse"></div>
-      <div class="check-pulse2"></div>
-      <div class="check-circle">
-        <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path class="check-path" d="M6 16l7 7 13-13"/>
+<div class="ch">
+  <div class="ch-grid"></div>
+  <div class="ch-glow"></div>
+
+  <div class="ch-inner">
+    <div class="ck-wrap">
+      <div class="ck-r1"></div>
+      <div class="ck-r2"></div>
+      <div class="ck-circle">
+        <svg viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path class="ck-path" d="M5 15l7 7 13-13"/>
         </svg>
       </div>
     </div>
 
 ```
-<div class="c-badge">
-  <span class="badge-dot"></span>
+<div class="ck-badge">
+  <span class="ck-dot"></span>
   Audit confirmé
 </div>
 
-<h1 class="c-h1">Votre créneau est réservé.<br><span>Voici ce qui se passe.</span></h1>
-<p class="c-sub">Vous allez recevoir un email de confirmation dans les prochaines minutes avec le lien de l'appel et tous les détails.</p>
+<h1 class="ch-h1">Votre créneau est réservé.<br><span>Voici ce qui se passe.</span></h1>
+<p class="ch-sub">Vous allez recevoir un email de confirmation dans les prochaines minutes avec le lien de l'appel et tous les détails.</p>
 ```
 
   </div>
@@ -542,97 +490,105 @@ background: #f5f5f7;
 
 <!-- BODY -->
 
-<div class="c-body">
+<div class="cb">
 
-  <div class="tl-card">
+  <!-- Timeline -->
+
+  <div class="tl">
     <div class="tl-head">
       <span class="tl-lbl">Ce qui se passe maintenant</span>
-      <span class="tl-count">4 étapes</span>
+      <span class="tl-cnt">4 étapes</span>
     </div>
-    <div class="tl-list">
-      <div class="tl-item">
+    <div class="tl-body">
+      <div class="tl-row">
         <div class="tl-n">1</div>
         <div>
-          <p class="tl-title">Email de confirmation</p>
-          <p class="tl-text">Vous recevez le lien de visioconférence, la date confirmée et un rappel automatique 24h avant l'appel.</p>
-          <span class="tl-tag tl-tag-g">Dans les 5 minutes</span>
+          <p class="tl-t">Email de confirmation</p>
+          <p class="tl-d">Vous recevez le lien de visioconférence, la date confirmée et un rappel automatique 24h avant l'appel.</p>
+          <span class="tl-tag g">Dans les 5 minutes</span>
         </div>
       </div>
-      <div class="tl-item">
+      <div class="tl-row">
         <div class="tl-n">2</div>
         <div>
-          <p class="tl-title">Préparation de l'audit</p>
-          <p class="tl-text">Notre équipe analyse votre zone, votre secteur et le potentiel d'acquisition disponible. L'audit commence dès la première seconde.</p>
+          <p class="tl-t">Préparation de l'audit</p>
+          <p class="tl-d">Notre équipe analyse votre zone, votre secteur et le potentiel d'acquisition disponible. L'audit commence dès la première seconde.</p>
           <span class="tl-tag">Avant l'appel</span>
         </div>
       </div>
-      <div class="tl-item">
+      <div class="tl-row">
         <div class="tl-n">3</div>
         <div>
-          <p class="tl-title">L'audit stratégique — 45 min</p>
-          <p class="tl-text">On analyse ensemble votre situation, les opportunités concrètes et comment le système Orixen s'adapte à votre activité locale.</p>
+          <p class="tl-t">L'audit stratégique — 45 min</p>
+          <p class="tl-d">On analyse ensemble votre situation, les opportunités concrètes et comment Orixen s'adapte à votre marché local.</p>
           <span class="tl-tag">J-jour</span>
         </div>
       </div>
-      <div class="tl-item">
+      <div class="tl-row">
         <div class="tl-n">4</div>
         <div>
-          <p class="tl-title">Proposition ou non-proposition</p>
-          <p class="tl-text">Si une opportunité claire existe, nous vous la présentons. Sinon, vous repartez avec des insights gratuits sur votre marché. Sans pression.</p>
+          <p class="tl-t">Proposition ou non-proposition</p>
+          <p class="tl-d">Si une opportunité existe, nous vous la présentons. Sinon, vous repartez avec des insights gratuits. Sans pression.</p>
           <span class="tl-tag">Sous 48h après l'appel</span>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="two-col">
-    <div class="info-card">
-      <div class="ic-icon">
+  <!-- 2-col -->
+
+  <div class="two">
+    <div class="ic">
+      <div class="ic-ico">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
           <rect x="1" y="3" width="14" height="11" rx="2"/>
           <path d="M1 7h14M5 1v4M11 1v4"/>
         </svg>
       </div>
-      <p class="ic-title">Durée de l'appel</p>
-      <p class="ic-body">45 minutes en visioconférence. Agenda structuré, pas de temps perdu.</p>
+      <p class="ic-t">Durée de l'appel</p>
+      <p class="ic-d">45 min en visioconférence. Agenda structuré, pas de temps perdu.</p>
     </div>
-    <div class="info-card">
-      <div class="ic-icon">
+    <div class="ic">
+      <div class="ic-ico">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
           <circle cx="8" cy="8" r="6"/>
           <path d="M8 5v3l2.5 2"/>
         </svg>
       </div>
-      <p class="ic-title">Aucun engagement</p>
-      <p class="ic-body">L'audit est gratuit. Aucune obligation de suite, aucune pression commerciale.</p>
+      <p class="ic-t">Aucun engagement</p>
+      <p class="ic-d">L'audit est gratuit. Aucune obligation, aucune pression commerciale.</p>
     </div>
   </div>
 
-  <div class="prep-card">
-    <p class="prep-lbl">Pour préparer votre audit</p>
-    <div class="prep-item">
-      <div class="prep-dot"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 5.5l2.5 2.5 4.5-4.5"/></svg></div>
+  <!-- Prep -->
+
+  <div class="pr">
+    <p class="pr-lbl">Pour préparer votre audit</p>
+    <div class="pr-row">
+      <div class="pr-ico"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 5.5l2.5 2.5 5.5-5.5"/></svg></div>
       Votre zone géographique et rayon d'intervention
     </div>
-    <div class="prep-item">
-      <div class="prep-dot"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 5.5l2.5 2.5 4.5-4.5"/></svg></div>
+    <div class="pr-row">
+      <div class="pr-ico"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 5.5l2.5 2.5 5.5-5.5"/></svg></div>
       Le panier moyen de vos chantiers
     </div>
-    <div class="prep-item">
-      <div class="prep-dot"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 5.5l2.5 2.5 4.5-4.5"/></svg></div>
+    <div class="pr-row">
+      <div class="pr-ico"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 5.5l2.5 2.5 5.5-5.5"/></svg></div>
       Votre volume de demandes entrant par semaine
     </div>
-    <div class="prep-item">
-      <div class="prep-dot"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 5.5l2.5 2.5 4.5-4.5"/></svg></div>
+    <div class="pr-row">
+      <div class="pr-ico"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 5.5l2.5 2.5 5.5-5.5"/></svg></div>
       Votre délai de réponse actuel à un nouveau lead
     </div>
-    <div class="prep-item">
-      <div class="prep-dot"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 5.5l2.5 2.5 4.5-4.5"/></svg></div>
+    <div class="pr-row">
+      <div class="pr-ico"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 5.5l2.5 2.5 5.5-5.5"/></svg></div>
       Votre budget publicitaire envisageable
     </div>
   </div>
 
-  <a href="/" class="back-btn">
+  <!-- Back -->
+
+  <a href="/" class="bb">
     <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M13 7H1M6 2L1 7l5 5"/>
     </svg>
@@ -643,7 +599,7 @@ background: #f5f5f7;
 
 <!-- FOOTER -->
 
-<footer class="c-footer">
+<footer class="cf">
   <div class="cf-logo">
     <svg viewBox="0 0 22 22" fill="none">
       <rect width="22" height="22" rx="6" fill="#0071e3"/>
@@ -657,27 +613,25 @@ background: #f5f5f7;
 
 <script>
 (function() {
-  // Only enable custom cursor on non-touch devices
-  var hasTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
-  if (hasTouch) return;
+  /* disable custom cursor on touch devices */
+  if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return;
 
   document.body.classList.add('has-mouse');
-  var cur = document.getElementById('orixen-cursor');
-  cur.classList.add('active');
-
-  var mx = 0, my = 0, tx = 0, ty = 0;
+  var c = document.getElementById('ocur');
+  c.classList.add('on');
+  var mx = 0, my = 0;
 
   document.addEventListener('mousemove', function(e) {
     mx = e.clientX; my = e.clientY;
-    cur.style.left = mx + 'px';
-    cur.style.top  = my + 'px';
+    c.style.left = mx + 'px';
+    c.style.top  = my + 'px';
   });
-
-  var hoverable = document.querySelectorAll('a, button, .info-card, .tl-item, .prep-item');
-  hoverable.forEach(function(el) {
-    el.addEventListener('mouseenter', function() { cur.classList.add('big'); });
-    el.addEventListener('mouseleave', function() { cur.classList.remove('big'); });
+  document.querySelectorAll('a, .ic, .tl-row, .pr-row').forEach(function(el) {
+    el.addEventListener('mouseenter', function() { c.classList.add('big'); });
+    el.addEventListener('mouseleave', function() { c.classList.remove('big'); });
   });
+  document.addEventListener('mousedown', function() { c.style.transform = 'translate(-50%,-50%) scale(.7)'; });
+  document.addEventListener('mouseup',   function() { c.style.transform = 'translate(-50%,-50%) scale(1)'; });
 })();
 </script>
 
