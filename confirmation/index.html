@@ -6,386 +6,246 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 <title>Orixen — Audit confirmé</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230071e3'/><path d='M8 16L14 10L20 16L14 22Z' fill='none' stroke='white' stroke-width='2' stroke-linejoin='round'/><circle cx='22' cy='16' r='3' fill='white'/></svg>"/>
-
-<!-- INLINE CRITICAL CSS — renders before anything else -->
-
 <style>
-html, body {
-  background-color: #fbfbfd !important;
-  background: #fbfbfd !important;
-  color: #1d1d1f !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  overflow-x: hidden !important;
-}
+/* Force white before anything */
+html { background: #fbfbfd; }
+body { background: #fbfbfd; margin: 0; padding: 0; }
 </style>
-
 <style>
-/* ═══ RESET — complete isolation from index.html ═══ */
 html {
   font-size: 16px;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  -webkit-text-size-adjust: 100%;
+  background: #fbfbfd;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
 }
 body {
+  background: #fbfbfd;
+  color: #1d1d1f;
   font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+  margin: 0; padding: 0;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 100%;
-  position: relative;
-  overflow-x: hidden;
+  display: flex; flex-direction: column;
+  overflow-x: hidden; width: 100%;
+}
+*, *::before, *::after { box-sizing: border-box; max-width: 100%; }
+a  { text-decoration: none; color: inherit; }
+p, h1 { margin: 0; padding: 0; }
+
+/* ── NAV ── */
+.xn {
+position: sticky; top: 0; z-index: 100;
+height: 52px; width: 100%;
+display: flex; align-items: center; justify-content: space-between;
+padding: 0 22px;
+background: rgba(251,251,253,.94);
+-webkit-backdrop-filter: saturate(180%) blur(20px);
+backdrop-filter: saturate(180%) blur(20px);
+border-bottom: 1px solid #e8e8ed;
+}
+.xn-logo {
+display: flex; align-items: center; gap: 8px;
+font-size: 1.02rem; font-weight: 800;
+letter-spacing: -.03em; color: #1d1d1f; white-space: nowrap;
+}
+.xn-logo svg { width: 25px; height: 25px; flex-shrink: 0; }
+
+/* Blue back button — same as main site nav-btn */
+.xn-back {
+display: inline-flex; align-items: center; gap: 7px;
+font-size: .78rem; font-weight: 600;
+color: #fff;
+background: #0071e3;
+padding: 8px 16px; border-radius: 980px;
+white-space: nowrap; flex-shrink: 0;
+transition: background .2s, transform .15s, box-shadow .2s;
+box-shadow: 0 2px 8px rgba(0,113,227,.25);
+}
+.xn-back svg { width: 12px; height: 12px; flex-shrink: 0; }
+.xn-back:hover { background: #0077ed; transform: scale(1.02); box-shadow: 0 4px 16px rgba(0,113,227,.35); }
+
+/* ── HERO ── */
+.xh {
+background: #fbfbfd;
+width: 100%; overflow: hidden;
+padding: 60px 20px 52px;
+text-align: center; position: relative;
+}
+.xh-grid {
+position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+background-image:
+linear-gradient(rgba(0,113,227,.03) 1px, transparent 1px),
+linear-gradient(90deg, rgba(0,113,227,.03) 1px, transparent 1px);
+background-size: 54px 54px;
+-webkit-mask-image: radial-gradient(ellipse 88% 80% at 50% 50%, black 5%, transparent 65%);
+mask-image: radial-gradient(ellipse 88% 80% at 50% 50%, black 5%, transparent 65%);
+}
+.xh-glow {
+position: absolute; pointer-events: none; overflow: hidden;
+top: 0; left: 50%; transform: translateX(-50%);
+width: 100%; max-width: 580px; height: 360px;
+background: radial-gradient(ellipse 60% 55% at 50% 35%, rgba(40,167,69,.055), transparent 65%);
+}
+.xh-inner {
+position: relative; z-index: 1;
+max-width: 520px; margin: 0 auto;
 }
 
-/* Kill any possible inheritance from index.html */
-body * {
-  box-sizing: border-box;
+/* ── CHECK — uses <img> tag, zero animation bug ── */
+.xck-wrap {
+position: relative;
+width: 84px; height: 84px;
+margin: 0 auto 26px;
+display: flex; align-items: center; justify-content: center;
 }
-body a  { text-decoration: none; color: inherit; }
-body p, body h1 { margin: 0; padding: 0; }
-body img, body svg { display: block; }
+.xck-r1 {
+position: absolute; inset: -12px; border-radius: 50%;
+border: 1px solid rgba(40,167,69,.13);
+animation: xp 3s ease-in-out infinite;
+-webkit-animation: xp 3s ease-in-out infinite;
+}
+.xck-r2 {
+position: absolute; inset: 0; border-radius: 50%;
+border: 1px solid rgba(40,167,69,.3);
+animation: xp 3s ease-in-out infinite .9s;
+-webkit-animation: xp 3s ease-in-out infinite .9s;
+}
+@keyframes xp { 0%,100%{transform:scale(1);opacity:.4} 50%{transform:scale(1.1);opacity:1} }
+@-webkit-keyframes xp { 0%,100%{-webkit-transform:scale(1);opacity:.4} 50%{-webkit-transform:scale(1.1);opacity:1} }
 
-/* ═══ CURSOR ═══ */
-.has-mouse, .has-mouse a, .has-mouse button { cursor: none; }
-#oc {
-  position: fixed; top: 0; left: 0; z-index: 9999;
-  pointer-events: none; display: none;
-  width: 10px; height: 10px;
-  background: #0071e3; border-radius: 50%;
-  transform: translate(-50%,-50%);
-  transition: width .22s cubic-bezier(.34,1.56,.64,1), height .22s cubic-bezier(.34,1.56,.64,1);
-}
-#oc.show { display: block; }
-#oc.big  { width: 40px; height: 40px; background: rgba(0,113,227,.1); border: 1.5px solid #0071e3; }
-
-/* ═══ NAV ═══ */
-.xnav {
-  position: sticky; top: 0; left: 0; right: 0; z-index: 100;
-  height: 52px; width: 100%;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 22px;
-  background: rgba(251,251,253,.94) !important;
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  backdrop-filter: saturate(180%) blur(20px);
-  border-bottom: 1px solid #e8e8ed;
-}
-.xnav-logo {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 1.02rem; font-weight: 800;
-  letter-spacing: -.03em; color: #1d1d1f;
-  white-space: nowrap;
-  background: none; border: none; padding: 0;
-}
-.xnav-logo svg { width: 25px; height: 25px; flex-shrink: 0; }
-.xnav-back {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: .78rem; font-weight: 500; color: #6e6e73;
-  border: 1px solid #e8e8ed; padding: 7px 13px;
-  border-radius: 980px; background: #ffffff !important;
-  white-space: nowrap; flex-shrink: 0;
-  transition: border-color .2s, color .2s;
-}
-.xnav-back svg { width: 12px; height: 12px; flex-shrink: 0; }
-.xnav-back:hover { border-color: #d2d2d7; color: #1d1d1f; }
-
-/* ═══ HERO ═══ */
-.xhero {
-  background: #fbfbfd !important;
-  background-color: #fbfbfd !important;
-  width: 100%; overflow: hidden;
-  padding: 60px 20px 48px;
-  text-align: center;
-  position: relative;
-}
-
-/* Grid pattern — clipped, no overflow */
-.xhero-grid {
-  position: absolute; inset: 0; overflow: hidden; pointer-events: none;
-  background-image:
-    linear-gradient(rgba(0,113,227,.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,113,227,.03) 1px, transparent 1px);
-  background-size: 54px 54px;
-  -webkit-mask-image: radial-gradient(ellipse 88% 80% at 50% 50%, black 5%, transparent 65%);
-  mask-image: radial-gradient(ellipse 88% 80% at 50% 50%, black 5%, transparent 65%);
-}
-
-/* Green ambient — contained */
-.xhero-glow {
-  position: absolute; pointer-events: none;
-  top: 0; left: 50%; transform: translateX(-50%);
-  width: 100%; max-width: 600px; height: 380px;
-  background: radial-gradient(ellipse 60% 55% at 50% 35%, rgba(40,167,69,.06), transparent 68%);
-}
-
-.xhero-inner {
-  position: relative; z-index: 1;
-  max-width: 520px; margin: 0 auto;
-}
-
-/* ═══ CHECKMARK ═══ */
-/* No SVG-only animation that might render as ... */
-.xck {
-  position: relative;
-  width: 80px; height: 80px;
-  margin: 0 auto 26px;
-}
-.xck-ring {
-  position: absolute; border-radius: 50%;
-  pointer-events: none;
-}
-.xck-ring1 {
-  inset: -11px;
-  border: 1px solid rgba(40,167,69,.13);
-  -webkit-animation: xpulse 3s ease-in-out infinite;
-  animation: xpulse 3s ease-in-out infinite;
-}
-.xck-ring2 {
-  inset: 0;
-  border: 1px solid rgba(40,167,69,.3);
-  -webkit-animation: xpulse 3s ease-in-out infinite .8s;
-  animation: xpulse 3s ease-in-out infinite .8s;
-}
-@-webkit-keyframes xpulse {
-  0%,100%{ -webkit-transform:scale(1); opacity:.4 }
-  50%    { -webkit-transform:scale(1.1); opacity:1 }
-}
-@keyframes xpulse {
-  0%,100%{ transform:scale(1); opacity:.4 }
-  50%    { transform:scale(1.1); opacity:1 }
-}
-
-/* Circle — CSS drawn, no path animation that could fail */
 .xck-circle {
-  position: absolute; inset: 0;
-  border-radius: 50%;
-  background: rgba(40,167,69,.09);
-  border: 2px solid rgba(40,167,69,.3);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 1;
-  -webkit-animation: xpop .5s cubic-bezier(.34,1.56,.64,1) both;
-  animation: xpop .5s cubic-bezier(.34,1.56,.64,1) both;
+position: absolute; inset: 0; border-radius: 50%;
+background: rgba(40,167,69,.1);
+border: 2px solid rgba(40,167,69,.3);
+display: flex; align-items: center; justify-content: center;
+animation: xpop .5s cubic-bezier(.34,1.56,.64,1) both;
+-webkit-animation: xpop .5s cubic-bezier(.34,1.56,.64,1) both;
+z-index: 1;
 }
-@-webkit-keyframes xpop {
-  from { -webkit-transform:scale(.3); opacity:0 }
-  to   { -webkit-transform:scale(1);  opacity:1 }
-}
-@keyframes xpop {
-  from { transform:scale(.3); opacity:0 }
-  to   { transform:scale(1);  opacity:1 }
-}
+@keyframes xpop { from{transform:scale(.3);opacity:0} to{transform:scale(1);opacity:1} }
+@-webkit-keyframes xpop { from{-webkit-transform:scale(.3);opacity:0} to{-webkit-transform:scale(1);opacity:1} }
 
-/* Checkmark drawn with CSS border trick — never shows as text */
-.xck-mark {
-  width: 28px; height: 28px;
-  position: relative;
-  -webkit-animation: xfadein .3s ease .55s both;
-  animation: xfadein .3s ease .55s both;
-}
-@-webkit-keyframes xfadein { from{opacity:0} to{opacity:1} }
-@keyframes xfadein { from{opacity:0} to{opacity:1} }
-
-/* Pure CSS checkmark — no SVG path that can render as ... */
-.xck-mark::before,
-.xck-mark::after {
-  content: '';
-  position: absolute;
-  background: #28a745;
-  border-radius: 2px;
-}
-/* Short left side of check */
-.xck-mark::before {
-  width: 3px; height: 10px;
-  bottom: 4px; left: 7px;
-  transform: rotate(45deg);
-  transform-origin: bottom center;
-}
-/* Long right side of check */
-.xck-mark::after {
-  width: 3px; height: 18px;
-  bottom: 4px; left: 13px;
-  transform: rotate(-45deg);
-  transform-origin: bottom center;
+/* ✓ as an <img> using data URI — renders identically everywhere */
+.xck-img {
+width: 32px; height: 32px;
+display: block; flex-shrink: 0;
+/* no animation on the img itself — circle handles it */
 }
 
 /* badge */
 .xbadge {
-  display: inline-flex; align-items: center; gap: 7px;
-  font-size: .7rem; font-weight: 700; color: #28a745;
-  letter-spacing: .07em; text-transform: uppercase;
-  background: rgba(40,167,69,.09); border: 1px solid rgba(40,167,69,.25);
-  padding: 5px 14px; border-radius: 20px; margin-bottom: 18px;
+display: inline-flex; align-items: center; gap: 7px;
+font-size: .7rem; font-weight: 700; color: #28a745;
+letter-spacing: .07em; text-transform: uppercase;
+background: rgba(40,167,69,.09); border: 1px solid rgba(40,167,69,.25);
+padding: 5px 14px; border-radius: 20px; margin-bottom: 18px;
 }
 .xbadge-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: #28a745; flex-shrink: 0;
-  -webkit-animation: xdot 2s ease-in-out infinite;
-  animation: xdot 2s ease-in-out infinite;
+width: 6px; height: 6px; border-radius: 50%;
+background: #28a745; flex-shrink: 0;
+animation: xdot 2s ease-in-out infinite;
+-webkit-animation: xdot 2s ease-in-out infinite;
 }
-@-webkit-keyframes xdot {
-  0%,100%{ opacity:1; -webkit-transform:scale(1) }
-  50%    { opacity:.35; -webkit-transform:scale(.45) }
-}
-@keyframes xdot {
-  0%,100%{ opacity:1; transform:scale(1) }
-  50%    { opacity:.35; transform:scale(.45) }
-}
+@keyframes xdot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.35;transform:scale(.45)} }
+@-webkit-keyframes xdot { 0%,100%{opacity:1;-webkit-transform:scale(1)} 50%{opacity:.35;-webkit-transform:scale(.45)} }
 
 .xh1 {
-  font-size: clamp(1.85rem, 5.5vw, 2.9rem);
-  font-weight: 800; letter-spacing: -.04em; line-height: 1.07;
-  color: #1d1d1f; margin: 0 0 15px; word-break: break-word;
+font-size: clamp(1.85rem, 5.5vw, 2.9rem);
+font-weight: 800; letter-spacing: -.04em; line-height: 1.07;
+color: #1d1d1f; margin: 0 0 15px; word-break: break-word;
 }
 .xh1 span { color: #0071e3; }
-.xsub {
-  font-size: .98rem; line-height: 1.7; color: #6e6e73;
-  max-width: 420px; margin: 0 auto;
-}
+.xsub { font-size: .98rem; line-height: 1.7; color: #6e6e73; max-width: 420px; margin: 0 auto; }
 
-/* ═══ BODY ═══ */
-.xbody {
-  padding: 0 16px 64px;
-  max-width: 640px;
-  margin: 0 auto; width: 100%;
-  background: #fbfbfd !important;
+/* ── BODY ── */
+.xb {
+padding: 0 16px 64px;
+max-width: 640px; margin: 0 auto; width: 100%;
 }
 
 /* timeline */
 .xtl {
-  background: #ffffff !important;
-  border: 1px solid #e8e8ed;
-  border-radius: 20px; overflow: hidden;
-  margin-top: -18px; margin-bottom: 13px;
-  box-shadow: 0 4px 24px rgba(0,0,0,.06), 0 1px 3px rgba(0,0,0,.04);
-  position: relative; z-index: 2; width: 100%;
+background: #fff; border: 1px solid #e8e8ed; border-radius: 20px; overflow: hidden;
+margin-top: -20px; margin-bottom: 13px;
+box-shadow: 0 4px 24px rgba(0,0,0,.06), 0 1px 3px rgba(0,0,0,.04);
+position: relative; z-index: 2; width: 100%;
 }
 .xtl-head {
-  padding: 19px 22px 0;
-  display: flex; align-items: center; justify-content: space-between;
-  background: #ffffff !important;
+padding: 19px 22px 0;
+display: flex; align-items: center; justify-content: space-between;
+background: #fff;
 }
 .xtl-lbl { font-size: .64rem; font-weight: 700; color: #aeaeb2; text-transform: uppercase; letter-spacing: .09em; }
 .xtl-cnt { font-size: .64rem; font-weight: 600; color: #0071e3; background: rgba(0,113,227,.08); padding: 3px 9px; border-radius: 20px; }
-.xtl-list { padding: 16px 22px 20px; background: #ffffff !important; }
+.xtl-list { padding: 16px 22px 20px; background: #fff; }
 .xtl-row {
-  display: flex; align-items: flex-start; gap: 13px;
-  padding: 15px 0; border-bottom: 1px solid #e8e8ed;
-  background: transparent;
+display: flex; align-items: flex-start; gap: 13px;
+padding: 15px 0; border-bottom: 1px solid #e8e8ed;
 }
 .xtl-row:first-child { padding-top: 2px; }
 .xtl-row:last-child  { border-bottom: none; padding-bottom: 2px; }
 .xtl-n {
-  width: 29px; height: 29px; border-radius: 8px;
-  background: rgba(0,113,227,.08);
-  display: flex; align-items: center; justify-content: center;
-  font-size: .7rem; font-weight: 800; color: #0071e3;
-  flex-shrink: 0; margin-top: 1px;
-  transition: background .2s, color .2s;
+width: 29px; height: 29px; border-radius: 8px;
+background: rgba(0,113,227,.08);
+display: flex; align-items: center; justify-content: center;
+font-size: .7rem; font-weight: 800; color: #0071e3;
+flex-shrink: 0; margin-top: 1px;
+transition: background .2s, color .2s;
 }
 .xtl-row:hover .xtl-n { background: #0071e3; color: #fff; }
 .xtl-t { font-size: .95rem; font-weight: 700; color: #1d1d1f; margin: 0 0 4px; letter-spacing: -.01em; }
 .xtl-d { font-size: .84rem; line-height: 1.65; color: #6e6e73; margin: 0; }
-.xtl-tag {
-  display: inline-block; margin-top: 7px;
-  font-size: .63rem; font-weight: 600; color: #0071e3;
-  background: rgba(0,113,227,.08); padding: 3px 9px; border-radius: 9px;
-}
+.xtl-tag { display: inline-block; margin-top: 7px; font-size: .63rem; font-weight: 600; color: #0071e3; background: rgba(0,113,227,.08); padding: 3px 9px; border-radius: 9px; }
 .xtl-tag.g { color: #28a745; background: rgba(40,167,69,.09); }
 
 /* 2-col */
-.xtwo {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 11px; margin-bottom: 13px; width: 100%;
-}
-.xic {
-  background: #ffffff !important;
-  border: 1px solid #e8e8ed; border-radius: 16px;
-  padding: 18px 16px 16px; min-width: 0;
-  transition: box-shadow .2s, transform .2s;
-}
+.xtwo { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; margin-bottom: 13px; width: 100%; }
+.xic { background: #fff; border: 1px solid #e8e8ed; border-radius: 16px; padding: 18px 16px 16px; min-width: 0; transition: box-shadow .2s, transform .2s; }
 .xic:hover { box-shadow: 0 6px 20px rgba(0,0,0,.07); transform: translateY(-2px); }
-.xic-ico {
-  width: 34px; height: 34px; border-radius: 8px;
-  background: rgba(0,113,227,.08);
-  display: flex; align-items: center; justify-content: center;
-  color: #0071e3; margin-bottom: 11px;
-  transition: background .2s;
-}
-.xic:hover .xic-ico { background: rgba(0,113,227,.15); }
+.xic-ico { width: 34px; height: 34px; border-radius: 8px; background: rgba(0,113,227,.08); display: flex; align-items: center; justify-content: center; color: #0071e3; margin-bottom: 11px; }
 .xic-ico svg { width: 14px; height: 14px; flex-shrink: 0; }
 .xic-t { font-size: .83rem; font-weight: 700; color: #1d1d1f; margin: 0 0 4px; letter-spacing: -.01em; }
 .xic-d { font-size: .76rem; line-height: 1.58; color: #6e6e73; margin: 0; }
 
 /* prep */
-.xpr {
-  background: #f5f5f7 !important;
-  border: 1px solid #e8e8ed; border-radius: 17px;
-  padding: 20px 20px 16px; margin-bottom: 14px; width: 100%;
-}
+.xpr { background: #f5f5f7; border: 1px solid #e8e8ed; border-radius: 17px; padding: 20px 20px 16px; margin-bottom: 14px; width: 100%; }
 .xpr-lbl { font-size: .64rem; font-weight: 700; color: #aeaeb2; text-transform: uppercase; letter-spacing: .09em; margin: 0 0 13px; }
-.xpr-row {
-  display: flex; align-items: center; gap: 11px;
-  padding: 11px 0; border-bottom: 1px solid #e8e8ed;
-  font-size: .87rem; font-weight: 500; color: #3d3d3f;
-  min-width: 0; transition: color .18s;
-}
+.xpr-row { display: flex; align-items: center; gap: 11px; padding: 11px 0; border-bottom: 1px solid #e8e8ed; font-size: .87rem; font-weight: 500; color: #3d3d3f; min-width: 0; }
 .xpr-row:first-of-type { padding-top: 2px; }
 .xpr-row:last-of-type  { border-bottom: none; padding-bottom: 2px; }
-.xpr-row:hover { color: #1d1d1f; }
-.xpr-ico {
-  width: 26px; height: 26px; flex-shrink: 0;
-  border-radius: 7px; background: #fff; border: 1px solid #e8e8ed;
-  display: flex; align-items: center; justify-content: center;
-  color: #0071e3; transition: background .18s, border-color .18s;
-}
+.xpr-ico { width: 26px; height: 26px; flex-shrink: 0; border-radius: 7px; background: #fff; border: 1px solid #e8e8ed; display: flex; align-items: center; justify-content: center; color: #0071e3; }
 .xpr-ico svg { width: 10px; height: 10px; }
-.xpr-row:hover .xpr-ico { background: rgba(0,113,227,.08); border-color: rgba(0,113,227,.2); }
 
 /* back */
-.xbb {
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  width: 100%; font-size: .88rem; font-weight: 600; color: #6e6e73;
-  border: 1.5px solid #e8e8ed; padding: 14px 24px; border-radius: 980px;
-  background: #ffffff !important; font-family: inherit;
-  transition: border-color .2s, color .2s, box-shadow .2s;
-}
+.xbb { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; font-size: .88rem; font-weight: 600; color: #6e6e73; border: 1.5px solid #e8e8ed; padding: 14px 24px; border-radius: 980px; background: #fff; font-family: inherit; transition: border-color .2s, color .2s; }
 .xbb svg { width: 13px; height: 13px; flex-shrink: 0; }
-.xbb:hover { border-color: #d2d2d7; color: #1d1d1f; box-shadow: 0 4px 14px rgba(0,0,0,.06); }
+.xbb:hover { border-color: #d2d2d7; color: #1d1d1f; }
 
 /* footer */
-.xfoot {
-  margin-top: auto;
-  border-top: 1px solid #e8e8ed; padding: 20px 22px;
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  background: #f5f5f7 !important; width: 100%;
-}
+.xfoot { margin-top: auto; border-top: 1px solid #e8e8ed; padding: 20px 22px; display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #f5f5f7; width: 100%; }
 .xfoot-logo { display: flex; align-items: center; gap: 7px; font-size: .88rem; font-weight: 800; color: #aeaeb2; }
 .xfoot-logo svg { width: 20px; height: 20px; flex-shrink: 0; }
 .xfoot-note { font-size: .74rem; color: #aeaeb2; }
 
 @media (max-width: 480px) {
-  .xnav  { padding: 0 14px; }
-  .xhero { padding: 50px 14px 42px; }
-  .xbody { padding: 0 12px 52px; }
-  .xtl-list { padding: 14px 16px 16px; }
-  .xtl-head { padding: 16px 16px 0; }
-  .xtwo { grid-template-columns: 1fr; }
-  .xfoot { flex-direction: column; text-align: center; padding: 16px 14px; }
-  .xpr { padding: 16px 14px 12px; }
+.xn    { padding: 0 14px; }
+.xh    { padding: 50px 14px 42px; }
+.xb    { padding: 0 12px 52px; }
+.xtl-list { padding: 14px 16px 16px; }
+.xtl-head { padding: 16px 16px 0; }
+.xtwo  { grid-template-columns: 1fr; }
+.xfoot { flex-direction: column; text-align: center; padding: 16px 14px; }
+.xpr   { padding: 16px 14px 12px; }
 }
 </style>
 
 </head>
 <body>
 
-<div id="oc"></div>
-
 <!-- NAV -->
 
-<nav class="xnav">
-  <div class="xnav-logo">
+<nav class="xn">
+  <div class="xn-logo">
     <svg viewBox="0 0 26 26" fill="none">
       <rect width="26" height="26" rx="7" fill="#0071e3"/>
       <path d="M7 13L12 8L17 13L12 18Z" fill="none" stroke="white" stroke-width="1.8" stroke-linejoin="round"/>
@@ -393,29 +253,28 @@ body img, body svg { display: block; }
     </svg>
     Orixen
   </div>
-  <a href="/" class="xnav-back">
-    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  <a href="/" class="xn-back">
+    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M13 7H1M6 2L1 7l5 5"/>
     </svg>
-    Retour
+    Retour au site
   </a>
 </nav>
 
 <!-- HERO -->
 
-<div class="xhero">
-  <div class="xhero-grid"></div>
-  <div class="xhero-glow"></div>
-
-  <div class="xhero-inner">
+<div class="xh">
+  <div class="xh-grid"></div>
+  <div class="xh-glow"></div>
+  <div class="xh-inner">
 
 ```
-<!-- Checkmark — pure CSS, zero SVG path that renders as text -->
-<div class="xck">
-  <div class="xck-ring xck-ring1"></div>
-  <div class="xck-ring xck-ring2"></div>
+<!-- Checkmark using <img> data URI — renders identically on every browser/OS -->
+<div class="xck-wrap">
+  <div class="xck-r1"></div>
+  <div class="xck-r2"></div>
   <div class="xck-circle">
-    <div class="xck-mark"></div>
+    <img class="xck-img" alt="✓" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Cpath d='M6 16l7 7 13-13' stroke='%2328a745' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"/>
   </div>
 </div>
 
@@ -433,7 +292,7 @@ body img, body svg { display: block; }
 
 <!-- BODY -->
 
-<div class="xbody">
+<div class="xb">
 
   <div class="xtl">
     <div class="xtl-head">
@@ -543,24 +402,6 @@ body img, body svg { display: block; }
   </div>
   <span class="xfoot-note">contact@orixen.fr</span>
 </footer>
-
-<script>
-(function() {
-  if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return;
-  document.body.classList.add('has-mouse');
-  var c = document.getElementById('oc');
-  c.classList.add('show');
-  var mx = 0, my = 0;
-  document.addEventListener('mousemove', function(e) {
-    mx = e.clientX; my = e.clientY;
-    c.style.left = mx + 'px'; c.style.top = my + 'px';
-  });
-  document.querySelectorAll('a, .xic, .xtl-row, .xpr-row').forEach(function(el) {
-    el.addEventListener('mouseenter', function() { c.classList.add('big'); });
-    el.addEventListener('mouseleave', function() { c.classList.remove('big'); });
-  });
-})();
-</script>
 
 </body>
 </html>
