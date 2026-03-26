@@ -1,448 +1,391 @@
 <!DOCTYPE html>
 
-<html lang="fr" style="background:#fbfbfd;overflow-x:hidden">
+<html lang="fr">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 <title>Orixen — Audit confirmé</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230071e3'/><path d='M8 16L14 10L20 16L14 22Z' fill='none' stroke='white' stroke-width='2' stroke-linejoin='round'/><circle cx='22' cy='16' r='3' fill='white'/></svg>"/>
+
+<!-- INLINE CRITICAL CSS — renders before anything else -->
+
 <style>
-/* ── TOTAL ISOLATION ── */
+html, body {
+  background-color: #fbfbfd !important;
+  background: #fbfbfd !important;
+  color: #1d1d1f !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-x: hidden !important;
+}
+</style>
+
+<style>
+/* ═══ RESET — complete isolation from index.html ═══ */
 html {
   font-size: 16px;
-  background: #fbfbfd;
-  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
 }
 body {
-  background: #fbfbfd;
-  color: #1d1d1f;
   font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
-  margin: 0;
-  padding: 0;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow-x: hidden;
   width: 100%;
   max-width: 100%;
   position: relative;
+  overflow-x: hidden;
 }
-*, *::before, *::after {
+
+/* Kill any possible inheritance from index.html */
+body * {
   box-sizing: border-box;
-  max-width: 100%;
 }
-img, svg { display: block; max-width: 100%; }
-a { text-decoration: none; color: inherit; }
-p, h1 { margin: 0; padding: 0; }
+body a  { text-decoration: none; color: inherit; }
+body p, body h1 { margin: 0; padding: 0; }
+body img, body svg { display: block; }
 
-/* ── CURSOR (desktop only) ── */
-.has-mouse { cursor: none; }
-.has-mouse a, .has-mouse button { cursor: none; }
-#ocur {
-position: fixed;
-top: 0; left: 0;
-z-index: 9999;
-pointer-events: none;
-width: 10px; height: 10px;
-background: #0071e3;
-border-radius: 50%;
-transform: translate(-50%, -50%);
-transition: width .22s cubic-bezier(.34,1.56,.64,1), height .22s cubic-bezier(.34,1.56,.64,1), background .18s;
-display: none;
+/* ═══ CURSOR ═══ */
+.has-mouse, .has-mouse a, .has-mouse button { cursor: none; }
+#oc {
+  position: fixed; top: 0; left: 0; z-index: 9999;
+  pointer-events: none; display: none;
+  width: 10px; height: 10px;
+  background: #0071e3; border-radius: 50%;
+  transform: translate(-50%,-50%);
+  transition: width .22s cubic-bezier(.34,1.56,.64,1), height .22s cubic-bezier(.34,1.56,.64,1);
 }
-#ocur.on { display: block; }
-#ocur.big { width: 40px; height: 40px; background: rgba(0,113,227,.1); border: 1.5px solid #0071e3; }
+#oc.show { display: block; }
+#oc.big  { width: 40px; height: 40px; background: rgba(0,113,227,.1); border: 1.5px solid #0071e3; }
 
-/* ── NAV ── */
-.cn {
-position: sticky;
-top: 0; left: 0; right: 0;
-z-index: 100;
-height: 52px;
-width: 100%;
-display: flex;
-align-items: center;
-justify-content: space-between;
-padding: 0 22px;
-background: rgba(251,251,253,.92);
--webkit-backdrop-filter: saturate(180%) blur(20px);
-backdrop-filter: saturate(180%) blur(20px);
-border-bottom: 1px solid #e8e8ed;
+/* ═══ NAV ═══ */
+.xnav {
+  position: sticky; top: 0; left: 0; right: 0; z-index: 100;
+  height: 52px; width: 100%;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 22px;
+  background: rgba(251,251,253,.94) !important;
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid #e8e8ed;
 }
-.cn-logo {
-display: flex;
-align-items: center;
-gap: 8px;
-font-size: 1.02rem;
-font-weight: 800;
-letter-spacing: -.03em;
-color: #1d1d1f;
-white-space: nowrap;
+.xnav-logo {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 1.02rem; font-weight: 800;
+  letter-spacing: -.03em; color: #1d1d1f;
+  white-space: nowrap;
+  background: none; border: none; padding: 0;
 }
-.cn-logo svg { width: 25px; height: 25px; flex-shrink: 0; }
-.cn-back {
-display: inline-flex;
-align-items: center;
-gap: 6px;
-font-size: .78rem;
-font-weight: 500;
-color: #6e6e73;
-border: 1px solid #e8e8ed;
-padding: 7px 13px;
-border-radius: 980px;
-background: #fff;
-white-space: nowrap;
-transition: border-color .2s, color .2s;
-flex-shrink: 0;
+.xnav-logo svg { width: 25px; height: 25px; flex-shrink: 0; }
+.xnav-back {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: .78rem; font-weight: 500; color: #6e6e73;
+  border: 1px solid #e8e8ed; padding: 7px 13px;
+  border-radius: 980px; background: #ffffff !important;
+  white-space: nowrap; flex-shrink: 0;
+  transition: border-color .2s, color .2s;
 }
-.cn-back svg { width: 12px; height: 12px; flex-shrink: 0; }
-.cn-back:hover { border-color: #d2d2d7; color: #1d1d1f; }
+.xnav-back svg { width: 12px; height: 12px; flex-shrink: 0; }
+.xnav-back:hover { border-color: #d2d2d7; color: #1d1d1f; }
 
-/* ── HERO ── */
-.ch {
-width: 100%;
-overflow: hidden;
-background: #fbfbfd;
-padding: 60px 20px 48px;
-text-align: center;
-position: relative;
-}
-/* grid bg — clipped to container */
-.ch-grid {
-position: absolute;
-inset: 0;
-overflow: hidden;
-pointer-events: none;
-}
-.ch-grid::before {
-content: ‘’;
-position: absolute;
-inset: 0;
-background-image:
-linear-gradient(rgba(0,113,227,.035) 1px, transparent 1px),
-linear-gradient(90deg, rgba(0,113,227,.035) 1px, transparent 1px);
-background-size: 54px 54px;
--webkit-mask-image: radial-gradient(ellipse 85% 75% at 50% 50%, black 10%, transparent 70%);
-mask-image: radial-gradient(ellipse 85% 75% at 50% 50%, black 10%, transparent 70%);
-}
-/* green ambient */
-.ch-glow {
-position: absolute;
-top: -5%; left: 50%;
-transform: translateX(-50%);
-width: 600px;
-height: 400px;
-background: radial-gradient(ellipse 55% 50% at 50% 40%, rgba(40,167,69,.065), transparent 68%);
-pointer-events: none;
-}
-.ch-inner {
-position: relative;
-z-index: 1;
-max-width: 520px;
-margin: 0 auto;
+/* ═══ HERO ═══ */
+.xhero {
+  background: #fbfbfd !important;
+  background-color: #fbfbfd !important;
+  width: 100%; overflow: hidden;
+  padding: 60px 20px 48px;
+  text-align: center;
+  position: relative;
 }
 
-/* ── CHECKMARK ── */
-.ck-wrap {
-position: relative;
-width: 80px; height: 80px;
-margin: 0 auto 26px;
+/* Grid pattern — clipped, no overflow */
+.xhero-grid {
+  position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0,113,227,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,113,227,.03) 1px, transparent 1px);
+  background-size: 54px 54px;
+  -webkit-mask-image: radial-gradient(ellipse 88% 80% at 50% 50%, black 5%, transparent 65%);
+  mask-image: radial-gradient(ellipse 88% 80% at 50% 50%, black 5%, transparent 65%);
 }
-.ck-r1, .ck-r2 {
-position: absolute;
-border-radius: 50%;
-pointer-events: none;
+
+/* Green ambient — contained */
+.xhero-glow {
+  position: absolute; pointer-events: none;
+  top: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 600px; height: 380px;
+  background: radial-gradient(ellipse 60% 55% at 50% 35%, rgba(40,167,69,.06), transparent 68%);
 }
-.ck-r1 {
-inset: -11px;
-border: 1px solid rgba(40,167,69,.13);
--webkit-animation: ckpulse 2.8s ease-in-out infinite;
-animation: ckpulse 2.8s ease-in-out infinite;
+
+.xhero-inner {
+  position: relative; z-index: 1;
+  max-width: 520px; margin: 0 auto;
 }
-.ck-r2 {
-inset: 0;
-border: 1px solid rgba(40,167,69,.28);
--webkit-animation: ckpulse 2.8s ease-in-out infinite .7s;
-animation: ckpulse 2.8s ease-in-out infinite .7s;
+
+/* ═══ CHECKMARK ═══ */
+/* No SVG-only animation that might render as ... */
+.xck {
+  position: relative;
+  width: 80px; height: 80px;
+  margin: 0 auto 26px;
 }
-@-webkit-keyframes ckpulse {
-0%,100%{ -webkit-transform:scale(1); opacity:.5 }
-50%    { -webkit-transform:scale(1.1); opacity:1 }
+.xck-ring {
+  position: absolute; border-radius: 50%;
+  pointer-events: none;
 }
-@keyframes ckpulse {
-0%,100%{ transform:scale(1); opacity:.5 }
-50%    { transform:scale(1.1); opacity:1 }
+.xck-ring1 {
+  inset: -11px;
+  border: 1px solid rgba(40,167,69,.13);
+  -webkit-animation: xpulse 3s ease-in-out infinite;
+  animation: xpulse 3s ease-in-out infinite;
 }
-.ck-circle {
-position: absolute;
-inset: 0;
-border-radius: 50%;
-background: rgba(40,167,69,.09);
-border: 2px solid rgba(40,167,69,.28);
-display: flex;
-align-items: center;
-justify-content: center;
-z-index: 1;
--webkit-animation: ckpop .55s cubic-bezier(.34,1.56,.64,1) both;
-animation: ckpop .55s cubic-bezier(.34,1.56,.64,1) both;
+.xck-ring2 {
+  inset: 0;
+  border: 1px solid rgba(40,167,69,.3);
+  -webkit-animation: xpulse 3s ease-in-out infinite .8s;
+  animation: xpulse 3s ease-in-out infinite .8s;
 }
-@-webkit-keyframes ckpop {
-from { -webkit-transform:scale(.35); opacity:0 }
-to   { -webkit-transform:scale(1);   opacity:1 }
+@-webkit-keyframes xpulse {
+  0%,100%{ -webkit-transform:scale(1); opacity:.4 }
+  50%    { -webkit-transform:scale(1.1); opacity:1 }
 }
-@keyframes ckpop {
-from { transform:scale(.35); opacity:0 }
-to   { transform:scale(1);   opacity:1 }
+@keyframes xpulse {
+  0%,100%{ transform:scale(1); opacity:.4 }
+  50%    { transform:scale(1.1); opacity:1 }
 }
-.ck-circle svg { width: 30px; height: 30px; color: #28a745; overflow: visible; }
-.ck-path {
-stroke-dasharray: 44;
-stroke-dashoffset: 44;
--webkit-animation: ckdraw .5s ease .5s both;
-animation: ckdraw .5s ease .5s both;
+
+/* Circle — CSS drawn, no path animation that could fail */
+.xck-circle {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  background: rgba(40,167,69,.09);
+  border: 2px solid rgba(40,167,69,.3);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1;
+  -webkit-animation: xpop .5s cubic-bezier(.34,1.56,.64,1) both;
+  animation: xpop .5s cubic-bezier(.34,1.56,.64,1) both;
 }
-@-webkit-keyframes ckdraw { to { stroke-dashoffset: 0 } }
-@keyframes ckdraw { to { stroke-dashoffset: 0 } }
+@-webkit-keyframes xpop {
+  from { -webkit-transform:scale(.3); opacity:0 }
+  to   { -webkit-transform:scale(1);  opacity:1 }
+}
+@keyframes xpop {
+  from { transform:scale(.3); opacity:0 }
+  to   { transform:scale(1);  opacity:1 }
+}
+
+/* Checkmark drawn with CSS border trick — never shows as text */
+.xck-mark {
+  width: 28px; height: 28px;
+  position: relative;
+  -webkit-animation: xfadein .3s ease .55s both;
+  animation: xfadein .3s ease .55s both;
+}
+@-webkit-keyframes xfadein { from{opacity:0} to{opacity:1} }
+@keyframes xfadein { from{opacity:0} to{opacity:1} }
+
+/* Pure CSS checkmark — no SVG path that can render as ... */
+.xck-mark::before,
+.xck-mark::after {
+  content: '';
+  position: absolute;
+  background: #28a745;
+  border-radius: 2px;
+}
+/* Short left side of check */
+.xck-mark::before {
+  width: 3px; height: 10px;
+  bottom: 4px; left: 7px;
+  transform: rotate(45deg);
+  transform-origin: bottom center;
+}
+/* Long right side of check */
+.xck-mark::after {
+  width: 3px; height: 18px;
+  bottom: 4px; left: 13px;
+  transform: rotate(-45deg);
+  transform-origin: bottom center;
+}
 
 /* badge */
-.ck-badge {
-display: inline-flex;
-align-items: center;
-gap: 7px;
-font-size: .7rem;
-font-weight: 700;
-color: #28a745;
-letter-spacing: .07em;
-text-transform: uppercase;
-background: rgba(40,167,69,.09);
-border: 1px solid rgba(40,167,69,.24);
-padding: 5px 14px;
-border-radius: 20px;
-margin-bottom: 18px;
+.xbadge {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: .7rem; font-weight: 700; color: #28a745;
+  letter-spacing: .07em; text-transform: uppercase;
+  background: rgba(40,167,69,.09); border: 1px solid rgba(40,167,69,.25);
+  padding: 5px 14px; border-radius: 20px; margin-bottom: 18px;
 }
-.ck-dot {
-width: 6px; height: 6px;
-border-radius: 50%;
-background: #28a745;
-flex-shrink: 0;
--webkit-animation: ckdot 2s ease-in-out infinite;
-animation: ckdot 2s ease-in-out infinite;
+.xbadge-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #28a745; flex-shrink: 0;
+  -webkit-animation: xdot 2s ease-in-out infinite;
+  animation: xdot 2s ease-in-out infinite;
 }
-@-webkit-keyframes ckdot {
-0%,100%{ opacity:1; -webkit-transform:scale(1) }
-50%    { opacity:.35; -webkit-transform:scale(.5) }
+@-webkit-keyframes xdot {
+  0%,100%{ opacity:1; -webkit-transform:scale(1) }
+  50%    { opacity:.35; -webkit-transform:scale(.45) }
 }
-@keyframes ckdot {
-0%,100%{ opacity:1; transform:scale(1) }
-50%    { opacity:.35; transform:scale(.5) }
+@keyframes xdot {
+  0%,100%{ opacity:1; transform:scale(1) }
+  50%    { opacity:.35; transform:scale(.45) }
 }
 
-.ch-h1 {
-font-size: clamp(1.85rem, 5.5vw, 2.9rem);
-font-weight: 800;
-letter-spacing: -.04em;
-line-height: 1.07;
-color: #1d1d1f;
-margin: 0 0 15px;
-word-break: break-word;
+.xh1 {
+  font-size: clamp(1.85rem, 5.5vw, 2.9rem);
+  font-weight: 800; letter-spacing: -.04em; line-height: 1.07;
+  color: #1d1d1f; margin: 0 0 15px; word-break: break-word;
 }
-.ch-h1 span { color: #0071e3; }
-.ch-sub {
-font-size: .98rem;
-line-height: 1.7;
-color: #6e6e73;
-max-width: 420px;
-margin: 0 auto;
+.xh1 span { color: #0071e3; }
+.xsub {
+  font-size: .98rem; line-height: 1.7; color: #6e6e73;
+  max-width: 420px; margin: 0 auto;
 }
 
-/* ── BODY ── */
-.cb {
-padding: 0 16px 64px;
-max-width: 640px;
-margin: 0 auto;
-width: 100%;
+/* ═══ BODY ═══ */
+.xbody {
+  padding: 0 16px 64px;
+  max-width: 640px;
+  margin: 0 auto; width: 100%;
+  background: #fbfbfd !important;
 }
 
-/* timeline card — overlaps hero */
-.tl {
-background: #fff;
-border: 1px solid #e8e8ed;
-border-radius: 20px;
-overflow: hidden;
-margin-top: -20px;
-margin-bottom: 13px;
-box-shadow: 0 4px 24px rgba(0,0,0,.06), 0 1px 3px rgba(0,0,0,.04);
-position: relative;
-z-index: 2;
-width: 100%;
+/* timeline */
+.xtl {
+  background: #ffffff !important;
+  border: 1px solid #e8e8ed;
+  border-radius: 20px; overflow: hidden;
+  margin-top: -18px; margin-bottom: 13px;
+  box-shadow: 0 4px 24px rgba(0,0,0,.06), 0 1px 3px rgba(0,0,0,.04);
+  position: relative; z-index: 2; width: 100%;
 }
-.tl-head {
-padding: 19px 22px 0;
-display: flex;
-align-items: center;
-justify-content: space-between;
-background: #fff;
+.xtl-head {
+  padding: 19px 22px 0;
+  display: flex; align-items: center; justify-content: space-between;
+  background: #ffffff !important;
 }
-.tl-lbl { font-size: .65rem; font-weight: 700; color: #aeaeb2; text-transform: uppercase; letter-spacing: .09em; }
-.tl-cnt { font-size: .65rem; font-weight: 600; color: #0071e3; background: rgba(0,113,227,.08); padding: 3px 9px; border-radius: 20px; }
-.tl-body { padding: 16px 22px 20px; }
-.tl-row {
-display: flex;
-align-items: flex-start;
-gap: 13px;
-padding: 15px 0;
-border-bottom: 1px solid #e8e8ed;
+.xtl-lbl { font-size: .64rem; font-weight: 700; color: #aeaeb2; text-transform: uppercase; letter-spacing: .09em; }
+.xtl-cnt { font-size: .64rem; font-weight: 600; color: #0071e3; background: rgba(0,113,227,.08); padding: 3px 9px; border-radius: 20px; }
+.xtl-list { padding: 16px 22px 20px; background: #ffffff !important; }
+.xtl-row {
+  display: flex; align-items: flex-start; gap: 13px;
+  padding: 15px 0; border-bottom: 1px solid #e8e8ed;
+  background: transparent;
 }
-.tl-row:first-child { padding-top: 2px; }
-.tl-row:last-child  { border-bottom: none; padding-bottom: 2px; }
-.tl-n {
-width: 29px; height: 29px;
-border-radius: 8px;
-background: rgba(0,113,227,.08);
-display: flex; align-items: center; justify-content: center;
-font-size: .7rem; font-weight: 800; color: #0071e3;
-flex-shrink: 0; margin-top: 1px;
-transition: background .2s, color .2s;
+.xtl-row:first-child { padding-top: 2px; }
+.xtl-row:last-child  { border-bottom: none; padding-bottom: 2px; }
+.xtl-n {
+  width: 29px; height: 29px; border-radius: 8px;
+  background: rgba(0,113,227,.08);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .7rem; font-weight: 800; color: #0071e3;
+  flex-shrink: 0; margin-top: 1px;
+  transition: background .2s, color .2s;
 }
-.tl-row:hover .tl-n { background: #0071e3; color: #fff; }
-.tl-t { font-size: .95rem; font-weight: 700; color: #1d1d1f; margin: 0 0 4px; letter-spacing: -.01em; }
-.tl-d { font-size: .84rem; line-height: 1.65; color: #6e6e73; margin: 0; }
-.tl-tag {
-display: inline-block; margin-top: 7px;
-font-size: .64rem; font-weight: 600; color: #0071e3;
-background: rgba(0,113,227,.08); padding: 3px 9px; border-radius: 9px;
+.xtl-row:hover .xtl-n { background: #0071e3; color: #fff; }
+.xtl-t { font-size: .95rem; font-weight: 700; color: #1d1d1f; margin: 0 0 4px; letter-spacing: -.01em; }
+.xtl-d { font-size: .84rem; line-height: 1.65; color: #6e6e73; margin: 0; }
+.xtl-tag {
+  display: inline-block; margin-top: 7px;
+  font-size: .63rem; font-weight: 600; color: #0071e3;
+  background: rgba(0,113,227,.08); padding: 3px 9px; border-radius: 9px;
 }
-.tl-tag.g { color: #28a745; background: rgba(40,167,69,.09); }
+.xtl-tag.g { color: #28a745; background: rgba(40,167,69,.09); }
 
 /* 2-col */
-.two {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 11px;
-margin-bottom: 13px;
-width: 100%;
+.xtwo {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 11px; margin-bottom: 13px; width: 100%;
 }
-.ic {
-background: #fff;
-border: 1px solid #e8e8ed;
-border-radius: 16px;
-padding: 18px 16px 16px;
-min-width: 0;
-transition: box-shadow .2s, transform .2s;
+.xic {
+  background: #ffffff !important;
+  border: 1px solid #e8e8ed; border-radius: 16px;
+  padding: 18px 16px 16px; min-width: 0;
+  transition: box-shadow .2s, transform .2s;
 }
-.ic:hover { box-shadow: 0 6px 20px rgba(0,0,0,.07); transform: translateY(-2px); }
-.ic-ico {
-width: 34px; height: 34px;
-border-radius: 8px;
-background: rgba(0,113,227,.08);
-display: flex; align-items: center; justify-content: center;
-color: #0071e3;
-margin-bottom: 11px;
-transition: background .2s;
+.xic:hover { box-shadow: 0 6px 20px rgba(0,0,0,.07); transform: translateY(-2px); }
+.xic-ico {
+  width: 34px; height: 34px; border-radius: 8px;
+  background: rgba(0,113,227,.08);
+  display: flex; align-items: center; justify-content: center;
+  color: #0071e3; margin-bottom: 11px;
+  transition: background .2s;
 }
-.ic:hover .ic-ico { background: rgba(0,113,227,.16); }
-.ic-ico svg { width: 14px; height: 14px; flex-shrink: 0; }
-.ic-t { font-size: .83rem; font-weight: 700; color: #1d1d1f; margin: 0 0 4px; letter-spacing: -.01em; }
-.ic-d { font-size: .76rem; line-height: 1.58; color: #6e6e73; margin: 0; }
+.xic:hover .xic-ico { background: rgba(0,113,227,.15); }
+.xic-ico svg { width: 14px; height: 14px; flex-shrink: 0; }
+.xic-t { font-size: .83rem; font-weight: 700; color: #1d1d1f; margin: 0 0 4px; letter-spacing: -.01em; }
+.xic-d { font-size: .76rem; line-height: 1.58; color: #6e6e73; margin: 0; }
 
 /* prep */
-.pr {
-background: #f5f5f7;
-border: 1px solid #e8e8ed;
-border-radius: 17px;
-padding: 20px 20px 16px;
-margin-bottom: 14px;
-width: 100%;
+.xpr {
+  background: #f5f5f7 !important;
+  border: 1px solid #e8e8ed; border-radius: 17px;
+  padding: 20px 20px 16px; margin-bottom: 14px; width: 100%;
 }
-.pr-lbl { font-size: .65rem; font-weight: 700; color: #aeaeb2; text-transform: uppercase; letter-spacing: .09em; margin: 0 0 13px; }
-.pr-row {
-display: flex;
-align-items: center;
-gap: 11px;
-padding: 11px 0;
-border-bottom: 1px solid #e8e8ed;
-font-size: .87rem;
-font-weight: 500;
-color: #3d3d3f;
-min-width: 0;
-transition: color .18s;
+.xpr-lbl { font-size: .64rem; font-weight: 700; color: #aeaeb2; text-transform: uppercase; letter-spacing: .09em; margin: 0 0 13px; }
+.xpr-row {
+  display: flex; align-items: center; gap: 11px;
+  padding: 11px 0; border-bottom: 1px solid #e8e8ed;
+  font-size: .87rem; font-weight: 500; color: #3d3d3f;
+  min-width: 0; transition: color .18s;
 }
-.pr-row:first-of-type { padding-top: 2px; }
-.pr-row:last-of-type  { border-bottom: none; padding-bottom: 2px; }
-.pr-row:hover { color: #1d1d1f; }
-.pr-ico {
-width: 26px; height: 26px; flex-shrink: 0;
-border-radius: 7px;
-background: #fff;
-border: 1px solid #e8e8ed;
-display: flex; align-items: center; justify-content: center;
-color: #0071e3;
-transition: background .18s, border-color .18s;
+.xpr-row:first-of-type { padding-top: 2px; }
+.xpr-row:last-of-type  { border-bottom: none; padding-bottom: 2px; }
+.xpr-row:hover { color: #1d1d1f; }
+.xpr-ico {
+  width: 26px; height: 26px; flex-shrink: 0;
+  border-radius: 7px; background: #fff; border: 1px solid #e8e8ed;
+  display: flex; align-items: center; justify-content: center;
+  color: #0071e3; transition: background .18s, border-color .18s;
 }
-.pr-ico svg { width: 10px; height: 10px; }
-.pr-row:hover .pr-ico { background: rgba(0,113,227,.08); border-color: rgba(0,113,227,.2); }
+.xpr-ico svg { width: 10px; height: 10px; }
+.xpr-row:hover .xpr-ico { background: rgba(0,113,227,.08); border-color: rgba(0,113,227,.2); }
 
-/* back btn */
-.bb {
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 8px;
-width: 100%;
-font-size: .88rem;
-font-weight: 600;
-color: #6e6e73;
-border: 1.5px solid #e8e8ed;
-padding: 14px 24px;
-border-radius: 980px;
-background: #fff;
-font-family: inherit;
-transition: border-color .2s, color .2s, box-shadow .2s;
+/* back */
+.xbb {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; font-size: .88rem; font-weight: 600; color: #6e6e73;
+  border: 1.5px solid #e8e8ed; padding: 14px 24px; border-radius: 980px;
+  background: #ffffff !important; font-family: inherit;
+  transition: border-color .2s, color .2s, box-shadow .2s;
 }
-.bb svg { width: 13px; height: 13px; flex-shrink: 0; }
-.bb:hover { border-color: #d2d2d7; color: #1d1d1f; box-shadow: 0 4px 14px rgba(0,0,0,.06); }
+.xbb svg { width: 13px; height: 13px; flex-shrink: 0; }
+.xbb:hover { border-color: #d2d2d7; color: #1d1d1f; box-shadow: 0 4px 14px rgba(0,0,0,.06); }
 
 /* footer */
-.cf {
-margin-top: auto;
-border-top: 1px solid #e8e8ed;
-padding: 20px 22px;
-display: flex;
-align-items: center;
-justify-content: space-between;
-gap: 12px;
-background: #f5f5f7;
-width: 100%;
+.xfoot {
+  margin-top: auto;
+  border-top: 1px solid #e8e8ed; padding: 20px 22px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  background: #f5f5f7 !important; width: 100%;
 }
-.cf-logo { display: flex; align-items: center; gap: 7px; font-size: .88rem; font-weight: 800; color: #aeaeb2; }
-.cf-logo svg { width: 20px; height: 20px; flex-shrink: 0; }
-.cf-note { font-size: .74rem; color: #aeaeb2; }
+.xfoot-logo { display: flex; align-items: center; gap: 7px; font-size: .88rem; font-weight: 800; color: #aeaeb2; }
+.xfoot-logo svg { width: 20px; height: 20px; flex-shrink: 0; }
+.xfoot-note { font-size: .74rem; color: #aeaeb2; }
 
-/* ── RESPONSIVE ── */
 @media (max-width: 480px) {
-.cn { padding: 0 14px; }
-.ch { padding: 52px 14px 42px; }
-.cb { padding: 0 12px 52px; }
-.tl-body { padding: 14px 16px 16px; }
-.tl-head { padding: 16px 16px 0; }
-.two { grid-template-columns: 1fr; }
-.cf { flex-direction: column; text-align: center; padding: 16px 14px; }
-.pr { padding: 16px 14px 12px; }
+  .xnav  { padding: 0 14px; }
+  .xhero { padding: 50px 14px 42px; }
+  .xbody { padding: 0 12px 52px; }
+  .xtl-list { padding: 14px 16px 16px; }
+  .xtl-head { padding: 16px 16px 0; }
+  .xtwo { grid-template-columns: 1fr; }
+  .xfoot { flex-direction: column; text-align: center; padding: 16px 14px; }
+  .xpr { padding: 16px 14px 12px; }
 }
 </style>
 
 </head>
 <body>
 
-<div id="ocur"></div>
+<div id="oc"></div>
 
 <!-- NAV -->
 
-<nav class="cn">
-  <div class="cn-logo">
+<nav class="xnav">
+  <div class="xnav-logo">
     <svg viewBox="0 0 26 26" fill="none">
       <rect width="26" height="26" rx="7" fill="#0071e3"/>
       <path d="M7 13L12 8L17 13L12 18Z" fill="none" stroke="white" stroke-width="1.8" stroke-linejoin="round"/>
@@ -450,7 +393,7 @@ width: 100%;
     </svg>
     Orixen
   </div>
-  <a href="/" class="cn-back">
+  <a href="/" class="xnav-back">
     <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M13 7H1M6 2L1 7l5 5"/>
     </svg>
@@ -460,29 +403,29 @@ width: 100%;
 
 <!-- HERO -->
 
-<div class="ch">
-  <div class="ch-grid"></div>
-  <div class="ch-glow"></div>
+<div class="xhero">
+  <div class="xhero-grid"></div>
+  <div class="xhero-glow"></div>
 
-  <div class="ch-inner">
-    <div class="ck-wrap">
-      <div class="ck-r1"></div>
-      <div class="ck-r2"></div>
-      <div class="ck-circle">
-        <svg viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-          <path class="ck-path" d="M5 15l7 7 13-13"/>
-        </svg>
-      </div>
-    </div>
+  <div class="xhero-inner">
 
 ```
-<div class="ck-badge">
-  <span class="ck-dot"></span>
+<!-- Checkmark — pure CSS, zero SVG path that renders as text -->
+<div class="xck">
+  <div class="xck-ring xck-ring1"></div>
+  <div class="xck-ring xck-ring2"></div>
+  <div class="xck-circle">
+    <div class="xck-mark"></div>
+  </div>
+</div>
+
+<div class="xbadge">
+  <span class="xbadge-dot"></span>
   Audit confirmé
 </div>
 
-<h1 class="ch-h1">Votre créneau est réservé.<br><span>Voici ce qui se passe.</span></h1>
-<p class="ch-sub">Vous allez recevoir un email de confirmation dans les prochaines minutes avec le lien de l'appel et tous les détails.</p>
+<h1 class="xh1">Votre créneau est réservé.<br><span>Voici ce qui se passe.</span></h1>
+<p class="xsub">Vous allez recevoir un email de confirmation dans les prochaines minutes avec le lien de l'appel et tous les détails.</p>
 ```
 
   </div>
@@ -490,105 +433,97 @@ width: 100%;
 
 <!-- BODY -->
 
-<div class="cb">
+<div class="xbody">
 
-  <!-- Timeline -->
-
-  <div class="tl">
-    <div class="tl-head">
-      <span class="tl-lbl">Ce qui se passe maintenant</span>
-      <span class="tl-cnt">4 étapes</span>
+  <div class="xtl">
+    <div class="xtl-head">
+      <span class="xtl-lbl">Ce qui se passe maintenant</span>
+      <span class="xtl-cnt">4 étapes</span>
     </div>
-    <div class="tl-body">
-      <div class="tl-row">
-        <div class="tl-n">1</div>
+    <div class="xtl-list">
+      <div class="xtl-row">
+        <div class="xtl-n">1</div>
         <div>
-          <p class="tl-t">Email de confirmation</p>
-          <p class="tl-d">Vous recevez le lien de visioconférence, la date confirmée et un rappel automatique 24h avant l'appel.</p>
-          <span class="tl-tag g">Dans les 5 minutes</span>
+          <p class="xtl-t">Email de confirmation</p>
+          <p class="xtl-d">Vous recevez le lien de visioconférence, la date confirmée et un rappel automatique 24h avant l'appel.</p>
+          <span class="xtl-tag g">Dans les 5 minutes</span>
         </div>
       </div>
-      <div class="tl-row">
-        <div class="tl-n">2</div>
+      <div class="xtl-row">
+        <div class="xtl-n">2</div>
         <div>
-          <p class="tl-t">Préparation de l'audit</p>
-          <p class="tl-d">Notre équipe analyse votre zone, votre secteur et le potentiel d'acquisition disponible. L'audit commence dès la première seconde.</p>
-          <span class="tl-tag">Avant l'appel</span>
+          <p class="xtl-t">Préparation de l'audit</p>
+          <p class="xtl-d">Notre équipe analyse votre zone, votre secteur et le potentiel d'acquisition disponible. L'audit commence dès la première seconde.</p>
+          <span class="xtl-tag">Avant l'appel</span>
         </div>
       </div>
-      <div class="tl-row">
-        <div class="tl-n">3</div>
+      <div class="xtl-row">
+        <div class="xtl-n">3</div>
         <div>
-          <p class="tl-t">L'audit stratégique — 45 min</p>
-          <p class="tl-d">On analyse ensemble votre situation, les opportunités concrètes et comment Orixen s'adapte à votre marché local.</p>
-          <span class="tl-tag">J-jour</span>
+          <p class="xtl-t">L'audit stratégique — 45 min</p>
+          <p class="xtl-d">On analyse ensemble votre situation, les opportunités concrètes et comment Orixen s'adapte à votre marché local.</p>
+          <span class="xtl-tag">J-jour</span>
         </div>
       </div>
-      <div class="tl-row">
-        <div class="tl-n">4</div>
+      <div class="xtl-row">
+        <div class="xtl-n">4</div>
         <div>
-          <p class="tl-t">Proposition ou non-proposition</p>
-          <p class="tl-d">Si une opportunité existe, nous vous la présentons. Sinon, vous repartez avec des insights gratuits. Sans pression.</p>
-          <span class="tl-tag">Sous 48h après l'appel</span>
+          <p class="xtl-t">Proposition ou non-proposition</p>
+          <p class="xtl-d">Si une opportunité existe, nous vous la présentons. Sinon, vous repartez avec des insights gratuits. Sans pression.</p>
+          <span class="xtl-tag">Sous 48h après l'appel</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 2-col -->
-
-  <div class="two">
-    <div class="ic">
-      <div class="ic-ico">
+  <div class="xtwo">
+    <div class="xic">
+      <div class="xic-ico">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
           <rect x="1" y="3" width="14" height="11" rx="2"/>
           <path d="M1 7h14M5 1v4M11 1v4"/>
         </svg>
       </div>
-      <p class="ic-t">Durée de l'appel</p>
-      <p class="ic-d">45 min en visioconférence. Agenda structuré, pas de temps perdu.</p>
+      <p class="xic-t">Durée de l'appel</p>
+      <p class="xic-d">45 min en visioconférence. Agenda structuré, pas de temps perdu.</p>
     </div>
-    <div class="ic">
-      <div class="ic-ico">
+    <div class="xic">
+      <div class="xic-ico">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
           <circle cx="8" cy="8" r="6"/>
           <path d="M8 5v3l2.5 2"/>
         </svg>
       </div>
-      <p class="ic-t">Aucun engagement</p>
-      <p class="ic-d">L'audit est gratuit. Aucune obligation, aucune pression commerciale.</p>
+      <p class="xic-t">Aucun engagement</p>
+      <p class="xic-d">L'audit est gratuit. Aucune obligation, aucune pression commerciale.</p>
     </div>
   </div>
 
-  <!-- Prep -->
-
-  <div class="pr">
-    <p class="pr-lbl">Pour préparer votre audit</p>
-    <div class="pr-row">
-      <div class="pr-ico"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 5.5l2.5 2.5 5.5-5.5"/></svg></div>
+  <div class="xpr">
+    <p class="xpr-lbl">Pour préparer votre audit</p>
+    <div class="xpr-row">
+      <div class="xpr-ico"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 5.5l2.5 2.5 5.5-5.5"/></svg></div>
       Votre zone géographique et rayon d'intervention
     </div>
-    <div class="pr-row">
-      <div class="pr-ico"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 5.5l2.5 2.5 5.5-5.5"/></svg></div>
+    <div class="xpr-row">
+      <div class="xpr-ico"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 5.5l2.5 2.5 5.5-5.5"/></svg></div>
       Le panier moyen de vos chantiers
     </div>
-    <div class="pr-row">
-      <div class="pr-ico"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 5.5l2.5 2.5 5.5-5.5"/></svg></div>
+    <div class="xpr-row">
+      <div class="xpr-ico"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 5.5l2.5 2.5 5.5-5.5"/></svg></div>
       Votre volume de demandes entrant par semaine
     </div>
-    <div class="pr-row">
-      <div class="pr-ico"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 5.5l2.5 2.5 5.5-5.5"/></svg></div>
+    <div class="xpr-row">
+      <div class="xpr-ico"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 5.5l2.5 2.5 5.5-5.5"/></svg></div>
       Votre délai de réponse actuel à un nouveau lead
     </div>
-    <div class="pr-row">
-      <div class="pr-ico"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 5.5l2.5 2.5 5.5-5.5"/></svg></div>
+    <div class="xpr-row">
+      <div class="xpr-ico"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 5.5l2.5 2.5 5.5-5.5"/></svg></div>
       Votre budget publicitaire envisageable
     </div>
   </div>
 
-  <!-- Back -->
-
-  <a href="/" class="bb">
+  <a href="/" class="xbb">
     <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M13 7H1M6 2L1 7l5 5"/>
     </svg>
@@ -597,10 +532,8 @@ width: 100%;
 
 </div>
 
-<!-- FOOTER -->
-
-<footer class="cf">
-  <div class="cf-logo">
+<footer class="xfoot">
+  <div class="xfoot-logo">
     <svg viewBox="0 0 22 22" fill="none">
       <rect width="22" height="22" rx="6" fill="#0071e3"/>
       <path d="M6 11L10.5 6.5L15 11L10.5 15.5Z" fill="none" stroke="white" stroke-width="1.6" stroke-linejoin="round"/>
@@ -608,30 +541,24 @@ width: 100%;
     </svg>
     Orixen
   </div>
-  <span class="cf-note">contact@orixen.fr</span>
+  <span class="xfoot-note">contact@orixen.fr</span>
 </footer>
 
 <script>
 (function() {
-  /* disable custom cursor on touch devices */
   if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return;
-
   document.body.classList.add('has-mouse');
-  var c = document.getElementById('ocur');
-  c.classList.add('on');
+  var c = document.getElementById('oc');
+  c.classList.add('show');
   var mx = 0, my = 0;
-
   document.addEventListener('mousemove', function(e) {
     mx = e.clientX; my = e.clientY;
-    c.style.left = mx + 'px';
-    c.style.top  = my + 'px';
+    c.style.left = mx + 'px'; c.style.top = my + 'px';
   });
-  document.querySelectorAll('a, .ic, .tl-row, .pr-row').forEach(function(el) {
+  document.querySelectorAll('a, .xic, .xtl-row, .xpr-row').forEach(function(el) {
     el.addEventListener('mouseenter', function() { c.classList.add('big'); });
     el.addEventListener('mouseleave', function() { c.classList.remove('big'); });
   });
-  document.addEventListener('mousedown', function() { c.style.transform = 'translate(-50%,-50%) scale(.7)'; });
-  document.addEventListener('mouseup',   function() { c.style.transform = 'translate(-50%,-50%) scale(1)'; });
 })();
 </script>
 
