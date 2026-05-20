@@ -7,316 +7,331 @@
 <title>Orixen — Candidature reçue</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230071e3'/><path d='M8 16 L14 10 L20 16 L14 22 Z' fill='none' stroke='white' stroke-width='2' stroke-linejoin='round'/><circle cx='22' cy='16' r='3' fill='white'/></svg>"/>
 
 <style>
 :root {
-  --surface: #fbfbfd;
-  --line-hi: #e8e8ed;
-  --ink:   #1d1d1f;
-  --ink-2: #3d3d3f;
-  --ink-3: #6e6e73;
-  --ink-4: #aeaeb2;
-  --blue:  #0071e3;
-  --green: #30a64a;
-  --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --ease: cubic-bezier(.25,.46,.45,.94);
+  --bg:     #090909;
+  --text:   #f0f0f2;
+  --text-2: rgba(240,240,242,.42);
+  --text-3: rgba(240,240,242,.2);
+  --border: rgba(255,255,255,.07);
+  --blue:   #0071e3;
+  --green:  #32d864;
+  --font:   'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --ease:   cubic-bezier(.25,.46,.45,.94);
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 16px; -webkit-font-smoothing: antialiased; }
 body {
-  background: var(--surface);
-  color: var(--ink);
+  background: var(--bg);
+  color: var(--text);
   font-family: var(--font);
-  min-height: 100vh;
+  min-height: 100dvh;
   cursor: none;
-  overflow-x: hidden;
+  overflow: hidden;
 }
-a { color: inherit; text-decoration: none; }
 ::-webkit-scrollbar { width: 0; }
+
+/* ── AMBIENT GLOW ── */
+body::before {
+  content: '';
+  position: fixed;
+  top: -30%; left: 50%;
+  transform: translateX(-50%);
+  width: 800px; height: 600px;
+  background: radial-gradient(ellipse 55% 45% at 50% 30%,
+    rgba(0,113,227,.055) 0%,
+    transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
 
 /* ── CURSOR ── */
 #cursor {
   position: fixed; top: 0; left: 0; z-index: 9999;
   pointer-events: none;
-  width: 8px; height: 8px;
-  background: var(--ink);
+  width: 7px; height: 7px;
+  background: rgba(255,255,255,.85);
   border-radius: 50%;
-  transform: translate(-50%, -50%);
-  transition: width .3s var(--ease), height .3s var(--ease), background .3s, opacity .3s;
+  transform: translate(-50%,-50%);
+  transition: width .28s var(--ease), height .28s var(--ease), opacity .2s;
   will-change: transform;
 }
-#cursor.h { width: 36px; height: 36px; background: rgba(0,0,0,.06); border: 1px solid rgba(0,0,0,.18); }
+#cursor.h {
+  width: 32px; height: 32px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,.22);
+}
 #cursor-t {
   position: fixed; top: 0; left: 0; z-index: 9998;
   pointer-events: none;
-  width: 30px; height: 30px;
-  border: 1px solid rgba(0,0,0,.14);
+  width: 28px; height: 28px;
+  border: 1px solid rgba(255,255,255,.1);
   border-radius: 50%;
-  transform: translate(-50%, -50%);
-  opacity: .45;
+  transform: translate(-50%,-50%);
   will-change: transform;
 }
 
 /* ── HEADER ── */
 header {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  height: 58px;
+  height: 52px;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 32px;
-  background: rgba(251,251,253,.9);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-bottom: 1px solid rgba(0,0,0,.055);
+  padding: 0 28px;
+  border-bottom: 1px solid var(--border);
 }
 .logo {
   display: flex; align-items: center; gap: 8px;
-  font-size: .92rem; font-weight: 800;
-  letter-spacing: -.03em; color: var(--ink);
+  font-size: .85rem; font-weight: 700;
+  letter-spacing: -.02em;
+  color: rgba(255,255,255,.45);
+  cursor: default;
 }
-.logo svg { width: 22px; height: 22px; display: block; }
-.header-right {
-  font-size: .72rem; font-weight: 500; color: var(--ink-4);
-  letter-spacing: .01em;
+.logo svg { width: 20px; height: 20px; opacity: .7; }
+.header-tag {
+  font-size: .66rem;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-3);
 }
 
 /* ── MAIN ── */
 main {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 100px 24px 80px;
-}
-.center {
-  max-width: 400px;
-  width: 100%;
-  text-align: center;
-}
-
-/* ── CHECKMARK SVG ── */
-.check-area {
-  margin: 0 auto 36px;
-  width: 80px; height: 80px;
-  position: relative;
+  position: relative; z-index: 1;
+  min-height: 100dvh;
   display: flex; align-items: center; justify-content: center;
+  padding: 72px 24px;
 }
-.check-svg { display: block; overflow: visible; }
+.card {
+  width: 100%; max-width: 400px;
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+  gap: 0;
+}
 
+/* ── MARK ── */
+.mark {
+  width: 56px; height: 56px;
+  margin-bottom: 32px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
 @keyframes circleDraw {
-  from { stroke-dashoffset: 251; }
+  from { stroke-dashoffset: 175.9; }
   to   { stroke-dashoffset: 0; }
 }
 @keyframes checkDraw {
-  from { stroke-dashoffset: 56; }
+  from { stroke-dashoffset: 40; }
   to   { stroke-dashoffset: 0; }
 }
-
-.check-circle {
-  stroke-dasharray: 251;
-  stroke-dashoffset: 251;
-  animation: circleDraw 1.1s var(--ease) .3s forwards;
+.mark-circle {
+  stroke-dasharray: 175.9;
+  stroke-dashoffset: 175.9;
+  animation: circleDraw 1.4s var(--ease) .1s forwards;
 }
-.check-mark {
-  stroke-dasharray: 56;
-  stroke-dashoffset: 56;
-  animation: checkDraw .7s var(--ease) 1.2s forwards;
+.mark-check {
+  stroke-dasharray: 40;
+  stroke-dashoffset: 40;
+  animation: checkDraw .8s var(--ease) 1.3s forwards;
 }
 
-/* ── STAGGERED FADE ── */
-@keyframes appear {
-  from { opacity: 0; transform: translateY(8px); }
+/* ── FADE IN sequence ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: none; }
 }
-.a1 { opacity: 0; animation: appear .9s var(--ease) 1.7s forwards; }
-.a2 { opacity: 0; animation: appear .9s var(--ease) 1.95s forwards; }
-.a3 { opacity: 0; animation: appear .9s var(--ease) 2.15s forwards; }
-.a4 { opacity: 0; animation: appear .9s var(--ease) 2.4s forwards; }
-.a5 { opacity: 0; animation: appear .9s var(--ease) 2.65s forwards; }
-.a6 { opacity: 0; animation: appear .9s var(--ease) 2.9s forwards; }
-
-/* ── PILL ── */
-.pill {
-  display: inline-flex; align-items: center; gap: 7px;
-  font-size: .68rem; font-weight: 600;
-  color: var(--green);
-  letter-spacing: .06em; text-transform: uppercase;
-  background: rgba(48,166,74,.07);
-  border: 1px solid rgba(48,166,74,.18);
-  padding: 5px 13px;
-  border-radius: 20px;
-  margin-bottom: 22px;
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
-.pill-dot {
+.f1  { opacity:0; animation: fadeIn  1s var(--ease) 1.9s  forwards; }
+.f2  { opacity:0; animation: fadeUp  .9s var(--ease) 2.15s forwards; }
+.f3  { opacity:0; animation: fadeUp  .9s var(--ease) 2.35s forwards; }
+.f4  { opacity:0; animation: fadeIn  .8s var(--ease) 2.6s  forwards; }
+.f5  { opacity:0; animation: fadeIn  .8s var(--ease) 2.85s forwards; }
+.f6  { opacity:0; animation: fadeIn  .7s var(--ease) 3.1s  forwards; }
+.f7  { opacity:0; animation: fadeIn  .7s var(--ease) 3.35s forwards; }
+
+/* ── STATUS ── */
+.status {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: .63rem; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 20px;
+}
+.status-dot {
   width: 5px; height: 5px; border-radius: 50%;
   background: var(--green);
-  animation: pulse 2.4s ease-in-out infinite;
+  animation: blink 2.2s ease-in-out infinite;
 }
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: .35; transform: scale(.55); }
+@keyframes blink {
+  0%,100% { opacity:1; transform:scale(1); }
+  50%      { opacity:.3; transform:scale(.5); }
 }
 
 /* ── HEADLINE ── */
 .headline {
-  font-size: clamp(1.7rem, 4vw, 2.6rem);
+  font-size: clamp(2.6rem, 7vw, 4.8rem);
   font-weight: 800;
-  letter-spacing: -.04em;
-  line-height: 1.06;
-  color: var(--ink);
-  margin-bottom: 16px;
+  letter-spacing: -.055em;
+  line-height: .98;
+  color: var(--text);
+  margin-bottom: 18px;
 }
 
 /* ── SUBTEXT ── */
-.subtext {
-  font-size: .96rem;
+.sub {
+  font-size: .93rem;
   font-weight: 400;
   line-height: 1.72;
-  color: var(--ink-3);
-  max-width: 360px;
-  margin: 0 auto 28px;
-}
-
-/* ── DIVIDER ── */
-.divider {
-  width: 32px;
-  height: 1px;
-  background: var(--line-hi);
-  margin: 0 auto 22px;
-}
-
-/* ── RESPONSE TIME ── */
-.response-time {
-  font-size: .74rem;
-  font-weight: 500;
-  color: var(--ink-4);
-  letter-spacing: .02em;
-  margin-bottom: 40px;
-}
-.response-time strong {
-  font-weight: 600;
-  color: var(--ink-3);
-}
-
-/* ── PROGRESS STEPS ── */
-.steps {
-  display: inline-flex;
-  flex-direction: column;
-  gap: 0;
-  text-align: left;
+  color: var(--text-2);
+  max-width: 310px;
   margin-bottom: 36px;
 }
-.step {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  position: relative;
+
+/* ── LINE ── */
+.line {
+  width: 100%;
+  height: 1px;
+  background: var(--border);
+  margin-bottom: 24px;
 }
-.step:not(:last-child) .step-icon-wrap::after {
-  content: '';
-  position: absolute;
-  top: 22px; left: 9px;
-  width: 1px;
-  height: calc(100% + 2px);
-  background: var(--line-hi);
+
+/* ── META ROW ── */
+.meta {
+  width: 100%;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 36px;
+  padding: 0 2px;
 }
-.step-icon-wrap {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex-shrink: 0;
-  padding-bottom: 20px;
+.meta-item {
+  display: flex; flex-direction: column; gap: 3px;
 }
-.step:last-child .step-icon-wrap {
-  padding-bottom: 0;
+.meta-label {
+  font-size: .59rem; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--text-3);
 }
-.step-icon {
-  width: 20px; height: 20px;
-  border-radius: 50%;
+.meta-value {
+  font-size: .8rem; font-weight: 600;
+  color: rgba(255,255,255,.5);
+  letter-spacing: -.01em;
+}
+.meta-sep {
+  width: 1px; height: 28px;
+  background: var(--border);
+}
+
+/* ── PROGRESS ── */
+.progress {
+  width: 100%;
+  margin-bottom: 40px;
+}
+.progress-track {
+  display: flex; align-items: flex-start;
+}
+.p-step {
+  display: flex; flex-direction: column; align-items: center;
+  flex: 1;
+  gap: 0;
+}
+.p-step:last-child { flex: 0 0 auto; }
+.p-node {
+  width: 18px; height: 18px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
   position: relative; z-index: 1;
 }
-.step-icon.done {
-  background: var(--green);
+.p-node.done {
+  background: rgba(50,216,100,.15);
+  border: 1px solid rgba(50,216,100,.4);
 }
-.step-icon.active {
-  background: var(--surface);
-  border: 1.5px solid var(--line-hi);
+.p-node.active {
+  background: rgba(0,113,227,.15);
+  border: 1px solid rgba(0,113,227,.4);
 }
-.step-icon.pending {
-  background: var(--surface);
-  border: 1.5px solid var(--line-hi);
+.p-node.off {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,.1);
 }
-.step-check {
-  display: block;
-}
-.active-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
+.p-check { display:block; }
+.p-active-dot {
+  width: 5px; height: 5px; border-radius: 50%;
   background: var(--blue);
-  animation: pulse 1.8s ease-in-out infinite;
+  animation: blink 1.6s ease-in-out infinite;
 }
-.pending-dot {
-  width: 5px; height: 5px;
-  border-radius: 50%;
-  background: var(--line-hi);
+.p-off-dot {
+  width: 4px; height: 4px; border-radius: 50%;
+  background: rgba(255,255,255,.15);
 }
-.step-text {
-  padding-top: 1px;
-  padding-bottom: 20px;
+.p-wire {
+  flex: 1;
+  height: 1px;
+  margin-top: 8.5px;
+  background: var(--border);
 }
-.step:last-child .step-text {
-  padding-bottom: 0;
+.p-wire.done { background: rgba(50,216,100,.25); }
+.p-labels {
+  display: flex; justify-content: space-between;
+  margin-top: 10px;
+  padding: 0 0px;
 }
-.step-label {
-  font-size: .84rem;
-  font-weight: 500;
-  letter-spacing: -.01em;
-  line-height: 1.4;
+.p-label {
+  font-size: .62rem; font-weight: 500;
+  letter-spacing: .02em;
+  width: 18px;
+  text-align: center;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  margin-left: 9px;
 }
-.step.done .step-label { color: var(--ink-2); font-weight: 600; }
-.step.active .step-label { color: var(--ink); font-weight: 600; }
-.step.pending .step-label { color: var(--ink-4); }
+.p-label:last-child { transform: translateX(-50%); }
+.p-label.done  { color: rgba(50,216,100,.65); }
+.p-label.active { color: rgba(0,113,227,.8); }
+.p-label.off    { color: var(--text-3); }
 
 /* ── EMAIL NOTE ── */
-.email-note {
-  font-size: .78rem;
+.note {
+  font-size: .74rem;
   font-weight: 400;
-  color: var(--ink-4);
-  line-height: 1.65;
-  max-width: 300px;
-  margin: 0 auto;
+  line-height: 1.7;
+  color: var(--text-3);
+  max-width: 280px;
 }
 
 /* ── FOOTER ── */
 footer {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  height: 48px;
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+  height: 44px;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 32px;
-  background: rgba(251,251,253,.9);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-top: 1px solid rgba(0,0,0,.055);
+  padding: 0 28px;
+  border-top: 1px solid var(--border);
 }
-.f-logo {
-  display: flex; align-items: center; gap: 7px;
-  font-size: .82rem; font-weight: 800;
-  letter-spacing: -.03em; color: var(--ink-4);
+.f-left {
+  font-size: .66rem; font-weight: 500;
+  color: var(--text-3);
+  letter-spacing: .02em;
 }
-.f-logo svg { width: 18px; height: 18px; display: block; }
-.f-copy { font-size: .7rem; color: var(--ink-4); }
+.f-right {
+  font-size: .66rem; font-weight: 400;
+  color: var(--text-3);
+}
+.f-right a {
+  color: rgba(255,255,255,.3);
+  transition: color .2s;
+  text-decoration: none;
+}
+.f-right a:hover { color: rgba(255,255,255,.55); }
 
-/* ── RESPONSIVE ── */
-@media (max-width: 480px) {
-  header { padding: 0 18px; }
-  footer { padding: 0 18px; }
-  .header-right { display: none; }
-  main { padding: 90px 20px 70px; }
-  .f-copy { display: none; }
+@media (max-width: 440px) {
+  header  { padding: 0 18px; }
+  footer  { padding: 0 18px; }
+  .header-tag { display: none; }
+  .f-right { display: none; }
 }
 </style>
 </head>
@@ -325,7 +340,6 @@ footer {
 <div id="cursor"></div>
 <div id="cursor-t"></div>
 
-<!-- HEADER -->
 <header>
   <div class="logo">
     <svg viewBox="0 0 26 26" fill="none">
@@ -335,38 +349,34 @@ footer {
     </svg>
     Orixen
   </div>
-  <span class="header-right">Processus d'intégration</span>
+  <span class="header-tag">Espace client</span>
 </header>
 
-<!-- MAIN -->
 <main>
-  <div class="center">
+  <div class="card">
 
-    <!-- Checkmark -->
-    <div class="check-area">
-      <svg class="check-svg" viewBox="0 0 80 80" fill="none" width="80" height="80">
+    <!-- Animated mark -->
+    <div class="mark">
+      <svg viewBox="0 0 56 56" fill="none" width="56" height="56">
         <circle
-          class="check-circle"
-          cx="40" cy="40" r="39"
-          stroke="#e8e8ed"
+          class="mark-circle"
+          cx="28" cy="28" r="27"
+          stroke="rgba(255,255,255,.1)"
           stroke-width="1"
-          fill="none"
         />
         <circle
-          class="check-circle"
-          cx="40" cy="40" r="39"
-          stroke="#30a64a"
-          stroke-width="1.5"
-          fill="none"
+          class="mark-circle"
+          cx="28" cy="28" r="27"
+          stroke="rgba(50,216,100,.45)"
+          stroke-width="1"
           stroke-linecap="round"
-          transform="rotate(-90 40 40)"
-          style="animation-delay: .3s"
+          transform="rotate(-90 28 28)"
         />
         <path
-          class="check-mark"
-          d="M24 40 l11 11 21-21"
-          stroke="#30a64a"
-          stroke-width="2"
+          class="mark-check"
+          d="M16 28 l9 9 15-15"
+          stroke="rgba(255,255,255,.9)"
+          stroke-width="1.5"
           stroke-linecap="round"
           stroke-linejoin="round"
           fill="none"
@@ -374,102 +384,95 @@ footer {
       </svg>
     </div>
 
-    <!-- Pill -->
-    <div class="a1">
-      <div class="pill">
-        <span class="pill-dot"></span>
-        Candidature reçue
-      </div>
+    <!-- Status badge -->
+    <div class="status f1">
+      <span class="status-dot"></span>
+      Candidature reçue
     </div>
 
     <!-- Headline -->
-    <h1 class="headline a2">
-      Votre candidature<br>a bien été reçue.
-    </h1>
+    <h1 class="headline f2">Bienvenue.</h1>
 
-    <!-- Subtext -->
-    <p class="subtext a3">
-      Notre équipe analyse actuellement votre profil et prépare les prochaines étapes.
+    <!-- Sub -->
+    <p class="sub f3">
+      Votre candidature a bien été reçue. Notre équipe analyse votre profil et prépare les prochaines étapes.
     </p>
 
-    <!-- Divider -->
-    <div class="divider a4"></div>
+    <!-- Separator -->
+    <div class="line f4"></div>
 
-    <!-- Response time -->
-    <p class="response-time a4">
-      Temps moyen de réponse&nbsp;: <strong>moins de 24h</strong>
-    </p>
-
-    <!-- Steps -->
-    <div class="steps a5">
-
-      <div class="step done">
-        <div class="step-icon-wrap">
-          <div class="step-icon done">
-            <svg class="step-check" viewBox="0 0 10 10" fill="none" width="10" height="10">
-              <path d="M2 5l2.2 2.2L8 3" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-        </div>
-        <div class="step-text">
-          <span class="step-label">Onboarding complété</span>
-        </div>
+    <!-- Meta -->
+    <div class="meta f4">
+      <div class="meta-item">
+        <span class="meta-label">Référence</span>
+        <span class="meta-value" id="ref-num">—</span>
       </div>
-
-      <div class="step active">
-        <div class="step-icon-wrap">
-          <div class="step-icon active">
-            <span class="active-dot"></span>
-          </div>
-        </div>
-        <div class="step-text">
-          <span class="step-label">Analyse en cours</span>
-        </div>
+      <div class="meta-sep"></div>
+      <div class="meta-item" style="text-align:center">
+        <span class="meta-label">Réponse</span>
+        <span class="meta-value">&lt;&nbsp;24h</span>
       </div>
-
-      <div class="step pending">
-        <div class="step-icon-wrap">
-          <div class="step-icon pending">
-            <span class="pending-dot"></span>
-          </div>
-        </div>
-        <div class="step-text">
-          <span class="step-label">Validation finale</span>
-        </div>
+      <div class="meta-sep"></div>
+      <div class="meta-item" style="text-align:right">
+        <span class="meta-label">Statut</span>
+        <span class="meta-value" style="color:rgba(50,216,100,.6)">En cours</span>
       </div>
-
-      <div class="step pending">
-        <div class="step-icon-wrap">
-          <div class="step-icon pending">
-            <span class="pending-dot"></span>
-          </div>
-        </div>
-        <div class="step-text">
-          <span class="step-label">Accès envoyé</span>
-        </div>
-      </div>
-
     </div>
 
-    <!-- Email note -->
-    <p class="email-note a6">
+    <!-- Progress -->
+    <div class="progress f5">
+      <div class="progress-track">
+
+        <div class="p-step">
+          <div class="p-node done">
+            <svg class="p-check" viewBox="0 0 8 8" fill="none" width="8" height="8">
+              <path d="M1.5 4l2 2 3-3" stroke="rgba(50,216,100,.9)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="p-wire done"></div>
+        </div>
+
+        <div class="p-step">
+          <div class="p-node active">
+            <span class="p-active-dot"></span>
+          </div>
+          <div class="p-wire"></div>
+        </div>
+
+        <div class="p-step">
+          <div class="p-node off">
+            <span class="p-off-dot"></span>
+          </div>
+          <div class="p-wire"></div>
+        </div>
+
+        <div class="p-step" style="flex:0 0 auto">
+          <div class="p-node off">
+            <span class="p-off-dot"></span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="p-labels f6">
+        <span class="p-label done">Reçu</span>
+        <span class="p-label active">Analyse</span>
+        <span class="p-label off">Validation</span>
+        <span class="p-label off">Accès</span>
+      </div>
+    </div>
+
+    <!-- Note -->
+    <p class="note f7">
       Vérifiez vos emails afin de ne manquer aucune information importante.
     </p>
 
   </div>
 </main>
 
-<!-- FOOTER -->
 <footer>
-  <div class="f-logo">
-    <svg viewBox="0 0 22 22" fill="none">
-      <rect width="22" height="22" rx="6" fill="#0071e3"/>
-      <path d="M6 11 L10.5 6.5 L15 11 L10.5 15.5 Z" fill="none" stroke="white" stroke-width="1.6" stroke-linejoin="round"/>
-      <circle cx="18" cy="11" r="2" fill="white"/>
-    </svg>
-    Orixen
-  </div>
-  <span class="f-copy">© 2026 Orixen</span>
+  <span class="f-left">© 2026 Orixen</span>
+  <span class="f-right"><a href="mailto:contact@orixen.fr">contact@orixen.fr</a></span>
 </footer>
 
 <script>
@@ -477,31 +480,28 @@ footer {
 const cur = document.getElementById('cursor');
 const trail = document.getElementById('cursor-t');
 let mx = 0, my = 0, tx = 0, ty = 0;
-
 document.addEventListener('mousemove', e => {
   mx = e.clientX; my = e.clientY;
-  cur.style.left = mx + 'px';
-  cur.style.top  = my + 'px';
+  cur.style.left = mx + 'px'; cur.style.top = my + 'px';
 });
-
 (function loop() {
-  tx += (mx - tx) * .09;
-  ty += (my - ty) * .09;
-  trail.style.left = tx + 'px';
-  trail.style.top  = ty + 'px';
+  tx += (mx - tx) * .08; ty += (my - ty) * .08;
+  trail.style.left = tx + 'px'; trail.style.top = ty + 'px';
   requestAnimationFrame(loop);
 })();
-
-document.querySelectorAll('a, .logo, .f-logo').forEach(el => {
+document.querySelectorAll('a').forEach(el => {
   el.addEventListener('mouseenter', () => cur.classList.add('h'));
   el.addEventListener('mouseleave', () => cur.classList.remove('h'));
 });
-
 if ('ontouchstart' in window) {
-  cur.style.display = 'none';
-  trail.style.display = 'none';
+  cur.style.display = 'none'; trail.style.display = 'none';
   document.body.style.cursor = 'auto';
 }
+
+/* REFERENCE NUMBER */
+const yr = new Date().getFullYear();
+const id = String(Math.floor(Math.random() * 9000) + 1000);
+document.getElementById('ref-num').textContent = 'OX-' + yr + '-' + id;
 </script>
 
 </body>
