@@ -298,6 +298,25 @@ footer{background:var(--bg);border-top:1px solid var(--line-hi);padding:32px 28p
 .f-logo svg{width:22px;height:22px}
 .f-copy{font-size:.75rem;color:var(--ink-4)}
 
+/* ────── DATA ────── */
+#data{background:var(--bg)}
+.data-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.data-grid>*{min-width:0}
+.perf-card{background:var(--card);border:1px solid var(--line-hi);border-radius:20px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.06);width:100%;max-width:100%}
+.perf-top{padding:26px 26px 0}
+.perf-lbl{font-size:.68rem;font-weight:600;color:var(--ink-4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px}
+.perf-bars{display:flex;align-items:flex-end;gap:6px;height:110px;margin-bottom:14px}
+.perf-bars>div{flex:1;min-width:0;border-radius:4px 4px 0 0;background:var(--blue-lo)}
+.perf-bars>div.hi{background:var(--blue)}
+.perf-stats{border-top:1px solid var(--line-hi);display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line-hi)}
+.perf-stat{background:var(--card);padding:18px 22px;min-width:0}
+.perf-stat-lbl{font-size:.63rem;font-weight:600;color:var(--ink-4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.perf-stat-val{font-size:1.6rem;font-weight:800;letter-spacing:-.03em;color:var(--ink)}
+.perf-stat-delta{font-size:.68rem;color:var(--green);font-weight:500;margin-top:4px}
+.stat-row{display:flex;gap:36px;margin-top:36px;padding-top:32px;border-top:1px solid var(--line-hi);flex-wrap:wrap}
+.stat-num{font-size:clamp(2.2rem,3.5vw,3.2rem);font-weight:800;letter-spacing:-.04em;color:var(--blue);line-height:1;margin-bottom:4px}
+.stat-label{font-size:.8rem;color:var(--ink-3);margin-top:4px}
+
 /* ────── RESPONSIVE ────── */
 @media(max-width:900px){
   .data-grid,.excl-grid,.pos-grid{grid-template-columns:1fr;gap:52px}
@@ -313,14 +332,12 @@ footer{background:var(--bg);border-top:1px solid var(--line-hi);padding:32px 28p
   footer{flex-direction:column;text-align:center;padding-bottom:96px}
   section{padding:72px 20px}
   .stat-row{flex-direction:column;gap:20px}
+  .perf-top{padding:20px 20px 0}
+  .perf-bars{height:90px;gap:4px}
+  .perf-stats{grid-template-columns:1fr}
+  .perf-stat{padding:16px 20px}
 }
 
-/* ────── DATA ────── */
-#data{background:var(--bg)}
-.data-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
-.stat-row{display:flex;gap:36px;margin-top:36px;padding-top:32px;border-top:1px solid var(--line-hi);flex-wrap:wrap}
-.stat-num{font-size:clamp(2.2rem,3.5vw,3.2rem);font-weight:800;letter-spacing:-.04em;color:var(--blue);line-height:1;margin-bottom:4px}
-.stat-label{font-size:.8rem;color:var(--ink-3);margin-top:4px}
 </style>
 
 </head>
@@ -480,32 +497,32 @@ footer{background:var(--bg);border-top:1px solid var(--line-hi);padding:32px 28p
           </div>
         </div>
       </div>
-      <div class="reveal d2" style="background:var(--card);border:1px solid var(--line-hi);border-radius:20px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.06)">
-        <div style="padding:26px 26px 0">
-          <div style="font-size:.68rem;font-weight:600;color:var(--ink-4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px">Performance sur 90 jours</div>
-          <div style="display:flex;align-items:flex-end;gap:6px;height:110px;margin-bottom:14px">
-            <div style="flex:1;border-radius:4px 4px 0 0;background:var(--blue-lo);height:30%"></div>
-            <div style="flex:1;border-radius:4px 4px 0 0;background:var(--blue-lo);height:44%"></div>
-            <div style="flex:1;border-radius:4px 4px 0 0;background:var(--blue-lo);height:38%"></div>
-            <div style="flex:1;border-radius:4px 4px 0 0;background:var(--blue-lo);height:58%"></div>
-            <div style="flex:1;border-radius:4px 4px 0 0;background:var(--blue-lo);height:50%"></div>
-            <div style="flex:1;border-radius:4px 4px 0 0;background:var(--blue-lo);height:66%"></div>
-            <div style="flex:1;border-radius:4px 4px 0 0;background:var(--blue);height:74%"></div>
-            <div style="flex:1;border-radius:4px 4px 0 0;background:var(--blue);height:82%"></div>
-            <div style="flex:1;border-radius:4px 4px 0 0;background:var(--blue);height:91%"></div>
-            <div style="flex:1;border-radius:4px 4px 0 0;background:var(--blue);height:100%"></div>
+      <div class="perf-card reveal d2">
+        <div class="perf-top">
+          <div class="perf-lbl">Performance sur 90 jours</div>
+          <div class="perf-bars">
+            <div style="height:30%"></div>
+            <div style="height:44%"></div>
+            <div style="height:38%"></div>
+            <div style="height:58%"></div>
+            <div style="height:50%"></div>
+            <div style="height:66%"></div>
+            <div class="hi" style="height:74%"></div>
+            <div class="hi" style="height:82%"></div>
+            <div class="hi" style="height:91%"></div>
+            <div class="hi" style="height:100%"></div>
           </div>
         </div>
-        <div style="border-top:1px solid var(--line-hi);display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line-hi)">
-          <div style="background:var(--card);padding:18px 22px">
-            <div style="font-size:.63rem;font-weight:600;color:var(--ink-4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Leads qualifiés</div>
-            <div style="font-size:1.6rem;font-weight:800;letter-spacing:-.03em;color:var(--ink)" data-count="147" data-suffix="">0</div>
-            <div style="font-size:.68rem;color:var(--green);font-weight:500;margin-top:4px">↑ +34% vs trim. précédent</div>
+        <div class="perf-stats">
+          <div class="perf-stat">
+            <div class="perf-stat-lbl">Leads qualifiés</div>
+            <div class="perf-stat-val" data-count="147" data-suffix="">0</div>
+            <div class="perf-stat-delta">↑ +34% vs trim. précédent</div>
           </div>
-          <div style="background:var(--card);padding:18px 22px">
-            <div style="font-size:.63rem;font-weight:600;color:var(--ink-4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Chantiers conclus</div>
-            <div style="font-size:1.6rem;font-weight:800;letter-spacing:-.03em;color:var(--ink)" data-count="56" data-suffix="">0</div>
-            <div style="font-size:.68rem;color:var(--green);font-weight:500;margin-top:4px">↑ +28% vs trim. précédent</div>
+          <div class="perf-stat">
+            <div class="perf-stat-lbl">Chantiers conclus</div>
+            <div class="perf-stat-val" data-count="56" data-suffix="">0</div>
+            <div class="perf-stat-delta">↑ +28% vs trim. précédent</div>
           </div>
         </div>
       </div>
