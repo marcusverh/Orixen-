@@ -32,16 +32,12 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:16px;scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
-body{background:var(--surface);color:var(--ink);font-family:var(--font);line-height:1.5;overflow-x:hidden;cursor:none}
+body{background:var(--surface);color:var(--ink);font-family:var(--font);line-height:1.5;overflow-x:hidden}
 a{color:inherit;text-decoration:none}
-button{border:none;background:none;cursor:none;font-family:inherit}
+button{border:none;background:none;cursor:pointer;font-family:inherit}
 ::-webkit-scrollbar{width:0}
 
 /* CURSOR */
-#cursor{position:fixed;top:0;left:0;z-index:9999;pointer-events:none;width:10px;height:10px;background:var(--blue);border-radius:50%;transform:translate(-50%,-50%);transition:width .25s var(--spring),height .25s var(--spring),background .2s;will-change:transform}
-#cursor.h{width:44px;height:44px;background:rgba(0,113,227,.12);border:1.5px solid var(--blue)}
-#cursor.c{width:7px;height:7px}
-#cursor-t{position:fixed;top:0;left:0;z-index:9998;pointer-events:none;width:36px;height:36px;border:1px solid rgba(0,113,227,.28);border-radius:50%;transform:translate(-50%,-50%);opacity:.55;will-change:transform}
 
 /* PROGRESS */
 #prog{position:fixed;top:0;left:0;z-index:1000;height:2px;width:0%;background:linear-gradient(90deg,var(--blue),#34aaff);pointer-events:none;transition:width .08s linear}
@@ -344,8 +340,8 @@ footer{background:var(--bg);border-top:1px solid var(--line-hi);padding:32px 28p
 <body>
 
 <div id="prog"></div>
-<div id="cursor"></div>
-<div id="cursor-t"></div>
+
+
 
 <!-- NAV -->
 
@@ -865,17 +861,7 @@ footer{background:var(--bg);border-top:1px solid var(--line-hi);padding:32px 28p
 
 <script>
 /* CURSOR */
-const cur=document.getElementById('cursor'),trail=document.getElementById('cursor-t');
-let mx=0,my=0,tx=0,ty=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
-(function animT(){tx+=(mx-tx)*.1;ty+=(my-ty)*.1;trail.style.left=tx+'px';trail.style.top=ty+'px';requestAnimationFrame(animT)})();
-document.querySelectorAll('a,button,.sc,.result-card,.hero-tag,.how-step,.bi,.kpi,.faq-q,.prob-card').forEach(el=>{
-  el.addEventListener('mouseenter',()=>cur.classList.add('h'));
-  el.addEventListener('mouseleave',()=>cur.classList.remove('h'));
-});
-document.addEventListener('mousedown',()=>cur.classList.add('c'));
-document.addEventListener('mouseup',()=>cur.classList.remove('c'));
-if('ontouchstart' in window){cur.style.display='none';trail.style.display='none';document.body.style.cursor='auto'}
+
 
 /* PROGRESS */
 const prog=document.getElementById('prog');
