@@ -161,6 +161,16 @@ nav.scrolled{background:rgba(249,249,251,.88);box-shadow:inset 0 1.5px 0 rgba(25
 .sc-tag.g{color:var(--green);background:var(--green-lo)}
 
 /* ── FOOTER ── */
+/* CTA */
+#cta{background:var(--surface);text-align:center;padding:64px 24px 80px}
+.cta-inner{max-width:480px;margin:0 auto}
+.cta-label{font-size:.8rem;color:var(--ink-4);margin-bottom:20px}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;font-size:.9rem;font-weight:600;color:var(--ink-3);background:var(--card);border:1.5px solid var(--line);padding:14px 28px;border-radius:980px;transition:color .2s,border-color .2s,box-shadow .2s,transform .2s}
+.btn-ghost:hover{color:var(--ink);border-color:var(--ink-4);transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.btn-ghost svg{width:14px;height:14px}
+.cta-contact{font-size:.76rem;color:var(--ink-4);margin-top:20px}
+.cta-contact a{color:var(--blue);font-weight:500}
+
 footer{background:var(--bg);border-top:1px solid var(--line-hi);padding:32px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .f-logo{display:flex;align-items:center;gap:8px;font-size:.9rem;font-weight:800;color:var(--ink-3)}
 .f-logo svg{width:22px;height:22px}
@@ -360,6 +370,18 @@ footer{background:var(--bg);border-top:1px solid var(--line-hi);padding:32px 28p
       </div>
 
     </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-inner">
+    <p class="cta-label reveal">Vous souhaitez retourner sur le site ?</p>
+    <a href="/" class="btn-ghost reveal d1">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 7H1M6 2L1 7l5 5"/></svg>
+      Retour sur Orixen.fr
+    </a>
+    <p class="cta-contact reveal d2">Une question ? <a href="mailto:contact@orixen.fr">contact@orixen.fr</a></p>
   </div>
 </section>
 
