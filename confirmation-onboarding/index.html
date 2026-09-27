@@ -1,442 +1,99 @@
 <!DOCTYPE html>
-
 <html lang="fr">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta name="robots" content="noindex, nofollow"/>
-<link rel="canonical" href="https://www.orixen.fr/confirmation-onboarding/"/>
-<meta name="theme-color" content="#0071e3"/>
-<title>Orixen · Onboarding confirmé</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet"/>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230071e3'/><path d='M8 16 L14 10 L20 16 L14 22 Z' fill='none' stroke='white' stroke-width='2' stroke-linejoin='round'/><circle cx='22' cy='16' r='3' fill='white'/></svg>"/>
-
-<style>
-:root{
-  --surface:#fbfbfd;--bg:#f5f5f7;--card:#fff;
-  --line:#d2d2d7;--line-hi:#e8e8ed;
-  --ink:#1d1d1f;--ink-3:#6e6e73;--ink-4:#aeaeb2;
-  --blue:#0071e3;--blue-hi:#0077ed;--blue-lo:rgba(0,113,227,.08);--blue-mid:rgba(0,113,227,.18);
-  --green:#30a64a;--green-hi:#34b557;--green-lo:rgba(48,166,74,.09);
-  --font:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,sans-serif;
-  --ease:cubic-bezier(.25,.46,.45,.94);
-  --spring:cubic-bezier(.34,1.56,.64,1);
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{font-size:16px;scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
-body{background:var(--surface);color:var(--ink);font-family:var(--font);line-height:1.5;overflow-x:hidden}
-a{color:inherit;text-decoration:none}
-button{border:none;background:none;cursor:pointer;font-family:inherit}
-::-webkit-scrollbar{width:0}
-
-
-
-/* ── PROGRESS BAR ── */
-#prog{position:fixed;top:0;left:0;z-index:1000;height:2px;width:0%;background:linear-gradient(90deg,var(--green),#34d058);pointer-events:none;transition:width .08s linear}
-
-/* ── NAV · Liquid Glass ── */
-@keyframes navIn{from{opacity:0;transform:translateX(-50%) translateY(-14px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-nav{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:200;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 8px 0 20px;width:calc(100% - 40px);max-width:960px;background:rgba(255,255,255,.62);backdrop-filter:saturate(200%) blur(32px);-webkit-backdrop-filter:saturate(200%) blur(32px);border-radius:18px;border:1px solid rgba(255,255,255,.82);box-shadow:inset 0 1.5px 0 rgba(255,255,255,.92),inset 0 -1px 0 rgba(0,0,0,.04),0 8px 32px rgba(0,0,0,.09),0 2px 8px rgba(0,0,0,.05);transition:box-shadow .35s var(--ease),background .35s var(--ease);overflow:hidden;animation:navIn .6s var(--ease) .1s both}
-nav::before{content:'';position:absolute;top:0;left:0;right:0;height:55%;background:linear-gradient(180deg,rgba(255,255,255,.32) 0%,transparent 100%);border-radius:18px 18px 0 0;pointer-events:none;z-index:0}
-nav::after{content:'';position:absolute;inset:0;background:linear-gradient(130deg,rgba(48,166,74,.04) 0%,transparent 35%,rgba(0,113,227,.03) 65%,transparent 100%);border-radius:inherit;pointer-events:none;z-index:0}
-nav.scrolled{background:rgba(249,249,251,.88);box-shadow:inset 0 1.5px 0 rgba(255,255,255,.92),inset 0 -1px 0 rgba(0,0,0,.04),0 18px 52px rgba(0,0,0,.13),0 5px 14px rgba(0,0,0,.07)}
-.nav-logo{display:flex;align-items:center;gap:9px;font-size:1.05rem;font-weight:800;letter-spacing:-.03em;color:var(--ink);position:relative;z-index:1}
-.nav-logo svg{width:26px;height:26px}
-.nav-right{display:flex;align-items:center;gap:8px;position:relative;z-index:1}
-.nav-badge{display:flex;align-items:center;gap:6px;font-size:.72rem;font-weight:600;color:var(--green);background:var(--green-lo);border:1px solid rgba(48,166,74,.22);padding:5px 12px;border-radius:20px}
-.nav-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pdot 2s ease-in-out infinite}
-@keyframes pdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.6)}}
-.nav-btn{font-size:.78rem;font-weight:600;color:#fff;background:var(--blue);padding:8px 18px;border-radius:980px;transition:background .2s,transform .15s,box-shadow .2s;position:relative;z-index:1}
-.nav-btn:hover{background:var(--blue-hi);transform:scale(1.03);box-shadow:0 4px 18px rgba(0,113,227,.4)}
-@media(max-width:600px){.nav-badge{display:none}}
-
-/* ── REVEAL ── */
-.reveal{opacity:0;transform:translateY(20px);transition:opacity .75s var(--ease),transform .75s var(--ease)}
-.reveal.in{opacity:1;transform:none}
-.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
-
-/* ── SPLIT TEXT ── */
-.split-text .word{display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.05em}
-.split-text .wi{display:inline-block;transform:translateY(110%);transition:transform .75s var(--spring)}
-.split-text.revealed .wi{transform:translateY(0)}
-
-/* ══════════════════════
-   HERO
-══════════════════════ */
-#hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:140px 24px 80px;background:var(--surface);position:relative;overflow:hidden}
-#hero::before{content:'';position:absolute;top:-12%;left:50%;transform:translateX(-50%);width:900px;height:560px;background:radial-gradient(ellipse 60% 50% at 50% 40%,rgba(48,166,74,.07),transparent 70%);pointer-events:none}
-.hero-grid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(0,113,227,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,113,227,.04) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 70% at 50% 50%,black 30%,transparent 80%);-webkit-mask-image:radial-gradient(ellipse 80% 70% at 50% 50%,black 30%,transparent 80%)}
-.hero-inner{max-width:760px;position:relative;z-index:1}
-
-/* Checkmark */
-@keyframes checkBounce{0%{transform:scale(0);opacity:0}55%{transform:scale(1.1)}75%{transform:scale(.97)}100%{transform:scale(1);opacity:1}}
-@keyframes ringPulse{0%{transform:scale(.7);opacity:.7}100%{transform:scale(2.4);opacity:0}}
-@keyframes checkDraw{from{stroke-dashoffset:50}to{stroke-dashoffset:0}}
-.check-wrap{position:relative;width:96px;height:96px;margin:0 auto 36px;display:flex;align-items:center;justify-content:center}
-.check-ring{position:absolute;border-radius:50%;border:1.5px solid rgba(48,166,74,.3)}
-.check-ring-1{width:100%;height:100%;animation:ringPulse 2.8s var(--ease) .4s infinite}
-.check-ring-2{width:74%;height:74%;animation:ringPulse 2.8s var(--ease) .9s infinite}
-.check-ring-3{width:52%;height:52%;animation:ringPulse 2.8s var(--ease) 1.4s infinite}
-.check-core{width:66px;height:66px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--green-hi));display:flex;align-items:center;justify-content:center;animation:checkBounce .65s var(--spring) .15s both;box-shadow:0 6px 24px rgba(48,166,74,.38),0 2px 8px rgba(48,166,74,.2);position:relative;z-index:1}
-.check-path{stroke-dasharray:50;stroke-dashoffset:50;animation:checkDraw .55s var(--ease) .75s forwards}
-
-/* eyebrow */
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;font-weight:600;color:var(--green);margin-bottom:22px;opacity:0;animation:fadeUp .8s var(--ease) .6s forwards}
-.eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pdot 2s ease-in-out infinite}
-
-/* h1 */
-.hero-h1{font-size:clamp(2.8rem,6vw,5.2rem);font-weight:800;line-height:1.04;letter-spacing:-.04em;color:var(--ink);margin-bottom:22px}
-.hero-h1 .green{color:var(--green)}
-
-/* sub */
-.hero-sub{font-size:clamp(.96rem,1.8vw,1.15rem);font-weight:400;line-height:1.68;color:var(--ink-3);max-width:500px;margin:0 auto 52px;opacity:0;animation:fadeUp .9s var(--ease) 1.05s forwards}
-
-/* ── FLOATING CARD ── */
-@keyframes floatIn{from{opacity:0;transform:translateY(40px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.conf-wrap{position:relative;display:inline-block;opacity:0;animation:floatIn 1.1s var(--spring) 1.2s forwards}
-.conf-wrap::before{content:'';position:absolute;bottom:-28px;left:50%;transform:translateX(-50%);width:65%;height:40px;background:radial-gradient(ellipse,rgba(48,166,74,.2),transparent 70%);filter:blur(8px);pointer-events:none}
-.conf-card{background:var(--card);border-radius:20px;overflow:hidden;border:1px solid var(--line-hi);box-shadow:0 4px 24px rgba(0,0,0,.06),0 28px 72px rgba(0,0,0,.11);text-align:left;width:680px;max-width:calc(100vw - 48px);animation:float 6s ease-in-out infinite 2.4s}
-
-.cbar{background:var(--bg);padding:12px 18px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--line-hi)}
-.db{width:9px;height:9px;border-radius:50%}.db-r{background:#ff5f57}.db-y{background:#febc2e}.db-g{background:#28c840}
-.cbar-url{margin-left:8px;flex:1;background:var(--line-hi);border-radius:5px;height:20px;display:flex;align-items:center;justify-content:center;font-size:.62rem;color:var(--ink-4)}
-.cbar-live{display:flex;align-items:center;gap:5px;font-size:.62rem;font-weight:600;color:var(--green)}
-.cbar-live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pdot 2s infinite}
-
-.cbody{padding:20px 22px}
-.cbody-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--line-hi)}
-.cbody-title{font-size:.88rem;font-weight:700;color:var(--ink)}
-.cbody-badge{font-size:.63rem;font-weight:700;color:var(--green);background:var(--green-lo);border:1px solid rgba(48,166,74,.22);padding:4px 10px;border-radius:20px;display:flex;align-items:center;gap:5px}
-.cbody-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--green)}
-
-.cfields{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
-.cfield{background:var(--bg);border-radius:10px;padding:12px}
-.cfield-lbl{font-size:.57rem;font-weight:600;color:var(--ink-4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
-.cfield-val{font-size:.88rem;font-weight:700;letter-spacing:-.02em;color:var(--ink);line-height:1.2}
-.cfield-val.g{color:var(--green)}
-.cfield-sub{font-size:.6rem;color:var(--ink-4);margin-top:2px}
-
-.cprog{background:var(--bg);border-radius:10px;padding:13px 14px}
-.cprog-lbl{font-size:.58rem;font-weight:600;color:var(--ink-4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
-.cprog-track{display:flex;align-items:flex-start}
-.cstep{display:flex;flex-direction:column;align-items:center;flex:1}
-.cstep:last-child{flex:0 0 auto}
-.cstep-circle{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:700;flex-shrink:0}
-.cstep-circle.done{background:var(--green);color:#fff}
-.cstep-circle.cur{background:var(--blue);color:#fff}
-.cstep-circle.off{background:var(--line-hi);color:var(--ink-4)}
-.cstep-line{height:1.5px;width:100%;margin-top:10px}
-.cstep-line.done{background:var(--green)}
-.cstep-line.cur{background:linear-gradient(90deg,var(--blue),var(--line-hi))}
-.cstep-line.off{background:var(--line-hi)}
-.cprog-labels{display:flex;justify-content:space-between;margin-top:6px}
-.cprog-label{font-size:.57rem;font-weight:500}
-.cprog-label.done{color:var(--green);font-weight:600}
-.cprog-label.cur{color:var(--blue);font-weight:600}
-.cprog-label.off{color:var(--ink-4)}
-
-/* ══════════════════════
-   STEPS SECTION
-══════════════════════ */
-#steps{background:var(--bg);padding:88px 24px;scroll-margin-top:80px}
-.wrap{max-width:980px;margin:0 auto}
-.eyebrow{font-size:.78rem;font-weight:600;color:var(--blue);margin-bottom:12px}
-.h2{font-size:clamp(1.9rem,3.5vw,3rem);font-weight:800;letter-spacing:-.04em;line-height:1.07;color:var(--ink);margin-bottom:16px}
-.body-text{font-size:1.02rem;line-height:1.72;color:var(--ink-3);max-width:540px}
-
-.steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line-hi);border:1px solid var(--line-hi);border-radius:20px;overflow:hidden;margin-top:52px}
-.sc{background:var(--card);padding:36px 28px;position:relative;transition:background .25s}
-.sc:hover{background:#fafafe}
-.sc-line{position:absolute;top:48px;right:-1px;width:1px;height:40px;background:linear-gradient(to bottom,var(--blue),transparent);opacity:.35}
-.sc:last-child .sc-line{display:none}
-.sc-num{font-size:.66rem;font-weight:700;color:var(--blue);letter-spacing:.08em;margin-bottom:18px;display:flex;align-items:center;gap:8px}
-.sc-num::before{content:'';display:block;width:20px;height:1px;background:var(--blue)}
-.sc-icon{width:44px;height:44px;background:var(--blue-lo);border-radius:11px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;color:var(--blue);transition:background .3s,color .3s,transform .3s var(--spring)}
-.sc:hover .sc-icon{background:var(--blue);color:#fff;transform:scale(1.08)}
-.sc-icon svg{width:20px;height:20px}
-.sc h3{font-size:1rem;font-weight:700;letter-spacing:-.02em;color:var(--ink);margin-bottom:8px}
-.sc p{font-size:.84rem;line-height:1.68;color:var(--ink-3)}
-.sc-tag{display:inline-block;margin-top:14px;font-size:.65rem;font-weight:600;color:var(--blue);background:var(--blue-lo);padding:3px 10px;border-radius:20px}
-.sc-tag.g{color:var(--green);background:var(--green-lo)}
-
-/* ── FOOTER ── */
-/* CTA */
-#cta{background:var(--surface);text-align:center;padding:64px 24px 80px}
-.cta-inner{max-width:480px;margin:0 auto}
-.cta-label{font-size:.8rem;color:var(--ink-4);margin-bottom:20px}
-.btn-ghost{display:inline-flex;align-items:center;gap:8px;font-size:.9rem;font-weight:600;color:var(--ink-3);background:var(--card);border:1.5px solid var(--line);padding:14px 28px;border-radius:980px;transition:color .2s,border-color .2s,box-shadow .2s,transform .2s}
-.btn-ghost:hover{color:var(--ink);border-color:var(--ink-4);transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.08)}
-.btn-ghost svg{width:14px;height:14px}
-.cta-contact{font-size:.76rem;color:var(--ink-4);margin-top:20px}
-.cta-contact a{color:var(--blue);font-weight:500}
-
-footer{background:var(--bg);border-top:1px solid var(--line-hi);padding:32px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px}
-.f-logo{display:flex;align-items:center;gap:8px;font-size:.9rem;font-weight:800;color:var(--ink-3)}
-.f-logo svg{width:22px;height:22px}
-.f-copy{font-size:.75rem;color:var(--ink-4)}
-
-/* ── RESPONSIVE ── */
-@media(max-width:860px){
-  .cfields{grid-template-columns:1fr 1fr}
-  .steps-grid{grid-template-columns:1fr 1fr}
-}
-@media(max-width:580px){
-  .steps-grid{grid-template-columns:1fr}
-  footer{flex-direction:column;text-align:center}
-  #steps{padding:64px 20px}
-  .cfields{grid-template-columns:1fr 1fr}
-}
-</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bienvenue | Orixen</title>
+<meta name="description" content="Votre inscription Orixen est confirmée.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="/favicon.ico?v=3" sizes="48x48">
+<link rel="icon" href="/assets/logo.svg?v=3" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png?v=3">
+<link rel="manifest" href="/site.webmanifest">
+<script>document.documentElement.className+=' js'</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/orixen.css">
+<link rel="stylesheet" href="/assets/pages.css">
 </head>
 <body>
 
-<div id="prog"></div>
-
-
-
-<!-- NAV -->
-<nav id="nav">
-  <div class="nav-logo">
-    <svg viewBox="0 0 26 26" fill="none">
-      <rect width="26" height="26" rx="7" fill="#0071e3"/>
-      <path d="M7 13 L12 8 L17 13 L12 18 Z" fill="none" stroke="white" stroke-width="1.8" stroke-linejoin="round"/>
-      <circle cx="20" cy="13" r="2.5" fill="white"/>
-    </svg>
-    Orixen
+<header class="nav">
+  <div class="wrap wide">
+    <a href="/" class="logo" aria-label="Orixen, accueil"><img src="/assets/mark.svg" width="22" height="22" alt="">Orixen</a>
+    <a href="/" class="back">Retour au site</a>
   </div>
-  <div class="nav-right">
-    <div class="nav-badge">
-      <span class="nav-badge-dot"></span>
-      Onboarding confirmé
+</header>
+
+<main>
+
+<section class="conf">
+  <div class="wrap in-seq">
+    <svg class="seal" viewBox="0 0 84 84" fill="none" aria-hidden="true"><circle cx="42" cy="42" r="40" stroke="#7fa6d9" stroke-width="2"/><path d="M28 43l9 9 19-20" stroke="#7fa6d9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <p class="eyebrow">Inscription confirmée</p>
+    <h1 class="h1">Bienvenue chez Orixen.<br><span class="metal">Votre zone est à&nbsp;vous.</span></h1>
+    <p class="lead">Tout est enregistré. Votre territoire est fermé à vos concurrents, et nous commençons la configuration de votre système <b>dès maintenant.</b></p>
+    <div class="status" role="list">
+      <div class="ok" role="listitem"><small>Votre zone</small><b>Réservée</b></div>
+      <div class="live" role="listitem"><small>Votre système</small><b>En configuration</b></div>
+      <div role="listitem"><small>Vos accès</small><b>Sous 24&nbsp;h ouvrées</b></div>
+      <div role="listitem"><small>Lancement</small><b>Calé ensemble</b></div>
     </div>
-    <a href="/" class="nav-btn">← Retour au site</a>
-  </div>
-</nav>
-
-<!-- HERO -->
-<section id="hero">
-  <div class="hero-grid"></div>
-  <div class="hero-inner">
-
-    <div class="check-wrap">
-      <div class="check-ring check-ring-1"></div>
-      <div class="check-ring check-ring-2"></div>
-      <div class="check-ring check-ring-3"></div>
-      <div class="check-core">
-        <svg viewBox="0 0 36 36" fill="none" width="30" height="30">
-          <path class="check-path" d="M7 18l8 8 14-14" stroke="white" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-    </div>
-
-    <div class="hero-eyebrow">
-      <span class="eyebrow-dot"></span>
-      Onboarding confirmé · Bienvenue chez Orixen
-    </div>
-
-    <h1 class="hero-h1 split-text">
-      C'est officiel.<br>Bienvenue <span class="green">à bord.</span>
-    </h1>
-
-    <p class="hero-sub">Votre onboarding est complet et votre secteur est réservé. Notre équipe configure dès maintenant votre infrastructure d'acquisition. Vos accès arrivent sous 24h.</p>
-
-    <div class="conf-wrap">
-      <div class="conf-card">
-        <div class="cbar">
-          <div class="db db-r"></div><div class="db db-y"></div><div class="db db-g"></div>
-          <div class="cbar-url">orixen · espace client</div>
-          <div class="cbar-live"><span class="cbar-live-dot"></span>Configuration en cours</div>
-        </div>
-        <div class="cbody">
-          <div class="cbody-head">
-            <span class="cbody-title">Dossier <span id="ref-num" style="color:var(--ink-4);font-weight:500">`·</span></span>
-            <span class="cbody-badge"><span class="cbody-badge-dot"></span>Confirmé</span>
-          </div>
-          <div class="cfields">
-            <div class="cfield">
-              <div class="cfield-lbl">Statut</div>
-              <div class="cfield-val g">Confirmé ✓</div>
-              <div class="cfield-sub">Onboarding complété</div>
-            </div>
-            <div class="cfield">
-              <div class="cfield-lbl">Mise en route</div>
-              <div class="cfield-val">&lt; 24h</div>
-              <div class="cfield-sub">Jours ouvrés</div>
-            </div>
-            <div class="cfield">
-              <div class="cfield-lbl">Votre secteur</div>
-              <div class="cfield-val g">Réservé ✓</div>
-              <div class="cfield-sub">Exclusivité totale</div>
-            </div>
-            <div class="cfield">
-              <div class="cfield-lbl">Confirmation</div>
-              <div class="cfield-val g">Email ✓</div>
-              <div class="cfield-sub">Dans 5 minutes</div>
-            </div>
-          </div>
-          <div class="cprog">
-            <div class="cprog-lbl">Votre parcours de lancement</div>
-            <div class="cprog-track">
-              <div class="cstep">
-                <div class="cstep-circle done">✓</div>
-                <div class="cstep-line done"></div>
-              </div>
-              <div class="cstep">
-                <div class="cstep-circle cur">2</div>
-                <div class="cstep-line cur"></div>
-              </div>
-              <div class="cstep">
-                <div class="cstep-circle off">3</div>
-                <div class="cstep-line off"></div>
-              </div>
-              <div class="cstep" style="flex:0 0 auto">
-                <div class="cstep-circle off">4</div>
-              </div>
-            </div>
-            <div class="cprog-labels">
-              <span class="cprog-label done">Confirmé</span>
-              <span class="cprog-label cur">Configuration</span>
-              <span class="cprog-label off">Activation</span>
-              <span class="cprog-label off">Lancement</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
   </div>
 </section>
 
-<!-- STEPS -->
-<section id="steps">
+<section class="block">
   <div class="wrap">
-    <div class="reveal">
-      <p class="eyebrow">La suite</p>
-      <h2 class="h2">Vous n'avez plus rien à faire.</h2>
-      <p class="body-text">De la confirmation de votre onboarding au lancement de vos premières campagnes, voici exactement ce qui vous attend. On s'occupe de tout · vous n'avez qu'à préparer votre agenda.</p>
+    <div class="block-head rv">
+      <h2 class="h2">Ce qu'il nous faut de vous.<br><span class="dim">Trois choses, sous sept jours.</span></h2>
+      <p class="lead">Plus vite nous les avons, plus vite vos campagnes démarrent.</p>
     </div>
-    <div class="steps-grid">
+    <div class="grid3">
+      <div class="card rv"><p class="k">01</p><h3>L'accès à votre compte Meta.</h3><p>Pour créer les campagnes sur votre propre compte publicitaire. Il reste le vôtre, du premier au dernier jour.</p></div>
+      <div class="card rv d1"><p class="k">02</p><h3>Des photos de vos chantiers.</h3><p>Vos plus belles réalisations. Ce sont elles qui donnent envie de vous appeler.</p></div>
+      <div class="card rv d2"><p class="k">03</p><h3>Un agenda à jour.</h3><p>Les rendez&#8209;vous s'y posent tout seuls. Bloquez les créneaux où vous pouvez vous déplacer.</p></div>
+    </div>
+    <p class="rv" style="text-align:center;margin-top:28px;color:var(--text-2);font-size:15.5px">Tout s'envoie simplement à <a href="mailto:contact@orixen.fr" class="ice">contact@orixen.fr</a>.</p>
+  </div>
+</section>
 
-      <div class="sc reveal d1">
-        <div class="sc-line"></div>
-        <div class="sc-num">ÉTAPE 01</div>
-        <div class="sc-icon">
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
-            <path d="M4 10l4 4 8-8"/>
-          </svg>
-        </div>
-        <h3>Onboarding confirmé</h3>
-        <p>Toutes vos informations sont enregistrées et votre secteur est réservé rien que pour vous. Un email de confirmation vient de vous être envoyé.</p>
-        <span class="sc-tag g">Complété ✓</span>
-      </div>
-
-      <div class="sc reveal d2">
-        <div class="sc-line"></div>
-        <div class="sc-num">ÉTAPE 02</div>
-        <div class="sc-icon">
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
-            <circle cx="10" cy="10" r="7"/><path d="M10 7v3l2.5 2"/>
-          </svg>
-        </div>
-        <h3>Configuration de votre système</h3>
-        <p>Notre équipe paramètre votre infrastructure d'acquisition : ciblage, qualification automatique des leads et prise de rendez-vous. Aucune action de votre part.</p>
-        <span class="sc-tag">En cours · &lt; 24h</span>
-      </div>
-
-      <div class="sc reveal d3">
-        <div class="sc-line"></div>
-        <div class="sc-num">ÉTAPE 03</div>
-        <div class="sc-icon">
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
-            <rect x="3" y="3" width="14" height="14" rx="3"/><path d="M7 10l2.5 2.5 4.5-4.5"/>
-          </svg>
-        </div>
-        <h3>Activation de votre espace</h3>
-        <p>Vous recevez vos accès, votre tableau de bord et votre plan de lancement personnalisé. On cale ensemble le coup d'envoi de vos campagnes.</p>
-        <span class="sc-tag">Sous 24h</span>
-      </div>
-
-      <div class="sc reveal d4">
-        <div class="sc-num">ÉTAPE 04</div>
-        <div class="sc-icon">
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
-            <path d="M3 10h14M10 3l7 7-7 7"/>
-          </svg>
-        </div>
-        <h3>Lancement des campagnes</h3>
-        <p>Vos campagnes passent en ligne. Les premiers leads qualifiés de votre secteur commencent à arriver directement dans votre agenda.</p>
-        <span class="sc-tag">Imminent</span>
-      </div>
-
+<section class="block">
+  <div class="wrap">
+    <div class="track tile rv">
+      <div class="track-head"><h2>La suite.</h2><span>De votre inscription à vos premiers rendez&#8209;vous.</span></div>
+      <ol class="tl">
+        <li class="done"><span class="dot"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2l2.3 2.3L9.5 3.6" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div><span class="when">Fait</span><h3>Inscription confirmée.</h3><p>Vos informations sont enregistrées et votre zone est réservée. Un e&#8209;mail de confirmation vous attend.</p></div></li>
+        <li class="now"><span class="dot">2</span><div><span class="when">En cours</span><h3>Configuration de votre système.</h3><p>Ciblage, page dédiée, filtre des demandes, réponses automatiques, prise de rendez&#8209;vous. Vous n'avez rien à faire.</p></div></li>
+        <li><span class="dot">3</span><div><span class="when">Sous 24&nbsp;h ouvrées</span><h3>Vos accès.</h3><p>Votre tableau de bord et votre plan de lancement, pour savoir exactement ce qui se passe et quand.</p></div></li>
+        <li><span class="dot">4</span><div><span class="when">Date fixée ensemble</span><h3>Lancement des campagnes.</h3><p>Les premières demandes arrivent. La garantie de 25 demandes qualifiées en 90&nbsp;jours démarre ce jour&#8209;là.</p></div></li>
+      </ol>
     </div>
   </div>
 </section>
 
-<!-- CTA -->
-<section id="cta">
-  <div class="cta-inner">
-    <p class="cta-label reveal">Vous souhaitez retourner sur le site ?</p>
-    <a href="/" class="btn-ghost reveal d1">
-      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 7H1M6 2L1 7l5 5"/></svg>
-      Retour sur Orixen.fr
-    </a>
-    <p class="cta-contact reveal d2">Une question ? <a href="mailto:contact@orixen.fr">contact@orixen.fr</a></p>
+<section class="end">
+  <div class="wrap">
+    <p>Une question, à n'importe quel moment&nbsp;?</p>
+    <div class="row-btn"><a href="mailto:contact@orixen.fr" class="btn">Écrire à Orixen</a></div>
   </div>
 </section>
 
-<footer>
-  <div class="f-logo">
-    <svg viewBox="0 0 22 22" fill="none"><rect width="22" height="22" rx="6" fill="#0071e3"/><path d="M6 11 L10.5 6.5 L15 11 L10.5 15.5 Z" fill="none" stroke="white" stroke-width="1.6" stroke-linejoin="round"/><circle cx="18" cy="11" r="2" fill="white"/></svg>
-    Orixen
+</main>
+
+<footer class="foot">
+  <div class="wrap wide">
+    <span>© 2026 Orixen. Acquisition exclusive pour le bâtiment.</span>
+    <nav aria-label="Liens légaux">
+      <a href="mailto:contact@orixen.fr">contact@orixen.fr</a>
+      <a href="/mentions-legales/">Mentions légales</a>
+      <a href="/confidentialite/">Confidentialité</a>
+    </nav>
   </div>
-  <div class="f-copy">© 2026 Orixen · Infrastructure d'acquisition pour le bâtiment<br><span style="display:inline-flex;gap:14px;margin-top:8px"><a href="/mentions-legales/" style="color:var(--ink-3)">Mentions légales</a><a href="/confidentialite/" style="color:var(--ink-3)">Confidentialité</a></span></div>
 </footer>
 
-<script>
-
-
-
-/* PROGRESS BAR */
-const prog=document.getElementById('prog');
-window.addEventListener('scroll',()=>{const h=document.documentElement;prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%'},{passive:true});
-
-/* NAV SCROLL */
-const nav=document.getElementById('nav');
-window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>20),{passive:true});
-
-/* REVEAL */
-const io=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}}),{threshold:.08,rootMargin:'0px 0px -20px 0px'});
-document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-
-/* SPLIT TEXT */
-(function(){
-  const h1=document.querySelector('.hero-h1');
-  if(!h1)return;
-  function wrap(node){
-    if(node.nodeType===3){
-      const words=node.textContent.split(/(\s+)/);
-      const frag=document.createDocumentFragment();
-      words.forEach(w=>{
-        if(/^\s+$/.test(w)||w===''){frag.appendChild(document.createTextNode(w))}
-        else{const s=document.createElement('span');s.className='word';const i=document.createElement('span');i.className='wi';i.textContent=w;s.appendChild(i);frag.appendChild(s)}
-      });
-      node.parentNode.replaceChild(frag,node);
-    } else if(node.nodeType===1){Array.from(node.childNodes).forEach(wrap)}
-  }
-  Array.from(h1.childNodes).forEach(wrap);
-  h1.querySelectorAll('.wi').forEach((w,i)=>{w.style.transitionDelay=(0.6+i*.07)+'s'});
-  setTimeout(()=>h1.classList.add('revealed'),80);
-})();
-
-/* REFERENCE */
-const yr=new Date().getFullYear();
-const id=String(Math.floor(Math.random()*9000)+1000);
-document.getElementById('ref-num').textContent='#OX-'+yr+'-'+id;
-</script>
-
+<script src="/assets/orixen.js" defer></script>
 </body>
 </html>
