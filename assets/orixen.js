@@ -71,7 +71,9 @@
   if (m) {
     var onScroll = function () {
       var end = scrollY + innerHeight > document.documentElement.scrollHeight - 520;
-      m.classList.toggle('show', scrollY > innerHeight * 0.8 && !end);
+      var on = scrollY > innerHeight * 0.8 && !end;
+      m.classList.toggle('show', on);
+      document.body.classList.toggle('cta-on', on);
     };
     addEventListener('scroll', onScroll, { passive: true });
     onScroll();
@@ -84,6 +86,24 @@
       if (d.open) ds.forEach(function (o) { if (o !== d) o.open = false; });
     });
   });
+
+  /* Calcul : ce que peuvent rapporter les 25 demandes garanties */
+  var pan = document.getElementById('r-pan'), tx = document.getElementById('r-tx');
+  if (pan && tx) {
+    var eur = function (n) { return Math.round(n).toLocaleString('fr-FR').replace(/\s/g, ' ') + ' €'; };
+    var fill = function (r) { r.style.setProperty('--p', ((r.value - r.min) / (r.max - r.min) * 100) + '%'); };
+    var calc = function () {
+      var ch = 25 * tx.value / 10;
+      document.getElementById('o-pan').textContent = eur(+pan.value);
+      document.getElementById('o-tx').textContent = tx.value;
+      document.getElementById('o-res').textContent = eur(ch * pan.value);
+      document.getElementById('o-ch').textContent = (ch % 1 ? Math.floor(ch) + ' à ' + Math.ceil(ch) : ch) + ' chantiers';
+      fill(pan); fill(tx);
+    };
+    pan.addEventListener('input', calc);
+    tx.addEventListener('input', calc);
+    calc();
+  }
 
   /* Éléments qui s'enchaînent (notifications, coches) */
   document.querySelectorAll('[data-t]').forEach(function (n) {
