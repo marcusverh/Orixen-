@@ -46,18 +46,39 @@
     return loading;
   }
 
+  function openBooking() {
+    window.Calendly.initPopupWidget({ url: bookingUrl() });
+    // Le bouton « retour » du téléphone ferme la fenêtre au lieu de quitter le site
+    history.pushState({ orixenCal: true }, '');
+  }
+
   document.querySelectorAll('[data-book]').forEach(function (a) {
     a.href = bookingUrl();
+    // Le chargement démarre dès que le doigt touche le bouton : la fenêtre s'ouvre plus vite
+    a.addEventListener('pointerdown', function () { loadCalendly().catch(function () {}); }, { passive: true });
     a.addEventListener('click', function (ev) {
       if (ev.metaKey || ev.ctrlKey || ev.shiftKey) return;
       ev.preventDefault();
       a.setAttribute('aria-busy', 'true');
       loadCalendly()
-        .then(function () { window.Calendly.initPopupWidget({ url: bookingUrl() }); })
+        .then(openBooking)
         .catch(function () { location.href = bookingUrl(); })
         .then(function () { a.removeAttribute('aria-busy'); });
     });
   });
+
+  window.addEventListener('popstate', function () {
+    if (window.Calendly && document.querySelector('.calendly-overlay')) window.Calendly.closePopupWidget();
+  });
+  // Fenêtre fermée avec la croix : on retire l'étape ajoutée à l'historique
+  var calSeen = false;
+  new MutationObserver(function () {
+    if (document.querySelector('.calendly-overlay')) { calSeen = true; return; }
+    if (calSeen) {
+      calSeen = false;
+      if (history.state && history.state.orixenCal) history.back();
+    }
+  }).observe(document.body, { childList: true, subtree: true });
 
   /* Rendez-vous pris : direction la page de confirmation */
   window.addEventListener('message', function (e) {
@@ -86,6 +107,18 @@
       if (d.open) ds.forEach(function (o) { if (o !== d) o.open = false; });
     });
   });
+
+  /* Navigation : le lien de la section visible s'allume */
+  var navLinks = document.querySelectorAll('.nav ul a[href^="#"]');
+  if (navLinks.length) {
+    var spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        navLinks.forEach(function (l) { l.classList.toggle('on', l.getAttribute('href') === '#' + e.target.id); });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    navLinks.forEach(function (l) { var s = document.querySelector(l.getAttribute('href')); if (s) spy.observe(s); });
+  }
 
   /* Calcul : ce que peuvent rapporter les 25 demandes garanties */
   var pan = document.getElementById('r-pan'), tx = document.getElementById('r-tx');

@@ -16,15 +16,16 @@
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{background:var(--bg);-webkit-text-size-adjust:100%;scroll-padding-top:64px}
+html{background:var(--bg);-webkit-text-size-adjust:100%;scroll-padding-top:64px;scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
 body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:17px;line-height:1.47;letter-spacing:-.022em;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden;font-feature-settings:'cv11','ss01'}
 a{color:inherit;text-decoration:none}
+a,button,input,summary{touch-action:manipulation}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 svg{display:block}
 ::selection{background:rgba(var(--ice-rgb),.3)}
 :focus-visible{outline:2px solid var(--ice);outline-offset:3px;border-radius:6px}
 
-.wrap{max-width:1024px;margin:0 auto;padding:0 22px}
+.wrap{max-width:1024px;margin:0 auto;padding:0 max(22px,env(safe-area-inset-right)) 0 max(22px,env(safe-area-inset-left))}
 .wide{max-width:1200px}
 
 /* ── Typographie ── */
@@ -40,11 +41,12 @@ svg{display:block}
 
 /* ── Boutons ── */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:50px;padding:0 28px;border-radius:980px;background:var(--text);color:#000;font-size:17px;font-weight:600;letter-spacing:-.015em;transition:background .25s var(--ease),transform .25s var(--ease),box-shadow .25s var(--ease);box-shadow:0 0 0 0 rgba(var(--ice-rgb),0)}
-.btn:hover{background:#fff;box-shadow:0 0 0 6px rgba(var(--ice-rgb),.14)}
+@media(hover:hover){.btn:hover{background:#fff;box-shadow:0 0 0 6px rgba(var(--ice-rgb),.14)}}
+.btn[aria-busy=true]{opacity:.7;cursor:progress}
 .btn:active{transform:scale(.98)}
 .btn-lg{min-height:58px;padding:0 34px;font-size:19px}
 .btn-ghost{background:transparent;color:var(--text);box-shadow:inset 0 0 0 1px #3a3a3e}
-.btn-ghost:hover{background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px #5a5a5f}
+@media(hover:hover){.btn-ghost:hover{background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px #5a5a5f}}
 .link{color:var(--ice);font-size:17px;display:inline-flex;align-items:center;gap:4px}
 .link:hover{text-decoration:underline;text-underline-offset:3px}
 .link::after{content:'›';font-size:1.15em;line-height:1;transform:translateY(-1px)}
@@ -58,7 +60,7 @@ svg{display:block}
 .nav .wrap{height:100%;display:flex;align-items:center;justify-content:space-between}
 .nav ul{display:flex;gap:32px;list-style:none}
 .nav ul a{font-size:12.5px;color:var(--text-2);transition:color .2s;letter-spacing:-.005em}
-.nav ul a:hover{color:var(--text)}
+.nav ul a:hover,.nav ul a.on{color:var(--text)}
 .nav .btn{min-height:32px;padding:0 15px;font-size:13px;font-weight:600;letter-spacing:-.01em}
 .nav .back{font-size:13px;color:var(--text-2);transition:color .2s}
 .nav .back:hover{color:var(--text)}
@@ -122,6 +124,7 @@ svg{display:block}
 }
 
 @media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
   *,*::before,*::after{transition:none!important;animation:none!important}
   .js .rv{opacity:1;transform:none}
 }
