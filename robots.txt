@@ -1,6 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /confirmation/
-Disallow: /confirmation-onboarding/
 
 Sitemap: https://www.orixen.fr/sitemap.xml

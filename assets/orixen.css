@@ -1,6 +1,11 @@
 /* Orixen — système visuel
    Noir profond, blanc cassé, titane, et une seule couleur : le bleu glacier. */
 
+/* Inter servie depuis le site (aucun appel à Google), police variable 400 à 700, caractères latins */
+@font-face{font-family:'Inter';font-style:normal;font-weight:400 700;font-display:swap;src:url(/assets/inter.woff2) format('woff2')}
+/* Repli calé sur les mesures d'Inter : le texte ne bouge pas quand la police arrive */
+@font-face{font-family:'Inter Fallback';src:local('Arial');size-adjust:107.12%;ascent-override:90.44%;descent-override:22.52%;line-gap-override:0%}
+
 :root{
   --bg:#000;
   --tile:#141416;
@@ -11,7 +16,7 @@
   --text-3:#86868b;
   --ice:#7fa6d9;
   --ice-rgb:127,166,217;
-  --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Inter','Helvetica Neue',Arial,sans-serif;
+  --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Inter','Inter Fallback','Helvetica Neue',Arial,sans-serif;
   --ease:cubic-bezier(.28,.11,.32,1);
 }
 
