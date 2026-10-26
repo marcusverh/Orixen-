@@ -25,6 +25,7 @@ window.CC_DATA = (function () {
 
   var raw = [
     // id, prénom nom, travaux, ville, budget, délai, campagne, heures depuis réception, étape, qualif, resp, valeur estimée, signé, motif
+    ['L-1043', 'Anne-Laure Delmas-Fontanille, SCI Les Jardins de la Couze', 'Réfection complète', 'Saint-Germain-Lembron', '25 000 € et plus', 'Dans les 3 mois', 'c1', 1.2, 'nouveau', 'À qualifier', 'u1', 34000],
     ['L-1042', 'Nathalie Roux', 'Réfection complète', 'Issoire', '15 000 à 25 000 €', 'Dans les 3 mois', 'c1', 3, 'nouveau', 'À qualifier', 'u2', 18000],
     ['L-1041', 'Patrick Faure', 'Fuite ou réparation', 'Perrier', 'Non communiqué', 'Dès que possible', 'c2', 5, 'nouveau', 'À qualifier', 'u2', 2500],
     ['L-1040', 'Élodie Chabrier', 'Démoussage et entretien', 'Le Broc', '1 000 à 3 000 €', 'Dans les 3 mois', 'c1', 9, 'nouveau', 'À qualifier', 'u1', 1800],
@@ -171,8 +172,66 @@ window.CC_DATA = (function () {
     serie.push({ date: day.toISOString(), recus: recus, qualifies: qualif });
   }
 
+  /* compléments : consentements, messages de formulaire, notes, prochaine action */
+  var msgs = ['Infiltration au-dessus de la chambre depuis l’orage.', 'Toiture d’origine (1975), je voudrais un devis complet.', 'Tuiles déplacées côté rue.', 'Gouttière qui déborde à chaque pluie.', 'Mousse importante, maison achetée cet été.'];
+  var ads = { c1: ['Vidéo de Julien sur un chantier', 'Avant et après · maison de Perrier'], c2: ['Fuite après l’orage', 'Tuiles déplacées'], c3: ['Combles et facture de chauffage'] };
+  leads.forEach(function (l, i) {
+    l.consent = { rappel: l.motif !== 'Coordonnées invalides', at: l.recu, canal: 'Formulaire Facebook', marketing: i % 4 === 0 };
+    l.message = msgs[i % msgs.length];
+    l.pub = ads[l.campagne][i % ads[l.campagne].length];
+    l.notes = i === 10 ? [{ at: d(4, 18, 20), par: 'Julien Martin', txt: 'Préfère être appelée après 18h. Voisine de la cliente Bonnet.' }] : [];
+    if (l.etape === 'perdu' && !l.motif) l.motif = 'Inconnu';
+    var next = { nouveau: 'Premier appel', contacte: 'Qualifier le projet', qualifie: 'Proposer un rendez-vous', rdv: 'Confirmer le rendez-vous', rdv_fait: 'Renseigner le résultat du rendez-vous', devis: 'Relancer le devis', nego: 'Proposer la signature' }[l.etape];
+    l.next = next ? { txt: next, due: l.etape === 'nouveau' ? NOW.toISOString() : f(l.etape === 'devis' ? 1 : 2, 18, 0) } : null;
+    l.derniere = l.historique[l.historique.length - 1];
+  });
+  systeme.forEach(function (c) { c.etat = c.statut === 'ok' ? 'ok' : 'warn'; c.sync = c.verif; c.err = c.incident ? c.incident.txt + ' · ' + new Date(c.incident.at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }) : null; });
+  systeme.find(function (c) { return c.id === 's8'; }).etat = 'checking';
+  systeme.find(function (c) { return c.id === 's7'; }).etat = 'unknown';
+  var conseq = { s1: 'Les particuliers peuvent envoyer leur demande.', s2: 'Votre page de demande s’affiche.', s3: 'Orixen peut piloter vos publicités.', s4: 'Chaque demande arrive dans votre espace.', s5: 'Vos SMS peuvent arriver avec 2 à 3 minutes de retard. Aucune demande perdue.', s6: 'Le prospect sait que vous allez le rappeler.', s7: 'Vos rendez-vous ne s’ajoutent pas à Google Agenda tant que la connexion n’est pas faite.', s8: 'Sans impact sur vos demandes. Meta optimise un peu moins bien en attendant.', s9: 'Un problème serait détecté en moins de 15 minutes.', s10: 'Les rappels et relances partent à l’heure.', s11: 'Vos rapports et factures arrivent par e-mail.' };
+  var act = { s5: 'Pris en charge par Orixen : contrôle toutes les 15 min, bascule sur le numéro de secours si le retard se répète.', s7: 'À faire par vous : connecter votre agenda dans Paramètres.', s8: 'Pris en charge par Orixen : vérification de l’envoi des événements à Meta, résultat dans 1 h.' };
+  systeme.forEach(function (c) { c.conseq = conseq[c.id]; c.action = act[c.id] || 'Aucune action nécessaire.'; });
+  systeme.find(function (c) { return c.id === 's7'; }).sync = null;
+
+  var equipe = {
+    orixen: [
+      { txt: 'Deuxième vidéo de Julien en ligne', resp: 'Marcus', date: f(3, 18, 0), statut: 'En cours', attendu: 'Baisser le coût par demande qualifiée sous 60 €' },
+      { txt: 'Visuels zinguerie', resp: 'Marcus', date: f(3, 18, 0), statut: 'En cours', attendu: 'Remplir le planning de décembre en zinguerie' },
+      { txt: 'Page dédiée aux réparations', resp: 'Marcus', date: f(10, 18, 0), statut: 'Proposé', attendu: 'Tester une page plus courte pour les urgences' }
+    ],
+    client: [
+      { txt: 'Valider la vidéo du chantier de Perrier', resp: 'Julien', date: f(2, 19, 0), statut: 'En cours', attendu: 'Mise en ligne jeudi' },
+      { txt: 'Renseigner le résultat du rendez-vous de Sandrine Aubert', resp: 'Julien', date: f(4, 19, 0), statut: 'En cours', attendu: 'Résultats commerciaux complets' },
+      { txt: 'Connecter Google Agenda', resp: 'Julien', date: f(7, 19, 0), statut: 'Proposé', attendu: 'Rendez-vous dans votre agenda sans ressaisie' }
+    ],
+    jalons: [
+      { txt: '15 demandes qualifiées · fin de la garantie de démarrage', date: f(6, 8, 0), statut: 'En cours' },
+      { txt: 'Bilan du premier mois', date: f(8, 18, 30), statut: 'Proposé' },
+      { txt: 'Lancement de la zinguerie', date: f(14, 8, 0), statut: 'Proposé' }
+    ]
+  };
+  demandes[1].commentaires = [
+    { at: d(2, 19, 15), de: 'Julien Martin', txt: 'Est-ce qu’on peut mettre en avant la zinguerie ? J’ai de la place en décembre.' },
+    { at: d(2, 19, 40), de: 'Marcus Verhaar', txt: 'Oui. Je prépare deux visuels avec vos photos de gouttières, je vous les envoie jeudi pour validation.' },
+    { at: d(1, 18, 0), de: 'Marcus Verhaar', txt: 'Petite question : vous faites aussi le zinc à joint debout ?' }
+  ];
+  demandes[0].commentaires = [{ at: d(5, 20, 2), de: 'Julien Martin', txt: 'Deux demandes de Clermont cette semaine, hors de ma zone.' }, { at: d(4, 18, 40), de: 'Marcus Verhaar', txt: 'Zone resserrée à 15 km et communes listées. Je surveille la semaine prochaine.' }];
+  demandes[2].commentaires = [{ at: h(20), de: 'Julien Martin', txt: 'Merci de mettre la facture au nom de la SARL.' }];
+  var notifs = [
+    { at: h(3), txt: 'Nouvelle demande · réfection complète à Issoire', href: '#/opportunites/L-1042', type: 'action' },
+    { at: h(5), txt: 'Retard des SMS · pris en charge par Orixen', href: '#/systeme', type: 'warn' },
+    { at: h(5.2), txt: 'Nouvelle demande · réparation à Perrier', href: '#/opportunites/L-1041', type: 'action' },
+    { at: h(20), txt: 'Marcus a répondu à « Mettre en avant la zinguerie »', href: '#/equipe', type: 'info' },
+    { at: h(26), txt: 'Rapport de la semaine disponible', href: '#/rapport', type: 'info' }
+  ];
+  var journal = [
+    { at: h(30), par: 'Julien Martin', txt: 'Notification « Facture disponible » désactivée' },
+    { at: d(5, 19, 32), par: 'Julien Martin', txt: 'Karim Benali ajouté avec le rôle Commercial' },
+    { at: d(8, 21, 50), par: 'Marcus Verhaar', txt: 'Connexion Meta renouvelée' }
+  ];
+
   return {
-    NOW: NOW, entreprise: 'Toitures Martin', metier: 'Couverture et zinguerie', zone: ['Issoire', 'Meilhaud', 'Perrier', 'Le Broc', 'Parentignat', 'Orbeil', 'Saint-Yvoine', 'Coudes'],
+    NOW: NOW, equipe: equipe, notifs: notifs, journal: journal, entreprise: 'Toitures Martin', metier: 'Couverture et zinguerie', zone: ['Issoire', 'Meilhaud', 'Perrier', 'Le Broc', 'Parentignat', 'Orbeil', 'Saint-Yvoine', 'Coudes'],
     contact: { nom: 'Marcus Verhaar', role: 'Votre responsable de compte', tel: '+33627776832', telAff: '06 27 77 68 32', email: 'contact@orixen.fr', delai: 'Réponse le jour même, 7 jours sur 7' },
     garantie: { objectif: 15, jours: 30, debut: d(24, 8, 0) },
     users: users, stages: stages, leads: leads, campagnes: campagnes, systeme: systeme, demandes: demandes, decisions: decisions, serie: serie, messages: messages, comptesRendus: comptesRendus,

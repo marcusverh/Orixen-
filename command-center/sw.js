@@ -1,5 +1,5 @@
 /* Orixen Command Center · cache de l'interface uniquement (aucune donnée de prospect) */
-var CACHE = 'cc-shell-v1';
+var CACHE = 'cc-shell-v3';
 var SHELL = ['/command-center/', '/command-center/cc.css', '/command-center/cc.js', '/command-center/cc-data.js', '/assets/inter.woff2', '/assets/icon-192.png'];
 
 self.addEventListener('install', function (e) {
