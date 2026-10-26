@@ -46,7 +46,7 @@
       ]
     },
     {
-      "source": "/(confirmation|confirmation-onboarding|espace)/(.*)",
+      "source": "/(confirmation|confirmation-onboarding|espace|command-center)/(.*)",
       "headers": [
         {
           "key": "X-Robots-Tag",
