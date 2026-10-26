@@ -66,7 +66,11 @@
     var end = new Date(NOW), start = new Date(NOW), label;
     if (S.period === 'mois') { start = new Date(NOW.getFullYear(), NOW.getMonth(), 1); label = 'Octobre 2026'; }
     else if (S.period === 'trim') { start = new Date(NOW.getFullYear(), 9, 1); label = '4e trimestre 2026'; }
-    else if (S.period === 'perso') { start = new Date(NOW); start.setDate(start.getDate() - 14); label = '14 derniers jours (exemple)'; }
+    else if (S.period === 'perso') {
+      start = new Date((S.from || '2026-10-01') + 'T00:00'); end = new Date((S.to || '2026-10-26') + 'T23:59'); if (end > NOW) end = new Date(NOW);
+      var fmt = function (x) { return x.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }); };
+      label = 'Du ' + fmt(start) + ' au ' + fmt(end);
+    }
     else { start.setDate(start.getDate() - 30); label = '30 derniers jours'; }
     var days = Math.max(1, Math.round((end - start) / 864e5));
     return { start: start, end: end, label: label, days: days };
@@ -154,7 +158,7 @@
     return '<span class="' + (good ? 'up' : 'down') + '">' + (d > 0 ? '+' : '') + r + ' %</span> vs ' + (fmt ? fmt(prev) : prev);
   }
   function kpiCard(key, val, c) {
-    return '<button class="kpi" data-def="' + key + '" aria-label="' + esc(DEF[key][0]) + ' : ' + esc(val) + '. Voir la définition"><span class="lab">' + DEF[key][0] + ic('info', 13) + '</span><div class="val num">' + val + '</div><div class="cmp">' + c + '</div></button>';
+    return '<button class="kpi" data-def="' + key + '" aria-label="' + esc(DEF[key][0]) + ' : ' + esc(val) + '. Voir la définition"><span class="lab">' + DEF[key][0] + ic('info', 13) + '</span><div class="val num">' + val + '</div><div class="cmp">' + c + '</div><div class="upd2">' + range().label + ' · mis à jour à ' + hhmm(NOW.toISOString()) + '</div></button>';
   }
   function showDef(key) {
     var d = DEF[key], M = metrics();
@@ -208,14 +212,15 @@
     var calls = T.filter(function (t) { return t.type === 'call' && t.p === 1; });
     var hour = NOW.getHours(), greet = hour < 12 ? 'Bonjour' : hour < 18 ? 'Bon après-midi' : 'Bonsoir';
     var gDays = Math.round((NOW - new Date(D.garantie.debut)) / 864e5);
-    var summary = M.won + ' ventes signées pour ' + eur(M.ca) + ', ' + M.q + ' leads qualifiés, et ' + (calls.length ? calls.length + ' prospects attendent votre appel.' : 'aucun prospect en attente.');
+    var summary = M.won + (M.won > 1 ? ' ventes signées' : ' vente signée') + ' pour ' + eur(M.ca) + ', ' + M.q + (M.q > 1 ? ' leads qualifiés' : ' lead qualifié') + ', et ' + (calls.length ? calls.length + ' prospects attendent votre appel.' : 'aucun prospect en attente.');
     var prio = calls.length ? {
       t: 'Rappeler ' + calls.length + ' nouveau' + (calls.length > 1 ? 'x' : '') + ' prospect' + (calls.length > 1 ? 's' : '') + '.',
       p: 'Ils ont reçu un SMS leur annonçant votre appel aujourd’hui. Le plus ancien attend depuis ' + ago(lead(calls[calls.length - 1].lead).recu).replace('il y a ', '') + '. Les demandes rappelées vite se signent plus souvent.',
       rows: calls.map(function (t) { var l = lead(t.lead); return '<a href="#/opportunites/' + l.id + '"><span>' + esc(l.nom) + ' · ' + esc(l.travaux) + '</span><span>' + ago(l.recu) + '</span></a>'; }).join('')
     } : { t: 'Rien d’urgent aujourd’hui.', p: 'Tous vos prospects ont été rappelés. Profitez-en pour renseigner vos résultats de rendez-vous.', rows: '' };
 
-    return '<section class="hello"><h2>' + greet + ' Julien.</h2><p>' + esc(D.entreprise) + ' · ' + M.R.label + '. ' + esc(summary) + '</p></section>' +
+    return '<section class="hello"><h2>' + greet + ' Julien.</h2><p>' + esc(D.entreprise) + ' · ' + M.R.label.replace(/[.]$/, '') + '. ' + esc(summary) + '</p></section>' +
+      (S.ob.done ? '' : '<div class="ob-banner"><span><b>Configuration de votre système</b> · étape ' + (S.ob.step + 1) + ' sur 5. Reprenez où vous vous êtes arrêté.</span><a class="btn sm acc" href="#/bienvenue">Continuer</a></div>') +
 
       '<div class="grid g-main">' +
         '<div class="card" aria-label="État du système"><div class="pulse"><div class="ring ' + (p.ok ? 'ok' : 'warn') + '">' + ic(p.ok ? 'check' : 'warn', 22) + '</div><div><h3>Orixen Pulse · ' + (p.ok ? 'Tout fonctionne normalement' : 'Tout fonctionne · 1 point surveillé') + '</h3><p>' + p.total + ' composants vérifiés · dernière vérification réelle ' + ago(p.last) + '.</p></div><a class="btn sm" href="#/systeme">Détails</a></div>' +
@@ -233,15 +238,28 @@
         kpiCard('cplq', eur(M.cplq), cmp(M.cplq, pr.cplq, true, eur)) +
       '</div>' +
       '<div class="second"><span>Budget publicitaire dépensé <b class="num">' + eur(M.spend) + '</b></span><span>Chiffre d’affaires signé attribué <b class="num">' + eur(M.ca) + '</b></span><a class="link" href="#/performance">Comprendre ces chiffres</a></div>' +
-      '<p class="upd">Mis à jour aujourd’hui à ' + hhmm(NOW.toISOString()) + ' · ventes déclarées par votre équipe · touchez un indicateur pour sa définition.</p>' +
+      '<p class="upd">Ventes déclarées par votre équipe · touchez un indicateur pour sa définition. Rappel : beaucoup de leads ne suffit pas, ce qui compte, c’est combien répondent, correspondent à vos travaux et deviennent clients.</p>' +
 
       '<div class="sec-t"><span>À traiter · ' + T.length + '</span><a class="link" href="#/historique">Historique</a></div>' +
       '<div class="card" style="padding:6px 16px">' + tasksHtml(T) + '</div>' +
 
       '<div class="grid g2 sec">' +
         '<div class="card"><div class="card-h"><h3>Les demandes arrivent-elles régulièrement ?</h3><span class="meta">30 derniers jours</span></div>' + lineChart('ch1') + '</div>' +
-        '<div class="card"><div class="card-h"><h3>Où se perdent vos prospects ?</h3><span class="meta">' + M.R.label + '</span></div><p class="q">Sur <b>' + M.n + '</b> leads reçus, <b>' + M.won + '</b> sont devenus des ventes. L’étape la plus faible est la prise de rendez-vous.</p>' + funnel(M) + '</div>' +
-      '</div>';
+        '<div class="card"><div class="card-h"><h3>Où se perdent vos prospects ?</h3><span class="meta"><span class="fname">LEAD-TO-REVENUE</span> · ' + M.R.label + '</span></div><p class="q">Sur <b>' + M.n + '</b> leads reçus, <b>' + M.won + '</b> sont devenus des ventes. ' + weakest(M) + '</p>' + funnel(M) + '</div>' +
+      '</div>' +
+      '<div class="card sec"><div class="card-h"><h3>Vos rendez-vous, devis et ventes progressent-ils ?</h3><span class="meta">4 dernières semaines</span></div><p class="q">Chaque graphique compte un seul indicateur, semaine par semaine. La valeur est écrite au-dessus de chaque barre.</p>' + minis() + '</div>';
+  }
+  function weakest(M) {
+    var steps = [['la qualification', M.q / (M.n || 1)], ['la prise de rendez-vous', M.rdv / (M.q || 1)], ['la présence au rendez-vous', M.honored / (M.rdvDue || 1)], ['l’envoi du devis', M.devis / (M.honored || 1)], ['la signature', M.won / (M.devis || 1)]];
+    var w = steps.reduce(function (a, b) { return b[1] < a[1] ? b : a; });
+    return 'L’étape qui perd le plus de prospects : <b>' + w[0] + '</b> (' + Math.round(w[1] * 100) + ' % passent).';
+  }
+  function minis() {
+    var H = D.hebdo, set = [['rdvPris', 'Rendez-vous pris'], ['rdvFaits', 'Rendez-vous réalisés'], ['devis', 'Devis envoyés'], ['ventes', 'Ventes signées']];
+    return '<div class="minis">' + set.map(function (k) {
+      var max = Math.max.apply(null, H.map(function (w) { return w[k[0]]; })) || 1;
+      return '<div class="mini" role="img" aria-label="' + k[1] + ' par semaine : ' + H.map(function (w) { return w.s + ' ' + w[k[0]]; }).join(', ') + '"><h4>' + k[1] + '</h4><div class="bars">' + H.map(function (w) { return '<div title="' + w.s + ' : ' + w[k[0]] + '"><span class="num">' + w[k[0]] + '</span><i style="height:' + Math.max(3, w[k[0]] / max * 52) + 'px"></i></div>'; }).join('') + '</div><div class="xs">' + H.map(function (w) { return '<span>' + w.s.replace('Sem. ', 'S') + '</span>'; }).join('') + '</div></div>';
+    }).join('') + '</div>';
   }
   function tasksHtml(T) {
     if (!T.length) return '<div class="empty">Tout est traité. Les nouvelles tâches apparaîtront ici.</div>';
@@ -294,11 +312,16 @@
       '<select class="sel" id="fResp" aria-label="Responsable"><option value="">Tous les responsables</option>' + D.users.slice(0, 2).map(function (u) { return '<option value="' + u.id + '"' + (S.fResp === u.id ? ' selected' : '') + '>' + u.nom + '</option>'; }).join('') + '</select>' +
       '<select class="sel hide-m" id="fWork" aria-label="Travaux"><option value="">Tous les travaux</option>' + works.map(function (w) { return '<option' + (S.fWork === w ? ' selected' : '') + '>' + esc(w) + '</option>'; }).join('') + '</select>' +
       '<div class="seg" role="tablist"><button data-view="board" class="' + (S.view === 'board' ? 'on' : '') + '">Pipeline</button><button data-view="list" class="' + (S.view === 'list' ? 'on' : '') + '">Liste</button></div></div>';
+    var still = function (l) { return hoursSince(l.historique[l.historique.length - 1].at); };
+    var avg = {}; D.stages.forEach(function (s) { var it = D.leads.filter(function (l) { return l.etape === s.id; }); avg[s.id] = it.length ? it.reduce(function (a, l) { return a + still(l); }, 0) / it.length : 0; });
+    var slowest = D.stages.filter(function (s) { return ['signe', 'perdu', 'nouveau'].indexOf(s.id) < 0; }).reduce(function (a, s) { return avg[s.id] > avg[a.id] ? s : a; });
+    var dur = function (hh) { return hh < 48 ? Math.round(hh) + ' h' : Math.round(hh / 24) + ' j'; };
+    html += '<p class="q">Les opportunités ralentissent à l’étape <b>' + slowest.nom + '</b> : elles y restent en moyenne ' + dur(avg[slowest.id]) + ' sans nouvelle action. Action conseillée : ' + ({ devis: 'relancer les devis envoyés il y a plus de 3 jours.', nego: 'proposer un rendez-vous de signature.', contacte: 'qualifier les prospects déjà contactés.', qualifie: 'proposer un rendez-vous à chaque prospect qualifié.', rdv: 'confirmer les rendez-vous à venir.', rdv_fait: 'renseigner le résultat des rendez-vous.' }[slowest.id] || 'faire avancer ces prospects.') + '</p>';
     if (S.view === 'board') {
       html += '<div class="board">' + D.stages.map(function (s) {
         var items = L.filter(function (l) { return l.etape === s.id; });
         var late = s.id === 'nouveau' && items.some(function (l) { return hoursSince(l.recu) > 2; });
-        return '<div class="col"><div class="col-h' + (late ? ' slow' : '') + '">' + s.nom + ' <span>' + items.length + '</span></div>' + items.map(card).join('') + (items.length ? '' : '<div class="empty" style="padding:10px">Aucun</div>') + '</div>';
+        return '<div class="col"><div class="col-h' + (late || s.id === slowest.id ? ' slow' : '') + '"><div>' + s.nom + (items.length && ['signe', 'perdu'].indexOf(s.id) < 0 ? '<small>Sans action depuis ' + dur(avg[s.id]) + ' en moyenne</small>' : '') + '</div><span>' + items.length + '</span></div>' + items.map(card).join('') + (items.length ? '' : '<div class="empty" style="padding:10px">Aucun</div>') + '</div>';
       }).join('') + '</div>';
     } else {
       html += '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Prospect</th><th>Travaux</th><th class="hide-m">Ville</th><th>Étape</th><th class="hide-m">Responsable</th><th class="hide-m">Reçu</th><th class="r">Valeur</th></tr></thead><tbody>' +
@@ -328,15 +351,15 @@
     var l = lead(id); if (!l) return;
     var tlIcon = { form: 'form', crm: 'db', notif: 'bell', call: 'phone', status: 'flag', rdv: 'cal', devis: 'euro', win: 'check', lost: 'x' };
     var h = '<div class="dr-h"><div style="flex:1;min-width:0"><span class="k">' + l.id + ' · ' + stage(l.etape).nom + '</span><h2>' + esc(l.nom) + '</h2><p>' + esc(l.travaux) + ' · ' + esc(l.ville) + ' · reçu ' + dt(l.recu) + '</p></div><button class="icon-btn" id="dr-x" aria-label="Fermer la fiche">' + ic('x', 16) + '</button></div><div class="dr-b">' +
-      '<div class="quick"><a href="tel:' + l.tel.replace(/\s/g, '') + '">' + ic('phone') + 'Appeler</a><a href="sms:' + l.tel.replace(/\s/g, '') + '">' + ic('msg') + 'Message</a><button data-q="rdv">' + ic('cal') + 'Rendez-vous</button><button data-q="assign">' + ic('user') + 'Attribuer</button></div>' +
+      '<div class="quick"><a href="tel:' + l.tel.replace(/\s/g, '') + '">' + ic('phone') + 'Appeler</a><a href="sms:' + l.tel.replace(/\s/g, '') + '">' + ic('msg') + 'Message</a><button data-q="rdv">' + ic('cal') + 'Rendez-vous</button><button data-q="assign">' + ic('user') + 'Attribuer</button></div><div id="qa"></div>' +
       '<div class="card"><div class="card-h"><h3>Statut</h3><span class="meta" id="st-meta">Modifié ' + ago(l.historique[l.historique.length - 1].at) + ' par ' + esc(l.historique[l.historique.length - 1].par) + '</span></div>' +
         '<div class="pills" id="stage-pills">' + D.stages.map(function (s) { return '<button data-stage="' + s.id + '" class="' + (l.etape === s.id ? 'on' : '') + '">' + s.nom.replace('Opportunités perdues', 'Perdue') + '</button>'; }).join('') + '</div>' +
         '<div id="disq" style="margin-top:12px' + (l.etape === 'perdu' ? '' : ';display:none') + '"><div class="field"><label for="motif">Motif</label><select id="motif"><option value="">Choisir un motif</option>' + ['Coordonnées invalides', 'Doublon', 'Hors zone', 'Prestation non adaptée', 'Budget incompatible', 'Projet trop éloigné', 'Prix jugé trop élevé', 'A choisi un concurrent', 'Ne répond plus'].map(function (m) { return '<option' + (l.motif === m ? ' selected' : '') + '>' + m + '</option>'; }).join('') + '</select></div><p class="small muted" style="margin-top:6px">Ces motifs servent à Orixen pour améliorer la qualité des prospects, pas seulement leur nombre.</p></div></div>' +
       outcomeForm(l, mode === 'resultat') +
       '<div class="card"><div class="card-h"><h3>Projet</h3><span class="locked">' + ic('lock', 12) + 'Visible par vous et ' + esc(user(l.resp).nom) + '</span></div><dl class="kv">' +
-        [['Téléphone', l.tel], ['E-mail', l.email], ['Travaux', l.travaux], ['Ville', l.ville], ['Budget indiqué', l.budget], ['Délai du projet', l.delai], ['Propriétaire', 'Oui'], ['Qualification', l.qualif], ['Source', l.source], ['Campagne', (D.campagnes.find(function (c) { return c.id === l.campagne; }) || {}).nom], ['Responsable', user(l.resp).nom], ['Rendez-vous', l.rdv ? dt(l.rdv.at) + ' · ' + l.rdv.statut : 'Aucun'], ['Devis', l.devis ? eur(l.devis.montant) + ' · envoyé ' + ago(l.devis.envoye) : 'Aucun'], ['Valeur estimée', l.valeur ? eur(l.valeur) : '·'], ['Montant signé', l.signe ? eur(l.signe) : '·'], ['Consentement', 'Accepte d’être rappelé']]
+        [['Téléphone', l.tel], ['E-mail', l.email], ['Travaux', l.travaux], ['Ville', l.ville], ['Budget indiqué', l.budget], ['Délai du projet', l.delai], ['Propriétaire', 'Oui'], ['Qualification', l.qualif], ['Source', l.source], ['Campagne', (D.campagnes.find(function (c) { return c.id === l.campagne; }) || {}).nom], ['Responsable', user(l.resp).nom], ['Rendez-vous', l.rdv ? dt(l.rdv.at) + ' · ' + l.rdv.statut : 'Aucun'], ['Notes du rendez-vous', l.rdv && l.rdv.note ? l.rdv.note : '·'], ['Statut de la vente', l.etape === 'signe' ? 'Gagnée' : l.etape === 'perdu' ? 'Perdue' : 'En cours'], ['Devis', l.devis ? eur(l.devis.montant) + ' · envoyé ' + ago(l.devis.envoye) : 'Aucun'], ['Valeur estimée', l.valeur ? eur(l.valeur) : '·'], ['Montant signé', l.signe ? eur(l.signe) : '·'], ['Consentement', 'Accepte d’être rappelé']]
           .map(function (x) { return '<div><dt>' + x[0] + '</dt><dd>' + esc(x[1]) + '</dd></div>'; }).join('') + '</dl></div>' +
-      '<div class="card"><div class="card-h"><h3>Historique</h3><span class="meta">' + l.historique.length + ' événements</span></div><ul class="tl" id="tl">' +
+      '<div class="card"><div class="card-h"><h3>Historique</h3><span class="meta"><span class="fname">LEAD-TO-REVENUE TRACKING</span> · ' + l.historique.length + ' événements</span></div><ul class="tl" id="tl">' +
         l.historique.slice().reverse().map(function (e) { return '<li><span class="ic ' + (e.type === 'win' ? 'win' : e.type === 'lost' ? 'lost' : '') + '">' + ic(tlIcon[e.type] || 'info', 12) + '</span><div><b>' + esc(e.txt) + '</b><span>' + dt(e.at) + ' · ' + esc(e.par) + '</span></div></li>'; }).join('') + '</ul></div>' +
       '</div>';
     var dr = $('#drawer'); dr.innerHTML = h; dr.classList.add('on'); $('#scrim').classList.add('on');
@@ -354,8 +377,19 @@
     var m = $('#motif'); if (m) m.onchange = function () { l.motif = m.value; addEvent(l, 'lost', 'Motif : ' + m.value); toast('Motif enregistré · ' + stamp()); };
     $$('[data-q]', dr).forEach(function (b) {
       b.onclick = function () {
-        if (b.dataset.q === 'assign') { var other = l.resp === 'u1' ? 'u2' : 'u1'; l.resp = other; addEvent(l, 'status', 'Attribué à ' + user(other).nom); toast('Attribué à ' + user(other).nom); openLead(id); }
-        else { toast('Choix du créneau : version connectée à votre calendrier'); }
+        var qa = $('#qa');
+        if (b.dataset.q === 'assign') {
+          qa.innerHTML = '<div class="card"><div class="form"><div class="field"><label for="as-u">Attribuer à</label><select id="as-u">' + D.users.slice(0, 2).map(function (u) { return '<option value="' + u.id + '"' + (u.id === l.resp ? ' selected' : '') + '>' + u.nom + ' · ' + u.role + '</option>'; }).join('') + '</select></div><button class="btn pri" id="as-ok">Attribuer</button></div></div>';
+          $('#as-ok').onclick = function () { var u = $('#as-u').value; l.resp = u; addEvent(l, 'status', 'Attribué à ' + user(u).nom); toast('Attribué à ' + user(u).nom + ' · ' + stamp()); openLead(id); };
+        } else {
+          qa.innerHTML = '<div class="card"><div class="form"><div class="field"><label for="rv-d">Date</label><input type="date" id="rv-d" value="2026-10-28"></div><div class="field"><label for="rv-h">Heure</label><input type="time" id="rv-h" value="18:30"></div><div class="field"><label for="rv-u">Responsable</label><select id="rv-u">' + D.users.slice(0, 2).map(function (u) { return '<option value="' + u.id + '"' + (u.id === l.resp ? ' selected' : '') + '>' + u.nom + '</option>'; }).join('') + '</select></div><p class="small muted">Le prospect reçoit une confirmation par SMS, puis un rappel la veille.</p><button class="btn pri" id="rv-ok">Planifier le rendez-vous</button></div></div>';
+          $('#rv-ok').onclick = function () {
+            var at = new Date($('#rv-d').value + 'T' + ($('#rv-h').value || '09:00'));
+            l.rdv = { at: at.toISOString(), statut: 'Confirmé', lieu: l.ville, note: '' }; l.resp = $('#rv-u').value;
+            if (['nouveau', 'contacte', 'qualifie'].indexOf(l.etape) > -1) l.etape = 'rdv';
+            addEvent(l, 'rdv', 'Rendez-vous planifié · ' + dt(l.rdv.at)); toast('Rendez-vous planifié · SMS envoyé au prospect'); openLead(id); render();
+          };
+        }
       };
     });
     bindOutcome(l);
@@ -397,6 +431,13 @@
     var M = metrics(), tabs = [['acq', 'Acquisition'], ['qual', 'Qualité commerciale'], ['biz', 'Résultats business'], ['camp', 'Campagnes'], ['rep', 'Rapports']];
     var h = '<section class="hello"><h2>Performance</h2><p>' + M.R.label + '. Trois niveaux, du clic à la vente signée. Chaque chiffre a sa définition.</p></section><div class="tabs" role="tablist">' + tabs.map(function (t) { return '<button data-pt="' + t[0] + '" class="' + (S.perfTab === t[0] ? 'on' : '') + '">' + t[1] + '</button>'; }).join('') + '</div>';
     var row = function (lab, val, def) { return '<div class="set-row"><div><h4>' + lab + '</h4><p>' + def + '</p></div><b class="num" style="font-size:19px">' + val + '</b></div>'; };
+    var interp = '<div class="card"><div class="card-h"><h3>Pourquoi le coût par lead qualifié a augmenté</h3>' + stBadge(M.cplq > D.precedent.cplq ? 'warn' : 'ok', (M.cplq > D.precedent.cplq ? '+' : '') + Math.round((M.cplq - D.precedent.cplq) / D.precedent.cplq * 100) + ' % vs période précédente') + '</div>' +
+      '<div class="rq"><span class="n">' + ic('check', 12) + '</span><div><h4>Faits</h4><p>Le coût par lead qualifié passe de 54 € à ' + eur(M.cplq) + '. Le budget a augmenté le 17 octobre (18 à 22 € par jour). La campagne Isolation, à 56 € par lead, a été mise en pause le 14 octobre.</p></div></div>' +
+      '<div class="rq"><span class="n">' + ic('info', 12) + '</span><div><h4>Hypothèses</h4><p>Le budget supplémentaire est en partie allé à la publicité « Âge du toit » avant sa mise en pause (96 € par lead). Hypothèse non confirmée : la répartition exacte par jour n’est pas encore disponible.</p></div></div>' +
+      '<div class="rq"><span class="n">' + ic('search', 12) + '</span><div><h4>À vérifier</h4><p>Le coût des 7 prochains jours, sans « Âge du toit ». Les résultats commerciaux des 6 leads de la campagne Réparations.</p></div></div>' +
+      '<div class="rq"><span class="n">' + ic('flag', 12) + '</span><div><h4>Prochaines étapes</h4><p>Marcus : deuxième vidéo de Julien d’ici jeudi. Vous : valider cette vidéo.</p></div></div>' +
+      '<div class="reco" style="margin-top:6px"><div class="tags">' + stBadge('info', 'Confiance moyenne') + stBadge('neutral', 'Données manquantes : répartition journalière, ventes des réparations') + stBadge('ok', 'Pause « Âge du toit » : réalisée') + stBadge('warn', 'Nouvelle vidéo : à valider par vous') + '</div></div></div>';
+    if (S.perfTab === 'acq' || S.perfTab === 'qual') h += interp;
     if (S.perfTab === 'acq') h += '<div class="card"><div class="set-list">' + row('Dépenses publicitaires', eur(M.spend), 'Montant facturé par Meta sur la période, sur votre compte.') + row('Impressions', nf(M.impressions), 'Nombre d’affichages de vos publicités.') + row('Clics', nf(M.clics), 'Clics vers votre formulaire.') + row('Formulaires reçus', M.n, 'Demandes envoyées, avant tri.') + row('Coût par lead', eur(M.cpl), 'Dépenses ÷ leads reçus.') + '</div></div>';
     if (S.perfTab === 'qual') h += '<div class="card"><div class="set-list">' + row('Leads joignables', M.reach + ' sur ' + M.n, 'Leads dont les coordonnées fonctionnent.') + row('Taux de qualification', pct(M.q, M.n), 'Leads qualifiés ÷ leads reçus.') + row('Coût par lead qualifié', eur(M.cplq), 'Dépenses ÷ leads qualifiés.') + row('Taux de prise de rendez-vous', pct(M.rdv, M.n), 'Rendez-vous pris ÷ leads reçus.') + row('Taux de présence', pct(M.honored, M.rdvDue), 'Rendez-vous honorés ÷ rendez-vous prévus arrivés à échéance (' + M.rdvDue + ').') + row('Devis envoyés', M.devis, 'Devis déclarés comme envoyés.') + '</div></div>' +
       '<div class="card"><div class="card-h"><h3>Pourquoi des leads ont été écartés</h3><span class="meta">Motifs renseignés</span></div>' + disqHtml() + '</div>';
@@ -417,18 +458,18 @@
   function campCard(c) {
     var st = { active: ['ok', 'Active'], apprentissage: ['info', 'En apprentissage'], pause: ['neutral', 'En pause'], erreur: ['crit', 'En erreur'] }[c.statut];
     var leads = D.leads.filter(function (l) { return l.campagne === c.id; });
-    var q = leads.filter(function (l) { return l.qualif === 'Qualifié'; }).length, won = leads.filter(function (l) { return l.etape === 'signe'; });
+    var q = leads.filter(function (l) { return l.qualif === 'Qualifié'; }).length, won = leads.filter(function (l) { return l.etape === 'signe'; }), nrdv = leads.filter(function (l) { return l.rdv; }).length;
     return '<div class="card"><div class="card-h"><div><h3>' + esc(c.nom) + '</h3><p class="small muted">' + esc(c.objectif) + '</p></div>' + stBadge(st[0], st[1]) + '</div>' +
-      '<div class="kpis" style="grid-template-columns:repeat(5,1fr)">' + [['Budget', c.budgetJour ? eur(c.budgetJour) + '/j' : 'En pause'], ['Dépensé', eur(c.depense)], ['Leads', c.formulaires], ['Coût par lead', eur(c.depense / c.formulaires)], ['Qualifiés · ventes', q + ' · ' + won.length]].map(function (x) { return '<div class="kpi" style="box-shadow:none;background:var(--surface-2)"><span class="lab">' + x[0] + '</span><div class="val num" style="font-size:21px">' + x[1] + '</div></div>'; }).join('') + '</div>' +
+      '<div class="kpis">' + [['Budget', c.budgetJour ? eur(c.budgetJour) + '/j' : 'En pause'], ['Dépensé', eur(c.depense)], ['Leads', c.formulaires], ['Coût par lead', eur(c.depense / c.formulaires)], ['Qualifiés · RDV · ventes', q + ' · ' + nrdv + ' · ' + won.length]].map(function (x) { return '<div class="kpi" style="box-shadow:none;background:var(--surface-2)"><span class="lab">' + x[0] + '</span><div class="val num" style="font-size:21px">' + x[1] + '</div></div>'; }).join('') + '</div>' +
       '<p class="k" style="margin:16px 0 6px">Publicités les plus efficaces</p>' + c.creas.map(function (cr) { return '<div class="set-row"><div><h4>' + esc(cr.nom) + '</h4><p>' + cr.leads + (cr.leads > 1 ? ' leads' : ' lead') + '</p></div><b class="num">' + eur(cr.cpl) + ' par lead</b></div>'; }).join('') +
       '<p class="k" style="margin:16px 0 6px">Ce qu’Orixen a changé, et pourquoi</p><ul class="tl">' + c.changements.map(function (ch) { return '<li><span class="ic">' + ic('flag', 12) + '</span><div><b>' + esc(ch.txt) + '</b><span>' + dt(ch.at) + ' · ' + esc(ch.par) + '</span><p class="small" style="color:var(--text-2);margin-top:2px">' + esc(ch.pourquoi) + '</p></div></li>'; }).join('') + '</ul>' +
       '<div class="reco"><span class="k">Prochaine action recommandée</span><h4>' + esc(c.reco.txt) + '</h4><p>' + esc(c.reco.pourquoi) + '</p><div class="tags">' + stBadge('info', 'Confiance ' + c.reco.confiance.toLowerCase()) + stBadge('neutral', 'Données manquantes : ' + c.reco.manque.toLowerCase()) + stBadge(c.reco.etat === 'Réalisée' ? 'ok' : c.reco.etat === 'À valider par vous' ? 'warn' : 'neutral', c.reco.etat) + '</div>' + (c.reco.etat === 'À valider par vous' ? '<div style="margin-top:12px;display:flex;gap:8px"><button class="btn sm acc" data-validate="' + c.id + '">Valider</button><button class="btn sm" data-later>En parler à Marcus</button></div>' : '') + '</div></div>';
   }
   function vReports() {
-    var tabs = [['jour', 'Point du jour'], ['hebdo', 'Bilan de la semaine'], ['mois', 'Bilan du mois']];
+    var tabs = [['jour', 'Point du jour'], ['hebdo', 'Bilan de la semaine'], ['mois', 'Executive Report · mois']];
     var M = metrics();
     var Q = {
-      jour: [['Nouveaux leads', '3 aujourd’hui : Nathalie Roux, Patrick Faure, Élodie Chabrier.'], ['Rendez-vous', '1 rendez-vous à confirmer pour demain.'], ['Action importante', 'Rappeler les 3 nouveaux leads avant 19h.']],
+      jour: [['Quel était l’objectif ?', 'Rappeler chaque nouveau lead dans l’heure et confirmer les rendez-vous du lendemain.'], ['Quels sont les résultats réels ?', '3 nouveaux leads aujourd’hui : Nathalie Roux, Patrick Faure, Élodie Chabrier. 1 rendez-vous à confirmer pour demain.'], ['Qu’est-ce qui a changé ?', 'Hier : 1 lead. Aujourd’hui : 3, sans changement de budget.'], ['Quels résultats commerciaux sont confirmés ?', 'Aucune nouvelle vente déclarée aujourd’hui.'], ['Qu’avons-nous appris ?', 'Les 3 leads viennent de la vidéo de Julien.'], ['Prochaines actions', 'Julien et Karim : rappeler les 3 leads avant 19h. Marcus : surveiller le délai des SMS jusqu’à demain.']],
       hebdo: [['Quel était l’objectif ?', 'Atteindre 15 leads qualifiés avant le 23 novembre, garder le coût par lead qualifié sous 60 €.'], ['Quels sont les résultats réels ?', '6 leads reçus, 4 qualifiés, 2 rendez-vous, 1 vente signée (4 100 €).'], ['Qu’est-ce qui a changé ?', 'Coût par lead qualifié en baisse de 54 € à ' + eur(M.cplq) + ', grâce à la vidéo de Julien.'], ['Quels résultats commerciaux sont confirmés ?', 'Ventes déclarées : 3 sur la période. 1 devis de 22 400 € en attente de réponse.'], ['Qu’avons-nous appris ?', 'Les vidéos tournées sur chantier font 3 fois mieux que les photos. Les leads d’isolation sortent souvent du budget.'], ['Prochaines actions', 'Marcus : nouvelle vidéo en ligne d’ici jeudi. Julien : renseigner le résultat du rendez-vous de Sandrine Aubert avant vendredi.']],
       mois: [['Quel était l’objectif ?', 'Lancer la zone d’Issoire et atteindre la garantie de 15 leads qualifiés.'], ['Quels sont les résultats réels ?', M.n + ' leads, ' + M.q + ' qualifiés, ' + M.won + ' ventes pour ' + eur(M.ca) + '.'], ['Qu’est-ce qui a changé ?', 'Première période complète : pas de comparaison fiable.'], ['Quels résultats commerciaux sont confirmés ?', eur(M.ca) + ' signés et déclarés. Valeur des devis en cours : ' + eur(54700) + ' (non signée).'], ['Qu’avons-nous appris ?', 'La réfection complète est le meilleur segment. L’urgence réparation est prometteuse mais encore jeune.'], ['Prochaines actions', 'Novembre : deuxième vidéo, test d’une page dédiée aux réparations, isolation en pause jusqu’en février.']]
     };
@@ -449,18 +490,21 @@
   function vRdv() {
     var R = D.leads.filter(function (l) { return l.rdv; });
     var up = R.filter(function (l) { return new Date(l.rdv.at) > NOW; }).sort(function (a, b) { return new Date(a.rdv.at) - new Date(b.rdv.at); });
-    var past = R.filter(function (l) { return new Date(l.rdv.at) <= NOW; }).sort(function (a, b) { return new Date(b.rdv.at) - new Date(a.rdv.at); });
-    var list = S.rdvTab === 'avenir' ? up : past;
+    var bad = function (l) { return l.rdv.statut === 'Annulé' || l.rdv.statut === 'Absent'; };
+    var lost = R.filter(bad);
+    var past = R.filter(function (l) { return new Date(l.rdv.at) <= NOW && !bad(l); }).sort(function (a, b) { return new Date(b.rdv.at) - new Date(a.rdv.at); });
+    var list = S.rdvTab === 'avenir' ? up : S.rdvTab === 'passes' ? past : lost;
     var conf = up.filter(function (l) { return l.rdv.statut === 'À confirmer'; }).length;
-    return '<section class="hello"><h2>Rendez-vous</h2><p>' + up.length + ' à venir' + (conf ? ', dont ' + conf + ' à confirmer' : '') + ' · ' + past.length + ' réalisés · 0 absence ce mois-ci.</p></section>' +
-      '<div class="tools"><div class="seg"><button data-rv="avenir" class="' + (S.rdvTab === 'avenir' ? 'on' : '') + '">À venir</button><button data-rv="passes" class="' + (S.rdvTab === 'passes' ? 'on' : '') + '">Réalisés</button></div><span style="flex:1"></span><a class="btn sm" href="#/parametres">' + ic('cal', 14) + 'Synchroniser mon calendrier</a></div>' +
+    return '<section class="hello"><h2>Rendez-vous</h2><p>' + up.length + ' à venir' + (conf ? ', dont ' + conf + ' à confirmer' : '') + ' · ' + past.length + ' réalisés · ' + lost.filter(function (l) { return l.rdv.statut === 'Annulé'; }).length + ' annulation et ' + lost.filter(function (l) { return l.rdv.statut === 'Absent'; }).length + ' absence ce mois-ci.</p></section>' +
+      '<div class="tools"><div class="seg"><button data-rv="avenir" class="' + (S.rdvTab === 'avenir' ? 'on' : '') + '">À venir</button><button data-rv="passes" class="' + (S.rdvTab === 'passes' ? 'on' : '') + '">Réalisés</button><button data-rv="annules" class="' + (S.rdvTab === 'annules' ? 'on' : '') + '">Annulés et absences</button></div><span style="flex:1"></span><a class="btn sm" href="#/parametres">' + ic('cal', 14) + 'Synchroniser mon calendrier</a></div>' +
       '<div class="ag">' + (list.length ? list.map(function (l) {
-        var d = new Date(l.rdv.at), k = l.rdv.statut === 'Confirmé' || l.rdv.statut === 'Honoré' ? 'ok' : 'warn';
-        return '<div class="agi"><div class="d"><span>' + d.toLocaleDateString('fr-FR', { weekday: 'short' }) + '</span><b>' + d.getDate() + '</b><span>' + hhmm(l.rdv.at) + '</span></div><div><h4>' + esc(l.nom) + '</h4><p>' + esc(l.travaux) + ' · ' + esc(l.ville) + ' · ' + esc(user(l.resp).nom) + '</p></div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end">' + stBadge(k, l.rdv.statut) +
+        var d = new Date(l.rdv.at), k = l.rdv.statut === 'Confirmé' || l.rdv.statut === 'Honoré' ? 'ok' : l.rdv.statut === 'Absent' ? 'crit' : 'warn';
+        return '<div class="agi"><div class="d"><span>' + d.toLocaleDateString('fr-FR', { weekday: 'short' }) + '</span><b>' + d.getDate() + '</b><span>' + hhmm(l.rdv.at) + '</span></div><div><h4>' + esc(l.nom) + '</h4><p>' + esc(l.travaux) + ' · ' + esc(l.ville) + ' · ' + esc(user(l.resp).nom) + '</p>' + (l.rdv.note ? '<p style="color:var(--text-2);margin-top:3px">Note : ' + esc(l.rdv.note) + '</p>' : '') + '</div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end">' + stBadge(k, l.rdv.statut) +
           (l.rdv.statut === 'À confirmer' ? '<button class="btn sm acc" data-confirm="' + l.id + '">Confirmer</button>' : '') + (S.rdvTab === 'passes' ? '<a class="btn sm" href="#/opportunites/' + l.id + '?resultat">Résultat</a>' : '<a class="btn sm" href="#/opportunites/' + l.id + '">Fiche</a>') + '</div></div>';
       }).join('') : '<div class="card empty">Aucun rendez-vous.</div>') + '</div>' +
-      '<div class="card sec"><div class="card-h"><h3>Rappels automatiques</h3><span class="meta">Avec le consentement du prospect</span></div><div class="set-list">' +
-        [['Confirmation', 'SMS au prospect dès la prise de rendez-vous'], ['Rappel la veille', 'SMS la veille à 18h'], ['Nouveau créneau', 'Proposé automatiquement en cas d’annulation'], ['Relance de devis', 'Vous recevez un rappel 3 jours puis 7 jours après l’envoi']].map(function (x) { return '<div class="set-row"><div><h4>' + x[0] + '</h4><p>' + x[1] + '</p></div>' + stBadge('ok', 'Actif') + '</div>'; }).join('') + '</div></div>';
+      '<div class="card sec"><div class="card-h"><h3><span class="fname">SMART FOLLOW-UP</span><br>Rappels et relances automatiques</h3><span class="meta">Avec le consentement et selon les préférences du prospect</span></div><div class="set-list">' +
+        [['Confirmation', 'SMS au prospect dès la prise de rendez-vous', 'Automatique', 18], ['Rappel la veille', 'SMS la veille à 18h', 'Automatique', 6], ['Nouveau créneau', 'Proposé automatiquement en cas d’annulation', 'Automatique', 1], ['Relance d’absent', 'SMS proposant un nouveau créneau, envoyé après votre accord', 'Validation humaine', 1], ['Relance de devis', 'Rappel pour vous 3 jours puis 7 jours après l’envoi. Le message au prospect part après votre accord.', 'Validation humaine', 4]]
+          .map(function (x) { return '<div class="set-row"><div><h4>' + x[0] + '</h4><p>' + x[1] + ' · exécuté ' + x[3] + ' fois ce mois-ci, 0 échec</p></div>' + stBadge(x[2] === 'Automatique' ? 'ok' : 'info', x[2]) + '</div>'; }).join('') + '</div></div>';
   }
   function bindRdv() {
     $$('[data-rv]').forEach(function (b) { b.onclick = function () { S.rdvTab = b.dataset.rv; render(); }; });
@@ -470,13 +514,14 @@
   /* ─── SYSTÈME ─── */
   function vSys() {
     var p = pulse();
-    return '<section class="hello"><h2>Système</h2><p>Votre machine d’acquisition, composant par composant. Chaque statut vient d’un test réel, refait toutes les 15 minutes.</p></section>' +
-      '<div class="card"><div class="pulse"><div class="ring ' + (p.ok ? 'ok' : 'warn') + '">' + ic(p.ok ? 'check' : 'warn', 22) + '</div><div><h3>' + (p.ok ? 'Tout fonctionne normalement' : 'Tout fonctionne · 1 point surveillé') + '</h3><p>Dernier test complet ' + ago(p.last) + ' : formulaire rempli, lead reçu dans le CRM, SMS envoyés, attribution faite.</p></div></div></div>' +
+    return '<section class="hello"><span class="fname">QUALITY ASSURANCE</span><h2>Système</h2><p>Votre machine d’acquisition, composant par composant. Chaque statut vient d’un test réel, refait toutes les 15 minutes.</p></section>' +
+      '<div class="card"><div class="pulse"><div class="ring ' + (p.ok ? 'ok' : 'warn') + '">' + ic(p.ok ? 'check' : 'warn', 22) + '</div><div><h3>' + (p.ok ? 'Tout fonctionne normalement' : 'Tout fonctionne · 1 point surveillé') + '</h3><p>Contrôle continu de vos formulaires, intégrations et automatisations. Dernier test complet ' + ago(p.last) + ' : formulaire rempli, lead reçu dans le CRM, SMS envoyés, attribution faite.</p></div></div></div>' +
       '<div class="card sec" style="padding:6px 18px">' + D.systeme.map(function (c) {
         var inc = c.incident, k = c.statut === 'ok' ? ['ok', 'Opérationnel'] : c.statut === 'warn' ? ['warn', 'Surveillé'] : ['crit', 'En panne'];
         var incH = '';
-        if (inc && !inc.resolu) incH = '<div class="inc"><b style="color:var(--text)">' + esc(inc.txt) + '</b> · ouvert ' + ago(inc.at) + ' · responsable ' + esc(inc.par) + '<dl><dt>Confirmé</dt><dd>' + esc(inc.confirme) + '</dd><dt>En cours d’analyse</dt><dd>' + esc(inc.enquete) + '</dd><dt>Prochaine étape</dt><dd>' + esc(inc.etape) + '</dd><dt>Impact possible</dt><dd>Vos SMS peuvent arriver avec 2 à 3 minutes de retard. Aucun lead perdu.</dd></dl></div>';
-        else if (inc) incH = '<div class="inc">Dernier incident : ' + esc(inc.txt) + ' · ' + dt(inc.at) + ' · résolu ' + dt(inc.resolu) + ' par ' + esc(inc.par) + '.</div>';
+        if (inc && !inc.resolu) incH = '<div class="inc"><b style="color:var(--text)">' + esc(inc.txt) + '</b> · ouvert ' + ago(inc.at) + ' · responsable ' + esc(inc.par) + '<dl><dt>Confirmé</dt><dd>' + esc(inc.confirme) + '</dd><dt>En cours d’analyse</dt><dd>' + esc(inc.enquete) + '</dd><dt>Prochaine étape</dt><dd>' + esc(inc.etape) + '</dd><dt>Impact possible</dt><dd>Vos SMS peuvent arriver avec 2 à 3 minutes de retard. Aucun lead perdu.</dd><dt>Procédure</dt><dd>' + esc(c.proc) + '</dd></dl></div>';
+        else if (inc) incH = '<div class="inc">Dernier incident : ' + esc(inc.txt) + ' · ' + dt(inc.at) + ' · résolu ' + dt(inc.resolu) + ' par ' + esc(inc.par) + '.<dl><dt>Procédure</dt><dd>' + esc(c.proc) + '</dd></dl></div>';
+        else incH = '<div class="inc">Aucun incident enregistré.<dl><dt>Procédure</dt><dd>' + esc(c.proc) + '</dd></dl></div>';
         return '<div class="comp"><div><h4>' + esc(c.nom) + '</h4><p>' + esc(c.desc) + ' · vérifié ' + ago(c.verif) + '</p></div>' + stBadge(k[0], k[1]) + incH + '</div>';
       }).join('') + '</div>';
   }
@@ -484,21 +529,33 @@
   /* ─── ÉQUIPE ─── */
   function vTeam() {
     var st = { 'Reçue': 'info', 'En cours': 'warn', 'Résolue': 'ok' };
-    return '<section class="hello"><h2>Équipe Orixen</h2><p>Vos échanges, vos demandes et les décisions prises, au même endroit. Vous n’avez jamais à répéter le contexte.</p></section>' +
-      '<div class="grid g-main"><div class="card"><div class="card-h"><h3>Vos demandes</h3><button class="btn sm acc" id="new-req">Nouvelle demande</button></div><div id="req-form" style="display:none;margin-bottom:12px" class="form"><div class="field"><label for="rq-cat">Catégorie</label><select id="rq-cat"><option>Campagnes publicitaires</option><option>Qualité des prospects</option><option>CRM</option><option>Automatisations</option><option>Facturation</option><option>Stratégie</option><option>Incident technique</option></select></div><div class="field"><label for="rq-t">Votre demande</label><textarea id="rq-t" placeholder="Décrivez ce dont vous avez besoin"></textarea></div><button class="btn pri" id="rq-send">Envoyer</button></div>' +
-        '<div class="tbl-wrap" style="box-shadow:none"><table class="tbl"><thead><tr><th>Demande</th><th class="hide-m">Catégorie</th><th>Statut</th><th class="hide-m">Mise à jour</th></tr></thead><tbody id="req-b">' + D.demandes.slice().reverse().map(function (d) { return '<tr><td><b>' + esc(d.titre) + '</b><div class="small muted">' + d.id + ' · ' + esc(d.hist[d.hist.length - 1]) + '</div></td><td class="hide-m">' + esc(d.cat) + '</td><td>' + stBadge(st[d.statut], d.statut) + '</td><td class="hide-m">' + ago(d.maj) + '</td></tr>'; }).join('') + '</tbody></table></div></div>' +
-      '<div><div class="card"><div class="am" style="box-shadow:none;padding:0;background:none"><span class="av" style="width:44px;height:44px;font-size:15px">MV</span><div><b style="font-size:16px">' + D.contact.nom + '</b><span>' + D.contact.role + '</span></div></div><p class="small" style="margin:12px 0;color:var(--text-2)">' + D.contact.delai + '. Votre contrat prévoit une réponse le jour même.</p><div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn sm acc" href="https://wa.me/' + D.contact.tel.replace('+', '') + '">WhatsApp</a><a class="btn sm" href="tel:' + D.contact.tel + '">Appeler</a><a class="btn sm" href="mailto:' + D.contact.email + '">E-mail</a></div></div>' +
-      '<div class="card"><div class="card-h"><h3>Décisions prises</h3></div><ul class="tl">' + D.decisions.map(function (d) { return '<li><span class="ic">' + ic('flag', 12) + '</span><div><b>' + esc(d.txt) + '</b><span>' + dt(d.at, { day: 'numeric', month: 'long' }) + ' · ' + esc(d.par) + '</span></div></li>'; }).join('') + '</ul></div>' +
-      '<div class="card"><div class="card-h"><h3>Prochain point</h3></div><p style="font-size:15px;font-weight:600">' + dday(new Date(NOW.getTime() + 6 * 864e5).toISOString()) + ' à 18h30</p><p class="small muted">Point hebdomadaire de 10 minutes · compte rendu publié ici ensuite.</p></div></div></div>';
+    return '<section class="hello"><h2>Équipe Orixen</h2><p>Vos échanges, vos demandes, les comptes rendus et les décisions, au même endroit. Vous n’avez jamais à répéter le contexte.</p></section>' +
+      '<div class="grid g-main"><div>' +
+        '<div class="card"><div class="card-h"><h3>Messages</h3><span class="meta">Réponse le jour même</span></div><div class="thread" id="thread">' + D.messages.map(function (m) { var me = m.de === 'Julien Martin'; return '<div class="msg' + (me ? ' me' : '') + '">' + esc(m.txt) + '<span>' + esc(m.de) + ' · ' + dt(m.at) + '</span></div>'; }).join('') + '</div>' +
+          '<div style="display:flex;gap:8px;margin-top:12px"><label class="search" style="min-width:0"><input id="msg-in" placeholder="Écrire à Marcus" aria-label="Message à Marcus"></label><button class="btn pri" id="msg-send">Envoyer</button></div></div>' +
+        '<div class="card"><div class="card-h"><h3>Vos demandes</h3><button class="btn sm acc" id="new-req">Nouvelle demande</button></div><div id="req-form" style="display:none;margin-bottom:12px" class="form"><div class="field"><label for="rq-cat">Catégorie</label><select id="rq-cat"><option>Campagnes publicitaires</option><option>Qualité des prospects</option><option>CRM</option><option>Automatisations</option><option>Facturation</option><option>Stratégie</option><option>Incident technique</option></select></div><div class="field"><label for="rq-p">Priorité</label><select id="rq-p"><option>Normale</option><option>Haute</option><option>Basse</option></select></div><div class="field"><label for="rq-t">Votre demande</label><textarea id="rq-t" placeholder="Décrivez ce dont vous avez besoin"></textarea></div><button class="btn pri" id="rq-send">Envoyer</button></div>' +
+          D.demandes.slice().reverse().map(function (d) { return '<details class="comp" style="display:block"><summary style="list-style:none;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center"><div><h4>' + esc(d.titre) + '</h4><p>' + d.id + ' · ' + esc(d.cat) + ' · priorité ' + esc(d.prio).toLowerCase() + ' · responsable ' + esc(d.resp) + ' · mis à jour ' + ago(d.maj) + '</p></div>' + stBadge(st[d.statut], d.statut) + '</summary><ul class="tl" style="margin-top:10px">' + d.hist.map(function (x) { return '<li><span class="ic">' + ic('flag', 12) + '</span><div><b>' + esc(x) + '</b></div></li>'; }).join('') + '</ul></details>'; }).join('') + '</div>' +
+        '<div class="card"><div class="card-h"><h3>Comptes rendus de réunion</h3></div>' + D.comptesRendus.map(function (c) { return '<div class="rq"><span class="n">' + ic('form', 12) + '</span><div><h4>' + esc(c.titre) + ' · ' + dt(c.at, { day: 'numeric', month: 'long' }) + '</h4><p>' + esc(c.resume) + '</p><p><b>Prochaines étapes :</b> ' + esc(c.suite) + '</p></div></div>'; }).join('') + '</div>' +
+      '</div><div>' +
+        '<div class="card"><div class="am" style="box-shadow:none;padding:0;background:none"><span class="av" style="width:44px;height:44px;font-size:15px">MV</span><div><b style="font-size:16px">' + D.contact.nom + '</b><span>' + D.contact.role + '</span></div></div><p class="small" style="margin:12px 0;color:var(--text-2)">' + D.contact.delai + '. Votre contrat prévoit une réponse le jour même.</p><div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn sm acc" href="https://wa.me/' + D.contact.tel.replace('+', '') + '">WhatsApp</a><a class="btn sm" href="tel:' + D.contact.tel + '">' + D.contact.telAff + '</a><a class="btn sm" href="mailto:' + D.contact.email + '">' + D.contact.email + '</a></div>' +
+          '<div class="set-list" style="margin-top:12px"><div class="set-row"><div><h4>Support Orixen</h4><p>contact@orixen.fr · demandes et incidents</p></div></div><div class="set-row"><div><h4>Facturation</h4><p>contact@orixen.fr · réponse sous 48 h</p></div></div></div></div>' +
+        '<div class="card"><div class="card-h"><h3>Décisions prises</h3></div><ul class="tl">' + D.decisions.map(function (d) { return '<li><span class="ic">' + ic('flag', 12) + '</span><div><b>' + esc(d.txt) + '</b><span>' + dt(d.at, { day: 'numeric', month: 'long' }) + ' · ' + esc(d.par) + '</span></div></li>'; }).join('') + '</ul></div>' +
+        '<div class="card"><div class="card-h"><h3>Prochaines étapes</h3></div><div class="set-list"><div class="set-row"><div><h4>Nouvelle vidéo de Julien</h4><p>Marcus · d’ici jeudi</p></div></div><div class="set-row"><div><h4>Résultat du rendez-vous de Sandrine Aubert</h4><p>Julien · avant vendredi</p></div></div><div class="set-row"><div><h4>Point hebdomadaire</h4><p>' + dday(new Date(NOW.getTime() + 6 * 864e5).toISOString()) + ' à 18h30 · 10 minutes</p></div></div></div></div>' +
+      '</div></div>';
   }
   function bindTeam() {
     var b = $('#new-req'); if (!b) return;
     b.onclick = function () { var f = $('#req-form'); f.style.display = f.style.display === 'none' ? '' : 'none'; $('#rq-t').focus(); };
     $('#rq-send').onclick = function () {
       var t = $('#rq-t').value.trim(); if (!t) { toast('Écrivez votre demande'); return; }
-      D.demandes.push({ id: 'D-' + (124 + D.demandes.length), cat: $('#rq-cat').value, titre: t.slice(0, 70), statut: 'Reçue', prio: 'Normale', resp: 'Marcus', ouvert: new Date().toISOString(), maj: new Date().toISOString(), hist: ['Reçue · Marcus est prévenu'] });
+      D.demandes.push({ id: 'D-' + (124 + D.demandes.length), cat: $('#rq-cat').value, titre: t.slice(0, 70), statut: 'Reçue', prio: $('#rq-p').value, resp: 'Marcus', ouvert: new Date().toISOString(), maj: new Date().toISOString(), hist: ['Reçue · Marcus est prévenu'] });
       toast('Demande reçue · réponse le jour même'); render();
     };
+    $('#msg-send').onclick = function () {
+      var v = $('#msg-in').value.trim(); if (!v) return;
+      D.messages.push({ at: new Date().toISOString(), de: 'Julien Martin', txt: v }); render(); toast('Message envoyé à Marcus');
+    };
+    var th = $('#thread'); if (th) th.scrollTop = th.scrollHeight;
   }
 
   /* ─── PARAMÈTRES ─── */
@@ -507,15 +564,16 @@
     var h = '<section class="hello"><h2>Paramètres</h2></section><div class="tabs">' + tabs.map(function (t) { return '<button data-st="' + t[0] + '" class="' + (S.setTab === t[0] ? 'on' : '') + '">' + t[1] + '</button>'; }).join('') + '</div>';
     var row = function (a, b, c) { return '<div class="set-row"><div><h4>' + a + '</h4><p>' + b + '</p></div>' + (c || '') + '</div>'; };
     var sw = function (on, lab) { return '<button class="sw" role="switch" aria-checked="' + on + '" aria-label="' + esc(lab) + '"></button>'; };
-    if (S.setTab === 'entreprise') h += '<div class="card"><div class="set-list">' + row('Entreprise', D.entreprise + ' · ' + D.metier, '<button class="btn sm">Modifier</button>') + row('Zone exclusive', D.zone.join(', '), '<button class="btn sm">Voir</button>') + row('Panier moyen indicatif', '18 000 € pour une réfection complète', '<button class="btn sm">Modifier</button>') + row('Taux de marge moyen', 'Non renseigné · nécessaire pour calculer la rentabilité réelle', '<button class="btn sm acc">Renseigner</button>') + row('Capacité commerciale', '6 rendez-vous par semaine', '<button class="btn sm">Modifier</button>') + '</div></div>';
+    if (S.setTab === 'entreprise') h += '<div class="card"><div class="set-list">' + row('Entreprise', D.entreprise + ' · ' + D.metier, '<button class="btn sm">Modifier</button>') + row('Zone exclusive', D.zone.join(', '), '<button class="btn sm">Voir</button>') + row('Panier moyen indicatif', '18 000 € pour une réfection complète', '<button class="btn sm">Modifier</button>') + row('Taux de marge moyen', 'Non renseigné · nécessaire pour calculer la rentabilité réelle', '<button class="btn sm acc">Renseigner</button>') + row('Capacité commerciale', '6 rendez-vous par semaine', '<button class="btn sm">Modifier</button>') + row('Configuration du système', 'Le parcours de démarrage en 5 étapes', '<a class="btn sm" href="#/bienvenue">Ouvrir</a>') + '</div></div>';
     if (S.setTab === 'equipe') h += '<div class="card"><div class="card-h"><h3>Utilisateurs</h3><button class="btn sm acc">Inviter</button></div><div class="set-list">' + D.users.map(function (u) { return row(u.nom, u.role + ' · ' + u.email, stBadge('ok', 'Actif')); }).join('') + '</div></div>' +
       '<div class="card"><div class="card-h"><h3>Qui peut faire quoi</h3></div><div class="tbl-wrap" style="box-shadow:none"><table class="tbl perm"><thead><tr><th>Droit</th><th>Dirigeant</th><th>Commercial</th><th>Associé</th></tr></thead><tbody>' +
         [['Voir ses prospects', 1, 1, 1], ['Voir tous les prospects', 1, 0, 1], ['Modifier les statuts', 1, 1, 0], ['Voir les coordonnées', 1, 1, 0], ['Voir les dépenses et rapports', 1, 0, 1], ['Gérer la facturation', 1, 0, 0], ['Gérer les connexions publicitaires', 1, 0, 0]].map(function (r) { return '<tr><td>' + r[0] + '</td>' + r.slice(1).map(function (v) { return '<td>' + (v ? '<span class="yes">' + ic('check', 15) + '<span class="sr">Oui</span></span>' : '<span class="no">·<span class="sr">Non</span></span>') + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div></div>';
     if (S.setTab === 'notif') h += '<div class="card"><div class="card-h"><h3>Urgentes</h3><span class="meta">SMS et notification</span></div><div class="set-list">' + row('Nouveau lead qualifié', 'Dans la minute', sw(true, 'Nouveau lead qualifié')) + row('Lead sans suivi depuis 24 h', 'Une fois par lead', sw(true, 'Lead sans suivi')) + row('Erreur de transmission', 'Dès la détection', sw(true, 'Erreur de transmission')) + '</div></div>' +
       '<div class="card"><div class="card-h"><h3>Informatives</h3><span class="meta">E-mail</span></div><div class="set-list">' + row('Rendez-vous confirmé', 'Quand un prospect confirme', sw(true, 'Rendez-vous confirmé')) + row('Rapport disponible', 'Chaque dimanche', sw(true, 'Rapport disponible')) + row('Facture disponible', 'Chaque mois', sw(false, 'Facture disponible')) + row('Décision attendue', 'Quand Orixen a besoin de votre accord', sw(true, 'Décision attendue')) + '</div></div>' +
-      '<div class="card"><div class="set-list">' + row('Heures calmes', 'Aucune notification non urgente de 21h à 7h', sw(true, 'Heures calmes')) + row('Écran verrouillé', 'Masquer le nom et le téléphone du prospect', sw(true, 'Masquer sur écran verrouillé')) + '</div></div>';
+      '<div class="card"><div class="card-h"><h3>Commerciales</h3><span class="meta">E-mail · désactivables</span></div><div class="set-list">' + row('Conseils pour signer plus', 'Une astuce par mois, tirée de vos chiffres', sw(false, 'Conseils commerciaux')) + row('Nouveautés Orixen', 'Nouvelles fonctions de votre espace', sw(false, 'Nouveautés')) + '</div></div>' +
+      '<div class="card"><div class="set-list">' + row('Canaux', 'SMS pour l’urgent, e-mail pour le reste, notification sur l’application installée', '<button class="btn sm">Modifier</button>') + row('Heures calmes', 'Aucune notification non urgente de 21h à 7h', sw(true, 'Heures calmes')) + row('Écran verrouillé', 'Masquer le nom et le téléphone du prospect', sw(true, 'Masquer sur écran verrouillé')) + '</div></div>';
     if (S.setTab === 'integr') h += '<div class="card"><div class="set-list">' + [['Meta (Facebook et Instagram)', 'Accès partenaire à votre page et à votre compte publicitaire'], ['CRM Orixen', 'Vos prospects, statuts et historique'], ['Messagerie SMS', 'Notifications et rappels'], ['Google Agenda', 'Synchronisation de vos rendez-vous']].map(function (x, i) { return row(x[0], x[1], i === 3 ? '<button class="btn sm acc">Connecter</button>' : stBadge('ok', 'Connecté')); }).join('') + '</div></div>';
-    if (S.setTab === 'factu') h += '<div class="card"><div class="set-list">' + row('Formule', 'Partenaire fondateur · 2 500 € par mois · sans engagement', '<a class="btn sm" href="/conditions/" target="_blank">Conditions</a>') + row('Contrat', 'Signé le ' + dt(D.garantie.debut, { day: 'numeric', month: 'long', year: 'numeric' }), '<button class="btn sm">Télécharger</button>') + row('Prochain prélèvement', 'Suspendu tant que la garantie n’est pas atteinte', stBadge('info', 'Garantie en cours')) + row('Factures', '1 facture · octobre 2026', '<button class="btn sm">Voir</button>') + row('Budget publicitaire', 'Payé directement à Meta, avec votre carte', '') + '</div></div>';
+    if (S.setTab === 'factu') h += '<div class="card"><div class="set-list">' + row('Coordonnées de facturation', 'Toitures Martin SARL · 12 rue des Couvreurs, 63500 Issoire · SIRET 000 000 000 00000 (exemple)', '<button class="btn sm">Modifier</button>') + row('Formule', 'Partenaire fondateur · 2 500 € par mois · sans engagement', '<a class="btn sm" href="/conditions/" target="_blank">Conditions</a>') + row('Contrat', 'Signé le ' + dt(D.garantie.debut, { day: 'numeric', month: 'long', year: 'numeric' }), '<button class="btn sm">Télécharger</button>') + row('Prochain prélèvement', 'Suspendu tant que la garantie n’est pas atteinte', stBadge('info', 'Garantie en cours')) + row('Factures', '1 facture · octobre 2026', '<button class="btn sm">Voir</button>') + row('Budget publicitaire', 'Payé directement à Meta, avec votre carte', '') + '</div></div>';
     if (S.setTab === 'donnees') h += '<div class="card"><div class="set-list">' + row('Exporter mes données', 'Prospects, statuts et historique, en CSV', '<button class="btn sm">Exporter</button>') + row('Demande de rectification ou de suppression', 'Pour un prospect qui exerce ses droits RGPD', '<button class="btn sm">Ouvrir</button>') + row('Traitement des données', 'Vous êtes responsable de traitement, Orixen est sous-traitant (article 28 du RGPD)', '<a class="btn sm" href="/confidentialite/" target="_blank">Lire</a>') + row('Historique des actions sensibles', 'Exports, changements de droits, connexions', '<button class="btn sm">Voir</button>') + row('Double authentification', 'Code par SMS à chaque nouvel appareil', sw(true, 'Double authentification')) + row('Sessions actives', 'iPhone de Julien · ordinateur du bureau', '<button class="btn sm">Tout déconnecter</button>') + '</div></div>';
     return h;
   }
@@ -530,9 +588,9 @@
     var s = S.ob.step, d = S.ob.data;
     var fld = function (k, lab, ph) { return '<div class="field"><label for="ob-' + k + '">' + lab + '</label><input id="ob-' + k + '" data-ob="' + k + '" value="' + esc(d[k] || '') + '" placeholder="' + esc(ph || '') + '"></div>'; };
     var body = [
-      fld('activites', 'Vos activités', 'Réfection, réparation, zinguerie') + fld('zones', 'Communes desservies', 'Issoire, Perrier, Le Broc') + fld('panier', 'Panier moyen indicatif', '18 000 €') + fld('capacite', 'Rendez-vous possibles par semaine', '6') + fld('objectif', 'Votre objectif', 'Remplir le planning de janvier'),
+      fld('activites', 'Vos activités', 'Couverture, zinguerie') + fld('travaux', 'Types de travaux à recevoir', 'Réfection complète, réparation, gouttières') + fld('zones', 'Communes desservies', 'Issoire, Perrier, Le Broc') + fld('panier', 'Panier moyen indicatif', '18 000 €') + fld('capacite', 'Rendez-vous possibles par semaine', '6') + fld('objectif', 'Votre objectif', 'Remplir le planning de janvier'),
       ['Accès Facebook et compte publicitaire', 'Formulaire de demande', 'Calendrier', 'CRM Orixen'].map(function (x, i) { return '<div class="check-row">' + stBadge(i < 2 ? 'ok' : 'neutral', i < 2 ? 'Fait' : 'À faire') + x + '</div>'; }).join(''),
-      fld('resp', 'Qui reçoit les nouveaux leads ?', 'Julien Martin') + fld('tel', 'Téléphone des demandes', '06 00 00 00 00') + fld('rappel', 'Délai de rappel visé', 'Moins d’une heure'),
+      fld('resp', 'Qui reçoit les nouveaux leads ?', 'Julien Martin') + fld('users', 'Utilisateurs autorisés', 'Julien (dirigeant), Karim (commercial), Sophie (lecture)') + fld('tel', 'Téléphone des demandes', '06 00 00 00 00') + fld('rappel', 'Délai de rappel visé', 'Moins d’une heure'),
       ['Formulaire rempli', 'Lead reçu dans le CRM', 'SMS reçu par Julien', 'SMS reçu par le prospect', 'Lead attribué à Julien'].map(function (x) { return '<div class="check-row">' + stBadge('ok', 'Testé') + x + '</div>'; }).join('') + '<p class="small muted" style="margin-top:10px">Test de bout en bout réalisé le ' + dt(NOW.toISOString()) + ' · 38 secondes du formulaire au SMS.</p>',
       '<div class="rq"><span class="n">1</span><div><h4>Configuré</h4><p>Entreprise, zone, formulaire, CRM, notifications.</p></div></div><div class="rq"><span class="n">2</span><div><h4>Testé</h4><p>Le circuit complet, en 38 secondes.</p></div></div><div class="rq"><span class="n">3</span><div><h4>Manquant</h4><p>Calendrier (Julien, d’ici jeudi). Non bloquant.</p></div></div><div class="rq"><span class="n">4</span><div><h4>Prochaine étape</h4><p>Marcus envoie les publicités pour validation demain. Mise en ligne seulement après votre accord.</p></div></div>'
     ][s];
@@ -544,7 +602,7 @@
     $$('[data-ob]').forEach(function (i) { i.oninput = function () { S.ob.data[i.dataset.ob] = i.value; store.set('cc-ob', S.ob); }; });
     var p = $('#ob-prev'), n = $('#ob-next');
     if (p) p.onclick = function () { S.ob.step = Math.max(0, S.ob.step - 1); store.set('cc-ob', S.ob); render(); };
-    if (n) n.onclick = function () { if (S.ob.step === 4) { toast('Validé · Marcus est prévenu'); location.hash = '#/'; return; } S.ob.step++; store.set('cc-ob', S.ob); render(); };
+    if (n) n.onclick = function () { if (S.ob.step === 4) { S.ob.done = true; store.set('cc-ob', S.ob); toast('Validé · Marcus est prévenu'); location.hash = '#/'; return; } S.ob.step++; store.set('cc-ob', S.ob); render(); };
   }
 
   /* ─── INTELLIGENCE ─── */
@@ -586,7 +644,8 @@
   function setThemeIcon() { var t = document.documentElement.getAttribute('data-theme'); $('#theme').innerHTML = ic(t === 'dark' ? 'sun' : 'moon', 16); $('#theme').setAttribute('aria-label', t === 'dark' ? 'Passer en thème clair' : 'Passer en thème sombre'); }
   $('#theme').onclick = function () { var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; document.documentElement.setAttribute('data-theme', t); try { localStorage.setItem('cc-theme', t); } catch (e) {} setThemeIcon(); };
   setThemeIcon();
-  $('#period').onchange = function () { S.period = this.value; render(); };
+  $('#period').onchange = function () { S.period = this.value; $('#custom').hidden = S.period !== 'perso'; render(); };
+  $('#apply').onclick = function () { S.from = $('#from').value; S.to = $('#to').value; render(); toast('Période appliquée'); };
   $('#scrim').onclick = function () { closeLead(); openSheet(false); };
   $('#s-ent').textContent = D.entreprise; $('#s-met').textContent = D.metier;
 
@@ -613,5 +672,6 @@
     if (changed && !sub) { window.scrollTo(0, 0); }
   }
   window.addEventListener('hashchange', render);
+  if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('/command-center/sw.js', { scope: '/command-center/' }).catch(function () {});
   render();
 })();

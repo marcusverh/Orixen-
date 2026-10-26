@@ -84,8 +84,16 @@ window.CC_DATA = (function () {
     if (idx >= 5 && r[8] !== 'perdu') { L.devis = { montant: r[11], envoye: new Date(t0 + 4 * 864e5).toISOString() }; ev(4 * 1440, 'devis', 'Devis envoyé · ' + r[11].toLocaleString('fr-FR') + ' €', resp); }
     if (r[8] === 'signe') ev(8 * 1440, 'win', 'Vente signée · ' + r[12].toLocaleString('fr-FR') + ' €', resp);
     if (r[8] === 'perdu') ev(1440, 'lost', (r[9] === 'Disqualifié' ? 'Disqualifié · ' : 'Perdu · ') + r[13], resp);
+    if (L.rdv) L.rdv.note = idx >= 4 ? 'Toiture de 1978, tuiles à remplacer. Le client compare deux devis.' : 'Accès par la cour, prévoir l’échelle de 9 m.';
     return L;
   });
+  /* rendez-vous annulé et absence */
+  var la = leads.find(function (l) { return l.id === 'L-1037'; });
+  la.rdv = { at: d(2, 10, 0), statut: 'Annulé', lieu: la.ville, note: 'Annulé par le prospect, préfère un samedi. Nouveau créneau proposé automatiquement.' };
+  la.historique.push({ at: d(3, 9, 12), type: 'rdv', txt: 'Rendez-vous annulé par le prospect', par: 'Système Orixen' });
+  var lb = leads.find(function (l) { return l.id === 'L-1036'; });
+  lb.rdv = { at: d(3, 17, 30), statut: 'Absent', lieu: lb.ville, note: 'Personne sur place. SMS de rappel envoyé, à rappeler lundi.' };
+  lb.historique.push({ at: d(3, 18, 5), type: 'rdv', txt: 'Prospect absent au rendez-vous', par: 'Julien Martin' });
 
   var campagnes = [
     { id: 'c1', nom: 'Réfection de toiture · Issoire et 15 km', objectif: 'Demandes de devis pour réfection complète', statut: 'active', budgetJour: 22, depense: 612, impressions: 41800, clics: 702, formulaires: 15,
@@ -114,7 +122,33 @@ window.CC_DATA = (function () {
     { id: 's6', nom: 'Message au prospect', desc: 'Le SMS « Votre demande est bien reçue »', statut: 'ok', verif: h(0.07), incident: null },
     { id: 's7', nom: 'Calendrier', desc: 'Synchronisation de vos rendez-vous', statut: 'ok', verif: h(0.5), incident: null },
     { id: 's8', nom: 'Mesure des conversions', desc: 'Meta sait quels leads deviennent qualifiés', statut: 'ok', verif: h(1), incident: null },
-    { id: 's9', nom: 'Surveillance des erreurs', desc: 'Test automatique du circuit complet toutes les 15 minutes', statut: 'ok', verif: h(0.07), incident: null }
+    { id: 's9', nom: 'Surveillance des erreurs', desc: 'Test automatique du circuit complet toutes les 15 minutes', statut: 'ok', verif: h(0.07), incident: null },
+    { id: 's10', nom: 'Automatisations', desc: 'Rappels de rendez-vous, relances de devis, nouveau créneau en cas d’annulation', statut: 'ok', verif: h(0.3), incident: null },
+    { id: 's11', nom: 'E-mails', desc: 'Confirmations, rapports et factures envoyés par e-mail', statut: 'ok', verif: h(0.5), incident: null }
+  ];
+  var proc = {
+    s1: 'Si le formulaire ne répond plus : bascule sur le formulaire de secours, puis correction sous 2 h.',
+    s2: 'Si la page tombe : les publicités sont redirigées vers le formulaire Facebook.',
+    s3: 'Si l’accès expire : Orixen vous envoie un lien de reconnexion d’un clic.',
+    s4: 'Si un lead n’arrive pas : il est récupéré dans Meta et rejoué, sans doublon.',
+    s5: 'Si les SMS ralentissent : bascule sur le numéro d’envoi de secours.',
+    s6: 'Si l’envoi échoue : nouvel essai, puis e-mail au prospect.',
+    s7: 'Si la synchronisation échoue : vos rendez-vous restent dans le CRM, resynchronisés au retour.',
+    s8: 'Si la mesure s’interrompt : les campagnes continuent, Orixen corrige le suivi.',
+    s9: 'Si le test échoue deux fois : alerte immédiate à Marcus.',
+    s10: 'Si une relance échoue : elle passe en tâche dans « À traiter ».',
+    s11: 'Si un e-mail est refusé : le contenu reste lisible dans votre espace.'
+  };
+  systeme.forEach(function (c) { c.proc = proc[c.id]; });
+
+  var messages = [
+    { at: d(2, 19, 15), de: 'Julien Martin', txt: 'Est-ce qu’on peut mettre en avant la zinguerie ? J’ai de la place en décembre.' },
+    { at: d(2, 19, 40), de: 'Marcus Verhaar', txt: 'Oui. Je prépare deux visuels avec vos photos de gouttières, je vous les envoie jeudi pour validation.' },
+    { at: d(1, 18, 0), de: 'Marcus Verhaar', txt: 'Visuels en cours. Petite question : vous faites aussi le zinc à joint debout ?' }
+  ];
+  var comptesRendus = [
+    { at: d(5, 19, 0), titre: 'Point hebdomadaire · semaine 43', resume: 'Résultats de la semaine, zone resserrée à 15 km, Karim reçoit les réparations.', suite: 'Marcus : nouvelle vidéo. Julien : renseigner les résultats de rendez-vous.' },
+    { at: d(12, 19, 0), titre: 'Point hebdomadaire · semaine 42', resume: 'Isolation mise en pause, budget toiture porté à 22 € par jour.', suite: 'Marcus : suivre le coût par lead qualifié. Julien : envoyer 10 photos de gouttières.' }
   ];
 
   var demandes = [
@@ -141,7 +175,8 @@ window.CC_DATA = (function () {
     NOW: NOW, entreprise: 'Toitures Martin', metier: 'Couverture et zinguerie', zone: ['Issoire', 'Meilhaud', 'Perrier', 'Le Broc', 'Parentignat', 'Orbeil', 'Saint-Yvoine', 'Coudes'],
     contact: { nom: 'Marcus Verhaar', role: 'Votre responsable de compte', tel: '+33627776832', telAff: '06 27 77 68 32', email: 'contact@orixen.fr', delai: 'Réponse le jour même, 7 jours sur 7' },
     garantie: { objectif: 15, jours: 30, debut: d(24, 8, 0) },
-    users: users, stages: stages, leads: leads, campagnes: campagnes, systeme: systeme, demandes: demandes, decisions: decisions, serie: serie,
+    users: users, stages: stages, leads: leads, campagnes: campagnes, systeme: systeme, demandes: demandes, decisions: decisions, serie: serie, messages: messages, comptesRendus: comptesRendus,
+    hebdo: [ { s: 'Sem. 40', rdvPris: 2, rdvFaits: 1, devis: 1, ventes: 0 }, { s: 'Sem. 41', rdvPris: 3, rdvFaits: 2, devis: 2, ventes: 1 }, { s: 'Sem. 42', rdvPris: 3, rdvFaits: 3, devis: 2, ventes: 1 }, { s: 'Sem. 43', rdvPris: 4, rdvFaits: 2, devis: 2, ventes: 1 } ],
     precedent: { leads: 19, qualifies: 13, rdv: 6, ventes: 2, cplq: 54, depense: 940, ca: 31200 }
   };
 })();
