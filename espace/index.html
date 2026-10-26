@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Votre espace | Orixen</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark">
+<meta name="format-detection" content="telephone=no">
+<link rel="icon" href="/favicon.ico?v=3" sizes="48x48">
+<link rel="icon" href="/assets/logo.svg?v=3" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png?v=3">
+<link rel="manifest" href="/site.webmanifest">
+<script>document.documentElement.className+=' js'</script>
+<link rel="stylesheet" href="/assets/orixen.css">
+<link rel="stylesheet" href="/assets/pages.css">
+<style>
+.sp-hero{padding:clamp(64px,9vw,112px) 0 clamp(40px,6vw,64px);text-align:center;position:relative;overflow:hidden}
+.sp-hero::before{content:'';position:absolute;left:50%;top:-280px;width:1100px;height:680px;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(var(--ice-rgb),.18),transparent);pointer-events:none}
+.sp-hero .wrap{position:relative}
+.sp-hero .eyebrow{color:var(--ice)}
+.sp-hero .lead{max-width:600px;margin:22px auto 0}
+.sp-sec{padding:0 0 clamp(20px,3vw,28px)}
+.sp-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
+.sp-card{background:var(--tile);border-radius:28px;padding:clamp(24px,4vw,40px);position:relative;overflow:hidden}
+.sp-k{font-size:13px;font-weight:600;color:var(--text-3);letter-spacing:-.005em;margin-bottom:10px}
+.sp-card h2{font-size:clamp(24px,3vw,32px);font-weight:700;letter-spacing:-.03em;line-height:1.1}
+.sp-card p.sub{color:var(--text-2);font-size:16px;line-height:1.5;margin-top:10px}
+
+/* compteur de garantie */
+.ring{display:flex;align-items:center;gap:clamp(20px,4vw,36px);margin-top:22px}
+.ring svg{width:148px;height:148px;flex:none;transform:rotate(-90deg)}
+.ring .bg{stroke:#26262a}
+.ring .fg{stroke:url(#gr);stroke-linecap:round;transition:stroke-dashoffset 1.6s var(--ease)}
+.ring-n{position:relative}
+.ring-n b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;font-size:38px;font-weight:700;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.ring-n b small{font-size:13px;font-weight:500;color:var(--text-3);letter-spacing:0;margin-top:2px}
+.ring-t p{color:var(--text-2);font-size:15.5px;line-height:1.5}
+.ring-t p+p{margin-top:8px}
+.ring-t strong{color:var(--text)}
+
+/* vidéo */
+.vid{aspect-ratio:9/16;max-height:420px;width:100%;border-radius:20px;background:#000;margin-top:18px;object-fit:cover}
+.vid-empty{aspect-ratio:16/10;border-radius:20px;background:linear-gradient(180deg,#1c1c1f,#141416);margin-top:18px;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--text-3);font-size:15px;padding:24px}
+
+/* tâches */
+.todo{display:grid;gap:10px;margin-top:20px}
+.todo a,.todo div.t{display:grid;grid-template-columns:30px 1fr auto;gap:14px;align-items:center;background:var(--tile-2);border-radius:18px;padding:16px 18px;transition:background .25s var(--ease)}
+.todo a:hover{background:#222225}
+.todo .c{width:26px;height:26px;border-radius:50%;box-shadow:inset 0 0 0 2px #3a3a3e;display:flex;align-items:center;justify-content:center}
+.todo .ok .c{background:var(--ice);box-shadow:none}
+.todo h3{font-size:16.5px;font-weight:600;letter-spacing:-.015em}
+.todo p{font-size:14px;color:var(--text-3);margin-top:2px}
+.todo .ok h3{color:var(--text-2);text-decoration:line-through;text-decoration-color:#48484d}
+.todo .go{font-size:14px;font-weight:600;color:var(--ice);white-space:nowrap}
+
+/* zone */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.chips span{background:var(--tile-2);border-radius:980px;padding:8px 14px;font-size:14.5px;font-weight:500;color:var(--text)}
+.lock{display:inline-flex;align-items:center;gap:8px;margin-top:18px;font-size:14px;color:var(--ice)}
+
+/* outils */
+.tools{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}
+.tools a{background:var(--tile-2);border-radius:18px;padding:18px;display:block;transition:background .25s var(--ease)}
+.tools a:hover{background:#222225}
+.tools b{display:block;font-size:15.5px;font-weight:600;letter-spacing:-.015em}
+.tools span{display:block;font-size:13.5px;color:var(--text-3);margin-top:4px}
+
+/* rapport */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}
+.stats div{background:var(--tile-2);border-radius:18px;padding:16px 18px}
+.stats b{display:block;font-size:28px;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.stats span{font-size:13px;color:var(--text-3)}
+.note{margin-top:16px;color:var(--text-2);font-size:15.5px;line-height:1.5}
+
+/* mot de Marcus */
+.word{font-size:clamp(19px,2.2vw,23px);line-height:1.45;letter-spacing:-.02em;font-weight:500;margin-top:16px}
+.sign{display:flex;align-items:center;gap:12px;margin-top:22px;color:var(--text-2);font-size:15px}
+.sign img{width:36px;height:36px;border-radius:10px}
+
+.contact{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.sp-empty{max-width:520px;margin:0 auto;text-align:center;padding:140px 0}
+[hidden]{display:none!important}
+
+@media(max-width:860px){
+  .sp-grid{grid-template-columns:1fr}
+  .tools,.stats{grid-template-columns:repeat(2,1fr)}
+  .ring svg{width:120px;height:120px}
+}
+@media(max-width:480px){
+  .ring{flex-direction:column;align-items:flex-start}
+  .todo a,.todo div.t{grid-template-columns:30px 1fr}
+  .todo .go{grid-column:2}
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap wide">
+    <a href="/" class="logo" aria-label="Orixen, accueil"><img src="/assets/mark.svg" width="22" height="22" alt="">Orixen</a>
+    <span class="back" id="h-ent"></span>
+  </div>
+</header>
+
+<main id="app" hidden>
+
+<section class="sp-hero">
+  <div class="wrap in-seq">
+    <p class="eyebrow" id="h-eye">Votre espace Orixen</p>
+    <h1 class="h1" id="h-title">Bonjour.</h1>
+    <p class="lead" id="h-lead"></p>
+  </div>
+</section>
+
+<section class="sp-sec">
+  <div class="wrap wide">
+    <div class="status rv" role="list" id="status"></div>
+  </div>
+</section>
+
+<section class="sp-sec">
+  <div class="wrap wide sp-grid">
+    <div class="sp-card rv">
+      <p class="sp-k">Votre garantie</p>
+      <h2 id="g-title">15 demandes en 30 jours.</h2>
+      <div class="ring">
+        <div class="ring-n">
+          <svg viewBox="0 0 148 148" aria-hidden="true">
+            <defs><linearGradient id="gr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#7fa6d9"/></linearGradient></defs>
+            <circle class="bg" cx="74" cy="74" r="64" fill="none" stroke-width="10"/>
+            <circle class="fg" id="g-arc" cx="74" cy="74" r="64" fill="none" stroke-width="10" stroke-dasharray="402.1" stroke-dashoffset="402.1"/>
+          </svg>
+          <b><span id="g-n">0</span><small id="g-of">sur 15</small></b>
+        </div>
+        <div class="ring-t" id="g-text"></div>
+      </div>
+    </div>
+    <div class="sp-card rv d1">
+      <p class="sp-k">Un mot de Marcus</p>
+      <h2>Votre zone, en vidéo.</h2>
+      <video class="vid" id="v" controls playsinline preload="metadata" hidden></video>
+      <div class="vid-empty" id="v-empty">Votre vidéo de bienvenue arrive très vite.<br>Une minute, commune par commune.</div>
+    </div>
+  </div>
+</section>
+
+<section class="sp-sec" id="rep-sec" hidden>
+  <div class="wrap wide">
+    <div class="sp-card rv">
+      <p class="sp-k" id="rep-k">Votre semaine</p>
+      <h2 id="rep-title">Vos chiffres.</h2>
+      <div class="stats" id="rep-stats"></div>
+      <p class="note" id="rep-note"></p>
+    </div>
+  </div>
+</section>
+
+<section class="sp-sec">
+  <div class="wrap wide sp-grid">
+    <div class="sp-card rv">
+      <p class="sp-k">La suite</p>
+      <h2>Vos 7 premiers jours.</h2>
+      <ol class="tl" id="tl" style="margin-top:14px"></ol>
+    </div>
+    <div class="sp-card rv d1">
+      <p class="sp-k">Ce qu'il me faut de vous</p>
+      <h2>Trois choses.<br><span class="dim">Rien de plus.</span></h2>
+      <div class="todo" id="todo"></div>
+    </div>
+  </div>
+</section>
+
+<section class="sp-sec">
+  <div class="wrap wide">
+    <div class="sp-card rv">
+      <p class="sp-k">Votre zone exclusive</p>
+      <h2>Ces communes sont à vous.</h2>
+      <p class="sub">Aucun autre couvreur n'y est accepté tant que nous travaillons ensemble. C'est écrit dans votre contrat.</p>
+      <div class="chips" id="chips"></div>
+      <p class="lock"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Fermée à vos concurrents</p>
+    </div>
+  </div>
+</section>
+
+<section class="sp-sec">
+  <div class="wrap wide">
+    <div class="sp-card rv">
+      <p class="sp-k">Vos outils</p>
+      <h2>Tout est ici.</h2>
+      <div class="tools" id="tools"></div>
+    </div>
+  </div>
+</section>
+
+<section class="sp-sec" style="padding-bottom:clamp(80px,10vw,120px)">
+  <div class="wrap wide">
+    <div class="sp-card rv">
+      <p class="sp-k">De Marcus</p>
+      <p class="word" id="word"></p>
+      <div class="sign"><img src="/assets/apple-touch-icon.png?v=3" alt="">Marcus · Orixen</div>
+      <div class="contact" id="contact"></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<main id="none" hidden>
+  <div class="wrap sp-empty">
+    <h1 class="h2">Ce lien n'est pas valide.</h1>
+    <p class="lead" style="margin-top:16px">Votre espace a peut-être changé d'adresse. Écrivez-moi et je vous renvoie le bon lien.</p>
+    <div class="row-btn" style="margin-top:28px"><a href="mailto:contact@orixen.fr" class="btn">Écrire à Orixen</a></div>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="wrap wide">
+    <span>© 2026 Orixen. Des chantiers signés. Pas des leads partagés.</span>
+    <nav aria-label="Liens légaux">
+      <a href="mailto:contact@orixen.fr">contact@orixen.fr</a>
+      <a href="/conditions/">Conditions</a>
+      <a href="/confidentialite/">Confidentialité</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var safe = function (u) { return /^(https:\/\/|mailto:|tel:|sms:|\/)/.test(u || '') ? u : ''; };
+  var day = function (d, withTime) {
+    if (!d) return '';
+    var o = { weekday: 'long', day: 'numeric', month: 'long' };
+    if (withTime) { o.hour = '2-digit'; o.minute = '2-digit'; }
+    var s = new Date(d).toLocaleDateString('fr-FR', o).replace(':', 'h');
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  };
+  var check = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2l2.3 2.3L9.5 3.6" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  var id = new URLSearchParams(location.search).get('c') || '';
+  if (!/^[a-z0-9-]{6,64}$/.test(id)) return show(false);
+  fetch('/espace/c/' + id + '.json', { cache: 'no-store' })
+    .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+    .then(render)
+    .catch(function () { show(false); });
+
+  function show(ok) { $(ok ? 'app' : 'none').hidden = false; }
+
+  function render(c) {
+    var L = c.liens || {}, D = c.dates || {}, T = c.taches || {};
+    var obj = c.objectif || 15, n = Math.min(c.demandes || 0, 999);
+    var live = !!D.mise_en_ligne && new Date(D.mise_en_ligne) <= new Date();
+    document.title = c.entreprise + ' | Orixen';
+    $('h-ent').textContent = c.entreprise;
+    $('h-title').innerHTML = 'Bonjour ' + esc(c.prenom) + '.<br><span class="metal">' + (live ? 'Vos demandes arrivent.' : 'Votre zone est à vous.') + '</span>';
+    $('h-lead').textContent = live
+      ? 'Vos publicités tournent depuis le ' + day(D.mise_en_ligne).toLowerCase() + '. Ici, vous suivez tout, à tout moment.'
+      : 'Tout ce qui se passe pour ' + c.entreprise + ', jour par jour. Vous n’avez presque rien à faire.';
+
+    var st = [
+      ['Votre zone', 'Réservée', 'ok'],
+      ['Votre système', live ? 'En ligne' : 'En configuration', live ? 'ok' : 'live'],
+      ['Mise en ligne', D.mise_en_ligne ? (live ? 'Faite' : day(D.mise_en_ligne)) : 'Sous 7 jours', live ? 'ok' : ''],
+      ['Demandes reçues', String(n), n ? 'ok' : '']
+    ];
+    $('status').innerHTML = st.map(function (s) { return '<div role="listitem" class="' + s[2] + '"><small>' + esc(s[0]) + '</small><b>' + esc(s[1]) + '</b></div>'; }).join('');
+
+    $('g-of').textContent = 'sur ' + obj;
+    var end = D.mise_en_ligne ? new Date(new Date(D.mise_en_ligne).getTime() + 30 * 864e5) : null;
+    var left = end ? Math.max(0, Math.ceil((end - new Date()) / 864e5)) : null;
+    var gt = [];
+    if (!live) gt.push('Le compteur démarre le jour de la mise en ligne' + (D.mise_en_ligne ? ', <strong>' + esc(day(D.mise_en_ligne).toLowerCase()) + '</strong>.' : '.'));
+    else if (n >= obj) gt.push('<strong>Objectif atteint.</strong> ' + n + ' demandes qualifiées reçues.');
+    else gt.push('<strong>' + (obj - n) + ' demandes</strong> encore, et il reste <strong>' + left + ' jours</strong>.');
+    gt.push('Si elles ne sont pas là à temps, je continue gratuitement jusqu’à ce que vous les ayez.');
+    $('g-text').innerHTML = gt.map(function (p) { return '<p>' + p + '</p>'; }).join('');
+    var go = function () { $('g-n').textContent = n; $('g-arc').style.strokeDashoffset = 402.1 * (1 - Math.min(n / obj, 1)); };
+    setTimeout(go, 500);
+
+    if (safe(c.video)) { $('v').src = c.video; $('v').hidden = false; $('v-empty').hidden = true; }
+
+    if (c.rapport) {
+      var R = c.rapport;
+      $('rep-sec').hidden = false;
+      $('rep-k').textContent = 'Votre semaine' + (R.semaine ? ' · ' + R.semaine : '');
+      $('rep-title').textContent = R.titre || 'Vos chiffres.';
+      $('rep-stats').innerHTML = [[R.demandes, 'demandes'], [R.cout != null ? R.cout + ' €' : '', 'par demande'], [R.devis, 'devis'], [R.signes, 'chantiers signés']]
+        .map(function (s) { return '<div><b>' + esc(s[0] == null || s[0] === '' ? '·' : s[0]) + '</b><span>' + s[1] + '</span></div>'; }).join('');
+      $('rep-note').textContent = R.note || '';
+    }
+
+    var steps = [
+      ['signature', 'Signature et paiement', 'Votre zone est fermée à vos concurrents.'],
+      ['appel', 'Appel de lancement', '30 minutes ensemble : vos accès, vos photos, votre zone.', true],
+      ['apercus', 'Vos publicités', 'Je vous les envoie avec vos photos et votre nom. Vous validez d’un « OK ».'],
+      ['test', 'La demande de test', 'Une fausse demande, pour vérifier que tout arrive sur votre téléphone.'],
+      ['mise_en_ligne', 'Mise en ligne', 'Les demandes arrivent. Le compteur de votre garantie démarre.']
+    ];
+    var now = new Date(), cur = -1;
+    steps.forEach(function (s, i) { if (D[s[0]] && new Date(D[s[0]]) <= now) cur = i; });
+    $('tl').innerHTML = steps.map(function (s, i) {
+      var cls = i <= cur ? 'done' : (i === cur + 1 ? 'now' : '');
+      var when = i <= cur ? 'Fait' : (D[s[0]] ? day(D[s[0]], s[3]) : 'À venir');
+      return '<li class="' + cls + '"><span class="dot">' + (i <= cur ? check : (i + 1)) + '</span><div><span class="when">' + esc(when) + '</span><h3>' + s[1] + '</h3><p>' + s[2] + '</p></div></li>';
+    }).join('');
+
+    var todo = [
+      ['acces', 'Vos accès Facebook', 'Un lien, deux clics. Vous restez propriétaire de tout.', L.acces, 'Donner l’accès'],
+      ['photos', '20 photos de vos chantiers', 'Des avant et après, prises au téléphone, ça suffit.', L.photos, 'Envoyer'],
+      ['telephone', 'Le téléphone des demandes', c.telephone ? 'Vos demandes arriveront au ' + c.telephone + '.' : 'Celui qui recevra vos demandes par SMS.', '', '']
+    ];
+    $('todo').innerHTML = todo.map(function (t) {
+      var ok = !!T[t[0]], href = safe(t[3]);
+      var inner = '<span class="c">' + (ok ? check : '') + '</span><div><h3>' + t[1] + '</h3><p>' + esc(t[2]) + '</p></div>' + (!ok && href ? '<span class="go">' + t[4] + '</span>' : '');
+      return (!ok && href) ? '<a class="' + (ok ? 'ok' : '') + '" href="' + esc(href) + '" target="_blank" rel="noopener">' + inner + '</a>' : '<div class="t ' + (ok ? 'ok' : '') + '">' + inner + '</div>';
+    }).join('');
+
+    $('chips').innerHTML = (c.communes || []).map(function (x) { return '<span>' + esc(x) + '</span>'; }).join('');
+
+    var tools = [
+      [L.script, 'Script de rappel', 'Quoi dire, mot pour mot'],
+      [L.fiche, 'Fiche de suivi', '10 secondes par demande'],
+      [L.guide, 'Guide de démarrage', '3 minutes de lecture'],
+      ['/conditions/', 'Vos conditions', 'La garantie, noir sur blanc']
+    ].filter(function (t) { return safe(t[0]); });
+    $('tools').innerHTML = tools.map(function (t) { return '<a href="' + esc(t[0]) + '" target="_blank" rel="noopener"><b>' + t[1] + '</b><span>' + t[2] + '</span></a>'; }).join('');
+
+    $('word').textContent = c.mot || ('Merci pour votre confiance, ' + c.prenom + '. Mon travail, c’est que vous n’ayez jamais à vous demander où on en est. Si une question vous vient, écrivez-moi : je réponds le jour même.');
+    var tel = (c.marcus_tel || '+33627776832').replace(/[^+\d]/g, '');
+    $('contact').innerHTML = '<a class="btn" href="https://wa.me/' + tel.replace('+', '') + '" target="_blank" rel="noopener">WhatsApp</a><a class="btn btn-ghost" href="sms:' + tel + '">SMS</a><a class="btn btn-ghost" href="tel:' + tel + '">Appeler</a>';
+
+    show(true);
+  }
+})();
+</script>
+<script src="/assets/orixen.js" defer></script>
+</body>
+</html>

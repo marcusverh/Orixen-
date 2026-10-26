@@ -1,0 +1,25 @@
+{
+  "prenom": "Julien",
+  "entreprise": "Couverture Martin",
+  "telephone": "06 00 00 00 00",
+  "communes": ["Issoire", "Meilhaud", "Perrier", "Le Broc", "Parentignat", "Orbeil", "Saint-Yvoine", "Coudes"],
+  "dates": {
+    "signature": "2026-10-24T18:40",
+    "appel": "2026-10-25T18:30",
+    "apercus": "2026-10-27T19:00",
+    "test": "2026-10-28T19:00",
+    "mise_en_ligne": "2026-10-29T08:00"
+  },
+  "taches": { "acces": true, "photos": false, "telephone": true },
+  "liens": {
+    "acces": "https://www.orixen.fr/",
+    "photos": "https://wa.me/33627776832",
+    "script": "https://docs.google.com/document/d/1pqUg67Q55UyPOJ36kzgQiUeWg81vc4iIg3FMtpaLZwk/edit",
+    "fiche": "https://docs.google.com/spreadsheets/d/1U3XR10T5qXLtswI9eBdTCNtst2gdC8W7X-e_dTfz1HQ/edit",
+    "guide": "https://docs.google.com/document/d/1PF-0bG7pPCt6GBAOuBF26SXeyUFGs4_vnbiTxuXuL4A/edit"
+  },
+  "demandes": 0,
+  "objectif": 15,
+  "video": "",
+  "mot": ""
+}
