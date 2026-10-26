@@ -120,13 +120,13 @@
     navLinks.forEach(function (l) { var s = document.querySelector(l.getAttribute('href')); if (s) spy.observe(s); });
   }
 
-  /* Calcul : ce que peuvent rapporter les 25 demandes garanties */
+  /* Calcul : ce que peuvent rapporter les 15 demandes garanties */
   var pan = document.getElementById('r-pan'), tx = document.getElementById('r-tx');
   if (pan && tx) {
     var eur = function (n) { return Math.round(n).toLocaleString('fr-FR').replace(/\s/g, ' ') + ' €'; };
     var fill = function (r) { r.style.setProperty('--p', ((r.value - r.min) / (r.max - r.min) * 100) + '%'); };
     var calc = function () {
-      var ch = 25 * tx.value / 10;
+      var ch = 15 * tx.value / 10;
       document.getElementById('o-pan').textContent = eur(+pan.value);
       document.getElementById('o-tx').textContent = tx.value;
       document.getElementById('o-res').textContent = eur(ch * pan.value);

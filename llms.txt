@@ -7,12 +7,12 @@
 ## Le service
 
 - Pour qui : artisans et entreprises du bâtiment qui travaillent localement en France (couverture, rénovation, menuiserie, isolation, façade, maçonnerie).
-- Ce qui est fait : publicités Facebook et Instagram ciblées sur la zone, page à l'enseigne de l'artisan, tri des demandes (propriétaire, budget, délai), message automatique au client, alerte en temps réel sur le téléphone de l'artisan, rapport chaque vendredi.
+- Ce qui est fait : publicités Facebook et Instagram ciblées sur la zone, page à l'enseigne de l'artisan, tri des demandes (propriétaire, budget, délai), message automatique au client, alerte en temps réel sur le téléphone de l'artisan, rapport chaque dimanche.
 - Exclusivité : une fois la zone attribuée, aucun autre artisan du même métier n'y est accepté. C'est une clause du contrat.
-- Garantie écrite : 25 demandes qualifiées en 90 jours, sinon Orixen travaille gratuitement jusqu'à les atteindre et rembourse le troisième mois (avec le budget publicitaire convenu maintenu et des demandes rappelées sous 48 heures ouvrées).
-- Délai : système opérationnel en deux à trois semaines.
+- Garantie écrite : 15 demandes qualifiées dans les 30 jours suivant la mise en ligne, sinon Orixen continue gratuitement jusqu'à les atteindre (avec le budget publicitaire convenu maintenu et des demandes rappelées sous 24 heures). La garantie s'exécute en travail gratuit, jamais en remboursement.
+- Délai : publicités en ligne sous sept jours.
 - Prix : forfait mensuel fixe annoncé pendant l'audit. Budget publicitaire à partir de 1 000 € par mois, payé directement à Meta par l'artisan.
-- Engagement : trois mois, puis sans obligation.
+- Engagement : aucun, au mois, avec quinze jours de préavis.
 - Propriété : la page, les contacts et le compte publicitaire appartiennent à l'artisan.
 
 ## Différence avec les plateformes de leads
